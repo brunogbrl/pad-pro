@@ -105,72 +105,83 @@ async function main() {
     }
   }
 
-  // 3. Upload binary asset
-  const exePath = path.join(__dirname, '..', 'dist', 'PAD Pro 1.0.4.exe');
-  if (!fs.existsSync(exePath)) {
-    throw new Error(`Arquivo executável não encontrado em: ${exePath}`);
-  }
+  // 3. Upload assets
+  const filesToUpload = [
+    { local: 'PAD Pro Setup 1.0.4.exe', remoteName: 'PAD-Pro-Setup-1.0.4.exe', contentType: 'application/octet-stream' },
+    { local: 'latest.yml', remoteName: 'latest.yml', contentType: 'text/yaml' }
+  ];
 
-  const stat = fs.statSync(exePath);
-  const fileSizeMB = (stat.size / (1024 * 1024)).toFixed(1);
-  console.log(`\n3. Fazendo upload do executável (${fileSizeMB} MB)...`);
-  console.log(`Origem: ${exePath}`);
+  for (const item of filesToUpload) {
+    const filePath = path.join(__dirname, '..', 'dist', item.local);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`Arquivo não encontrado para upload: ${filePath}`);
+      continue;
+    }
 
-  // Delete asset if already exists in release
-  if (release.assets && release.assets.length > 0) {
-    const existing = release.assets.find(a => a.name === 'PAD Pro 1.0.4.exe');
-    if (existing) {
-      console.log(`Removendo asset anterior (ID ${existing.id})...`);
-      await request({
-        hostname: 'api.github.com',
-        path: `/repos/${owner}/${repo}/releases/assets/${existing.id}`,
-        method: 'DELETE',
+    const stat = fs.statSync(filePath);
+    const fileSizeMB = (stat.size / (1024 * 1024)).toFixed(1);
+    console.log(`\nFazendo upload de ${item.remoteName} (${fileSizeMB} MB)...`);
+
+    // Delete existing asset if needed
+    if (release.assets && release.assets.length > 0) {
+      const existing = release.assets.find(a => a.name === item.remoteName);
+      if (existing) {
+        console.log(`Removendo asset anterior: ${item.remoteName}...`);
+        try {
+          await request({
+            hostname: 'api.github.com',
+            path: `/repos/${owner}/${repo}/releases/assets/${existing.id}`,
+            method: 'DELETE',
+            headers: {
+              'User-Agent': 'PAD-Pro-Deployer',
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+        } catch (e) {
+          console.warn('Aviso ao remover asset anterior:', e.message);
+        }
+      }
+    }
+
+    const uploadUrl = new URL(release.upload_url.replace('{?name,label}', ''));
+    uploadUrl.searchParams.set('name', item.remoteName);
+
+    const fileBuffer = fs.readFileSync(filePath);
+
+    await new Promise((resolve, reject) => {
+      const req = https.request({
+        hostname: uploadUrl.hostname,
+        path: uploadUrl.pathname + uploadUrl.search,
+        method: 'POST',
         headers: {
           'User-Agent': 'PAD-Pro-Deployer',
           'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json'
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': item.contentType,
+          'Content-Length': fileBuffer.length
         }
+      }, (res) => {
+        let body = '';
+        res.on('data', chunk => body += chunk);
+        res.on('end', () => {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`🎉 Upload de ${item.remoteName} concluído com sucesso! (HTTP ${res.statusCode})`);
+            resolve();
+          } else {
+            reject(new Error(`Erro no upload de ${item.remoteName}: HTTP ${res.statusCode} - ${body}`));
+          }
+        });
       });
-    }
+
+      req.on('error', reject);
+      req.write(fileBuffer);
+      req.end();
+    });
   }
 
-  const uploadUrl = new URL(release.upload_url.replace('{?name,label}', ''));
-  uploadUrl.searchParams.set('name', 'PAD Pro 1.0.4.exe');
-
-  const fileBuffer = fs.readFileSync(exePath);
-
-  await new Promise((resolve, reject) => {
-    const req = https.request({
-      hostname: uploadUrl.hostname,
-      path: uploadUrl.pathname + uploadUrl.search,
-      method: 'POST',
-      headers: {
-        'User-Agent': 'PAD-Pro-Deployer',
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/octet-stream',
-        'Content-Length': fileBuffer.length
-      }
-    }, (res) => {
-      let body = '';
-      res.on('data', chunk => body += chunk);
-      res.on('end', () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log(`\n🎉 Upload concluído com sucesso! (HTTP ${res.statusCode})`);
-          resolve();
-        } else {
-          reject(new Error(`Erro no upload: HTTP ${res.statusCode} - ${body}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    req.write(fileBuffer);
-    req.end();
-  });
-
   console.log(`\n======================================================`);
-  console.log(`  ✅ RELEASE PUBLICADA COM SUCESSO NO GITHUB!`);
+  console.log(`  ✅ INSTALADOR E ATUALIZADOR PUBLICADOS NO GITHUB!`);
   console.log(`  Acesse agora: https://github.com/${owner}/${repo}/releases`);
   console.log(`======================================================\n`);
 }

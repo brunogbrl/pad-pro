@@ -1844,6 +1844,10 @@
     showToast(active ? 'Notificações de atualização ativadas' : 'Notificações de atualização desativadas', 'info');
   });
 
+  document.getElementById('btn-open-github')?.addEventListener('click', () => {
+    window.api?.openURL?.('https://github.com/brunogbrl/pad-pro');
+  });
+
   document.getElementById('btn-open-makerworld')?.addEventListener('click', () => {
     window.api?.openURL?.('https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670');
   });
