@@ -10,6 +10,13 @@
   const layerEl = document.getElementById('hud-layer');
   const actionEl = document.getElementById('hud-action');
 
+  const hudDefault = document.getElementById('hud-default');
+  const hudFlyout = document.getElementById('hud-flyout');
+  const hudFlyoutIcon = document.getElementById('hud-flyout-icon');
+  const hudFlyoutTitle = document.getElementById('hud-flyout-title');
+  const hudFlyoutVal = document.getElementById('hud-flyout-val');
+  const hudFlyoutFill = document.getElementById('hud-flyout-fill');
+
   let resetTimer = null;
   let currentLayer = 0;
   let currentLayerName = 'CAMADA 0';
@@ -41,9 +48,23 @@
 
     layerEl.textContent = currentLayerName;
 
-    if (data.isSoundPlaying !== undefined) {
+    if (data.flyout) {
+      if (hudDefault) hudDefault.style.display = 'none';
+      if (hudFlyout) hudFlyout.style.display = 'inline-flex';
+      if (hudFlyoutTitle) hudFlyoutTitle.textContent = data.flyout.title || 'VOLUME';
+      if (hudFlyoutVal) hudFlyoutVal.textContent = data.flyout.value || `${data.flyout.pct}%`;
+      if (hudFlyoutFill) hudFlyoutFill.style.width = `${Math.max(0, Math.min(100, data.flyout.pct))}%`;
+      if (hudFlyoutIcon && data.flyout.iconSvg) {
+        hudFlyoutIcon.innerHTML = data.flyout.iconSvg;
+      }
+      pill.classList.add('active-press');
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(resetToRest, data.duration || 1200);
+    } else if (data.isSoundPlaying !== undefined) {
       isSoundPlaying = !!data.isSoundPlaying;
       if (isSoundPlaying) {
+        if (hudDefault) hudDefault.style.display = 'inline-flex';
+        if (hudFlyout) hudFlyout.style.display = 'none';
         actionEl.textContent = '🔊 ' + (data.soundTitle || 'TOCANDO SOM');
         actionEl.classList.add('highlight');
         pill.classList.add('playing-sound');
@@ -53,6 +74,8 @@
         resetToRest();
       }
     } else if (data.action) {
+      if (hudDefault) hudDefault.style.display = 'inline-flex';
+      if (hudFlyout) hudFlyout.style.display = 'none';
       actionEl.textContent = data.action;
       actionEl.classList.add('highlight');
       pill.classList.add('active-press');
@@ -76,6 +99,8 @@
 
   function resetToRest() {
     if (isSoundPlaying) return;
+    if (hudDefault) hudDefault.style.display = 'inline-flex';
+    if (hudFlyout) hudFlyout.style.display = 'none';
     actionEl.textContent = currentProfile || 'PADRÃO';
     actionEl.classList.remove('highlight');
     pill.classList.remove('active-press');

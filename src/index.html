@@ -188,11 +188,28 @@
               <div class="pad-oled-frame" id="pad-oled-frame">
                 <div class="pad-oled-glass">
                   <div class="pad-oled-screen">
-                    <div class="pad-oled-header">
-                      <span class="pad-oled-dot">●</span>
-                      <span class="pad-oled-layer" id="pad-oled-layer">CAMADA 0</span>
+                    <div class="pad-oled-default-content" id="pad-oled-default-content">
+                      <div class="pad-oled-header">
+                        <span class="pad-oled-dot">●</span>
+                        <span class="pad-oled-layer" id="pad-oled-layer">CAMADA 0</span>
+                      </div>
+                      <div class="pad-oled-sub" id="pad-oled-sub">DIRETAS (F15-F23)</div>
                     </div>
-                    <div class="pad-oled-sub" id="pad-oled-sub">DIRETAS (F15-F23)</div>
+                    <!-- Modern Flyout Bar (Windows-style OSD) -->
+                    <div class="pad-oled-flyout hidden" id="pad-oled-flyout">
+                      <div class="pad-oled-flyout-top">
+                        <span class="pad-oled-flyout-title" id="pad-oled-flyout-title">VOLUME</span>
+                      </div>
+                      <div class="pad-oled-flyout-body">
+                        <div class="pad-oled-flyout-icon" id="pad-oled-flyout-icon">
+                          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                        </div>
+                        <span class="pad-oled-flyout-val" id="pad-oled-flyout-val">50%</span>
+                        <div class="pad-oled-flyout-track">
+                          <div class="pad-oled-flyout-fill" id="pad-oled-flyout-fill" style="width: 50%;"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1403,16 +1420,33 @@
               </div>
               <div class="oled-screen-frame">
                 <div class="oled-screen-inner" id="oled-sim-screen">
-                  <div class="oled-sim-top">
-                    <span class="oled-sim-layer-name" id="oled-sim-layer-name">CAMADA 0</span>
-                    <span class="oled-sim-dots" id="oled-sim-dots">● ○ ○ ○</span>
-                  </div>
-                  <div class="oled-sim-divider" id="oled-sim-divider"></div>
-                  <div class="oled-sim-bottom">
-                    <div class="oled-sim-icon-box" id="oled-sim-icon-box">
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  <div class="oled-sim-default-content" id="oled-sim-default-content">
+                    <div class="oled-sim-top">
+                      <span class="oled-sim-layer-name" id="oled-sim-layer-name">CAMADA 0</span>
+                      <span class="oled-sim-dots" id="oled-sim-dots">● ○ ○ ○</span>
                     </div>
-                    <span class="oled-sim-action-text" id="oled-sim-action-text">VOL &amp; MUTE</span>
+                    <div class="oled-sim-divider" id="oled-sim-divider"></div>
+                    <div class="oled-sim-bottom">
+                      <div class="oled-sim-icon-box" id="oled-sim-icon-box">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                      </div>
+                      <span class="oled-sim-action-text" id="oled-sim-action-text">VOL &amp; MUTE</span>
+                    </div>
+                  </div>
+                  <!-- Modern Flyout Bar inside OLED Simulator -->
+                  <div class="oled-sim-flyout hidden" id="oled-sim-flyout">
+                    <div class="oled-sim-flyout-top">
+                      <span class="oled-sim-flyout-title" id="oled-sim-flyout-title">VOLUME</span>
+                    </div>
+                    <div class="oled-sim-flyout-body">
+                      <div class="oled-sim-flyout-icon" id="oled-sim-flyout-icon">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                      </div>
+                      <span class="oled-sim-flyout-val" id="oled-sim-flyout-val">50%</span>
+                      <div class="oled-sim-flyout-track">
+                        <div class="oled-sim-flyout-fill" id="oled-sim-flyout-fill" style="width: 50%;"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

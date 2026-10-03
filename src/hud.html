@@ -112,10 +112,20 @@
 </head>
 <body>
   <div id="hud-pill">
-    <span class="dot" id="hud-dot"></span>
-    <span class="layer-name" id="hud-layer">CAMADA 0</span>
-    <span class="separator">│</span>
-    <span class="action-text" id="hud-action">PADRÃO</span>
+    <div id="hud-default" style="display: inline-flex; align-items: center;">
+      <span class="dot" id="hud-dot"></span>
+      <span class="layer-name" id="hud-layer">CAMADA 0</span>
+      <span class="separator">│</span>
+      <span class="action-text" id="hud-action">PADRÃO</span>
+    </div>
+    <div id="hud-flyout" style="display: none; align-items: center; gap: 8px;">
+      <span id="hud-flyout-icon" style="display: inline-flex; align-items: center; color: var(--layer-color, #38BDF8);"></span>
+      <span id="hud-flyout-title" style="font-size: 11px; font-weight: 700; color: #F8FAFC;">VOLUME</span>
+      <span id="hud-flyout-val" style="font-size: 11px; font-weight: 600; color: var(--layer-color, #38BDF8); min-width: 30px;">50%</span>
+      <div id="hud-flyout-track" style="width: 80px; height: 5px; background: rgba(255, 255, 255, 0.18); border-radius: 999px; overflow: hidden; position: relative;">
+        <div id="hud-flyout-fill" style="height: 100%; background: var(--layer-color, #38BDF8); border-radius: 999px; width: 50%; transition: width 0.12s ease; box-shadow: 0 0 6px var(--layer-color, #38BDF8);"></div>
+      </div>
+    </div>
   </div>
 
   <script src="hud.js"></script>

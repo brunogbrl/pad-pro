@@ -756,7 +756,21 @@
     // 5. Encoder click event from physical pad
     if (event.type === 'encoder-click') {
       triggerKnobPressVisual();
-      setOLEDContent('ENCODER', 'CLIQUE', 1200);
+      const enc = window.configStore.getLayerEncoder(currentLayer);
+      if (enc?.function === 'volume') {
+        showOledFlyout({ title: 'VOLUME (MUTE)', value: 'MUDO', pct: 0, icon: 'volume' });
+      } else if (enc?.function === 'brightness') {
+        simBrightness = 70;
+        showOledFlyout({ title: 'BRILHO PADRÃO', value: '70%', pct: 70, icon: 'brightness' });
+      } else if (enc?.function === 'zoom') {
+        simZoom = 100;
+        showOledFlyout({ title: 'ZOOM 100% (RESET)', value: '100%', pct: 28, icon: 'zoom' });
+      } else if (enc?.function === 'scroll') {
+        simScroll = 50;
+        showOledFlyout({ title: 'CLIQUE DO MEIO', value: '50%', pct: 50, icon: 'scroll' });
+      } else {
+        setOLEDContent('ENCODER', 'CLIQUE', 1200);
+      }
       return;
     }
   }
@@ -765,6 +779,16 @@
   // OLED DISPLAY (SYNCHRONIZED WITH CUSTOMIZATION SIMULATOR)
   // ===================================================================
   function renderOLED() {
+    const padDefault = document.getElementById('pad-oled-default-content');
+    const padFlyout = document.getElementById('pad-oled-flyout');
+    const simDefault = document.getElementById('oled-sim-default-content');
+    const simFlyout = document.getElementById('oled-sim-flyout');
+
+    if (padDefault) padDefault.classList.remove('hidden');
+    if (padFlyout) padFlyout.classList.add('hidden');
+    if (simDefault) simDefault.classList.remove('hidden');
+    if (simFlyout) simFlyout.classList.add('hidden');
+
     const oledLayer = document.getElementById('pad-oled-layer');
     const oledSub = document.getElementById('pad-oled-sub');
     const layer = window.configStore.getLayer(currentLayer);
@@ -779,6 +803,16 @@
   }
 
   function setOLEDContent(line1, line2, duration = 1200) {
+    const padDefault = document.getElementById('pad-oled-default-content');
+    const padFlyout = document.getElementById('pad-oled-flyout');
+    const simDefault = document.getElementById('oled-sim-default-content');
+    const simFlyout = document.getElementById('oled-sim-flyout');
+
+    if (padDefault) padDefault.classList.remove('hidden');
+    if (padFlyout) padFlyout.classList.add('hidden');
+    if (simDefault) simDefault.classList.remove('hidden');
+    if (simFlyout) simFlyout.classList.add('hidden');
+
     const oledLayer = document.getElementById('pad-oled-layer');
     const oledSub = document.getElementById('pad-oled-sub');
     if (oledLayer) oledLayer.textContent = line1;
@@ -908,20 +942,135 @@
     }
   }
 
+  const ICONS_FLYOUT_SVG = {
+    volume: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+    brightness: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`,
+    zoom: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`,
+    scroll: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="2" width="12" height="20" rx="6"/><circle cx="12" cy="7" r="1.5"/></svg>`
+  };
+
+  let simVolume = 50;
+  let simBrightness = 70;
+  let simZoom = 100;
+  let simScroll = 50;
+  let oledFlyoutTimer = null;
+
+  function showOledFlyout({ title, value, pct, icon = 'volume', duration = 1200 }) {
+    const padDefault = document.getElementById('pad-oled-default-content');
+    const padFlyout = document.getElementById('pad-oled-flyout');
+    const padTitle = document.getElementById('pad-oled-flyout-title');
+    const padIcon = document.getElementById('pad-oled-flyout-icon');
+    const padVal = document.getElementById('pad-oled-flyout-val');
+    const padFill = document.getElementById('pad-oled-flyout-fill');
+
+    const simDefault = document.getElementById('oled-sim-default-content');
+    const simFlyout = document.getElementById('oled-sim-flyout');
+    const simTitle = document.getElementById('oled-sim-flyout-title');
+    const simIcon = document.getElementById('oled-sim-flyout-icon');
+    const simVal = document.getElementById('oled-sim-flyout-val');
+    const simFill = document.getElementById('oled-sim-flyout-fill');
+
+    const safePct = Math.max(0, Math.min(100, Math.round(pct)));
+    const svgCode = ICONS_FLYOUT_SVG[icon] || ICONS_FLYOUT_SVG.volume;
+
+    // Pad virtual screen
+    if (padDefault) padDefault.classList.add('hidden');
+    if (padFlyout) {
+      padFlyout.classList.remove('hidden');
+      if (padTitle) padTitle.textContent = title;
+      if (padIcon) padIcon.innerHTML = svgCode;
+      if (padVal) padVal.textContent = value;
+      if (padFill) padFill.style.width = `${safePct}%`;
+    }
+
+    // Customization page simulator
+    if (simDefault) simDefault.classList.add('hidden');
+    if (simFlyout) {
+      simFlyout.classList.remove('hidden');
+      if (simTitle) simTitle.textContent = title;
+      if (simIcon) simIcon.innerHTML = svgCode;
+      if (simVal) simVal.textContent = value;
+      if (simFill) simFill.style.width = `${safePct}%`;
+    }
+
+    // Notify Desktop Floating HUD
+    if (window.api?.notifyHUD) {
+      window.api.notifyHUD({
+        flyout: {
+          title,
+          value,
+          pct: safePct,
+          iconSvg: svgCode
+        },
+        duration
+      });
+    }
+
+    if (oledFlyoutTimer) clearTimeout(oledFlyoutTimer);
+    oledFlyoutTimer = setTimeout(() => {
+      if (padDefault) padDefault.classList.remove('hidden');
+      if (padFlyout) padFlyout.classList.add('hidden');
+      if (simDefault) simDefault.classList.remove('hidden');
+      if (simFlyout) simFlyout.classList.add('hidden');
+      oledFlyoutTimer = null;
+    }, duration);
+  }
+
   function triggerEncoderFeedbackOLED(direction) {
     const encoder = window.configStore.getLayerEncoder(currentLayer);
     const fn = encoder?.function || 'volume';
-    let detail = '';
-    if (fn === 'volume') detail = direction === 'cw' ? 'VOL +' : 'VOL -';
-    else if (fn === 'brightness') detail = direction === 'cw' ? 'BRILHO +' : 'BRILHO -';
-    else if (fn === 'scroll') detail = direction === 'cw' ? 'SCROLL DOWN' : 'SCROLL UP';
-    else if (fn === 'media') detail = direction === 'cw' ? 'FAIXA ⏭' : 'FAIXA ⏮';
-    else if (fn === 'zoom') detail = direction === 'cw' ? 'ZOOM +' : 'ZOOM -';
-    else if (fn === 'video') detail = direction === 'cw' ? 'AVANÇAR ⏭' : 'VOLTAR ⏮';
-    else if (fn === 'layer_nav') {
-      detail = direction === 'cw' ? 'PRÓXIMA (+1)' : 'ANTERIOR (-1)';
-      handleKnobNav(direction);
+
+    if (fn === 'volume') {
+      simVolume = direction === 'cw' ? Math.min(100, simVolume + 2) : Math.max(0, simVolume - 2);
+      showOledFlyout({
+        title: 'VOLUME DO SISTEMA',
+        value: `${simVolume}%`,
+        pct: simVolume,
+        icon: 'volume'
+      });
+      return;
     }
+    if (fn === 'brightness') {
+      simBrightness = direction === 'cw' ? Math.min(100, simBrightness + 5) : Math.max(0, simBrightness - 5);
+      showOledFlyout({
+        title: 'BRILHO DA TELA',
+        value: `${simBrightness}%`,
+        pct: simBrightness,
+        icon: 'brightness'
+      });
+      return;
+    }
+    if (fn === 'zoom') {
+      simZoom = direction === 'cw' ? Math.min(300, simZoom + 10) : Math.max(20, simZoom - 10);
+      const pctZoom = Math.round(((simZoom - 20) / (300 - 20)) * 100);
+      showOledFlyout({
+        title: 'ZOOM ESCALA',
+        value: `${simZoom}%`,
+        pct: pctZoom,
+        icon: 'zoom'
+      });
+      return;
+    }
+    if (fn === 'scroll') {
+      simScroll = direction === 'cw' ? Math.min(100, simScroll + 4) : Math.max(0, simScroll - 4);
+      showOledFlyout({
+        title: direction === 'cw' ? 'ROLAGEM (DESCER)' : 'ROLAGEM (SUBIR)',
+        value: `${simScroll}%`,
+        pct: simScroll,
+        icon: 'scroll'
+      });
+      return;
+    }
+    if (fn === 'layer_nav') {
+      handleKnobNav(direction);
+      const targetLayerName = window.configStore.getLayer(currentLayer)?.name || `CAMADA ${currentLayer}`;
+      setOLEDContent(direction === 'cw' ? 'PRÓXIMA CAMADA' : 'CAMADA ANTERIOR', targetLayerName, 1200);
+      return;
+    }
+
+    let detail = '';
+    if (fn === 'media') detail = direction === 'cw' ? 'FAIXA ⏭' : 'FAIXA ⏮';
+    else if (fn === 'video') detail = direction === 'cw' ? 'AVANÇAR ⏭' : 'VOLTAR ⏮';
     else if (fn === 'custom' || fn.startsWith('custom_')) detail = direction === 'cw' ? (encoder?.customCW || 'GIRO CW') : (encoder?.customCCW || 'GIRO CCW');
     else detail = direction === 'cw' ? 'GIRO CW' : 'GIRO CCW';
 
@@ -2372,6 +2521,21 @@
     },
     () => {
       triggerKnobPressVisual();
+      const enc = window.configStore.getLayerEncoder(currentLayer);
+      if (enc?.function === 'volume') {
+        showOledFlyout({ title: 'VOLUME (MUTE)', value: 'MUDO', pct: 0, icon: 'volume' });
+      } else if (enc?.function === 'brightness') {
+        simBrightness = 70;
+        showOledFlyout({ title: 'BRILHO PADRÃO', value: '70%', pct: 70, icon: 'brightness' });
+      } else if (enc?.function === 'zoom') {
+        simZoom = 100;
+        showOledFlyout({ title: 'ZOOM 100% (RESET)', value: '100%', pct: 28, icon: 'zoom' });
+      } else if (enc?.function === 'scroll') {
+        simScroll = 50;
+        showOledFlyout({ title: 'CLIQUE DO MEIO', value: '50%', pct: 50, icon: 'scroll' });
+      } else {
+        setOLEDContent('ENCODER', 'CLIQUE', 1200);
+      }
     }
   );
 
@@ -2388,6 +2552,21 @@
 
   document.getElementById('btn-test-click')?.addEventListener('click', () => {
     triggerKnobPressVisual();
+    const enc = window.configStore.getLayerEncoder(currentLayer);
+    if (enc?.function === 'volume') {
+      showOledFlyout({ title: 'VOLUME (MUTE)', value: 'MUDO', pct: 0, icon: 'volume' });
+    } else if (enc?.function === 'brightness') {
+      simBrightness = 70;
+      showOledFlyout({ title: 'BRILHO PADRÃO', value: '70%', pct: 70, icon: 'brightness' });
+    } else if (enc?.function === 'zoom') {
+      simZoom = 100;
+      showOledFlyout({ title: 'ZOOM 100% (RESET)', value: '100%', pct: 28, icon: 'zoom' });
+    } else if (enc?.function === 'scroll') {
+      simScroll = 50;
+      showOledFlyout({ title: 'CLIQUE DO MEIO', value: '50%', pct: 50, icon: 'scroll' });
+    } else {
+      setOLEDContent('ENCODER', 'CLIQUE', 1200);
+    }
   });
 
   function renderEncoderPage() {

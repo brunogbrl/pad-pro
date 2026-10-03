@@ -5379,6 +5379,97 @@ body.no-animations * {
   line-height: 1.35;
 }
 
+/* ===================================================================
+   OLED Modern Flyout Progress Bar (Windows 11 Style)
+   =================================================================== */
+.pad-oled-flyout,
+.oled-sim-flyout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1px 2px;
+  animation: oled-fade-in 0.12s ease-out;
+}
+.pad-oled-flyout.hidden,
+.oled-sim-flyout.hidden {
+  display: none !important;
+}
+.pad-oled-default-content.hidden,
+.oled-sim-default-content.hidden {
+  display: none !important;
+}
+
+.pad-oled-flyout-top,
+.oled-sim-flyout-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.pad-oled-flyout-title,
+.oled-sim-flyout-title {
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #38BDF8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pad-oled-flyout-body,
+.oled-sim-flyout-body {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+.pad-oled-flyout-icon,
+.oled-sim-flyout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F8FAFC;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+}
+.pad-oled-flyout-val,
+.oled-sim-flyout-val {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: #F8FAFC;
+  min-width: 26px;
+  flex-shrink: 0;
+}
+.pad-oled-flyout-track,
+.oled-sim-flyout-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+}
+.pad-oled-flyout-fill,
+.oled-sim-flyout-fill {
+  height: 100%;
+  background: #38BDF8;
+  border-radius: 999px;
+  transition: width 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 6px #38BDF8;
+}
+
+@keyframes oled-fade-in {
+  from { opacity: 0.3; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 
 
 
