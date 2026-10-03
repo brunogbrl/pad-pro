@@ -1,172 +1,152 @@
 # 🎛️ PAD Pro — Central de Configuração & Macro Pad
 
 <p align="center">
-  <img src="src/assets/icon.png" width="128" height="128" alt="PAD Pro Logo" />
+  <img src="build/icon.png" width="100" height="100" alt="PAD Pro Logo" style="border-radius: 20px; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);" />
 </p>
 
 <p align="center">
-  <strong>Configurador desktop oficial e intuitivo para o macro pad físico baseado em Raspberry Pi Pico.</strong>
+  <strong>Configurador desktop oficial e intuitivo para o macro pad mecânico PAD Pro baseado em Raspberry Pi Pico (RP2040).</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.4-blue.svg?style=flat-square" alt="Version 1.0.4" />
-  <img src="https://img.shields.io/badge/platform-Windows-0078D6.svg?style=flat-square&logo=windows" alt="Platform Windows" />
-  <img src="https://img.shields.io/badge/electron-33.x-47848F.svg?style=flat-square&logo=electron" alt="Electron 33" />
-  <img src="https://img.shields.io/badge/hardware-Raspberry%20Pi%20Pico-C51A4A.svg?style=flat-square&logo=raspberrypi" alt="Raspberry Pi Pico" />
-  <img src="https://img.shields.io/badge/firmware-CircuitPython-orange.svg?style=flat-square" alt="CircuitPython" />
-  <img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="License MIT" />
+  <a href="https://github.com/brunogbrl/pad-pro/releases/latest"><img src="https://img.shields.io/badge/version-v1.0.9-38BDF8.svg?style=for-the-badge&logo=github" alt="Versão Mais Recente" /></a>
+  <img src="https://img.shields.io/badge/platform-Windows-0078D6.svg?style=for-the-badge&logo=windows" alt="Plataforma Windows" />
+  <img src="https://img.shields.io/badge/electron-33.x-47848F.svg?style=for-the-badge&logo=electron" alt="Electron 33" />
+  <img src="https://img.shields.io/badge/hardware-RP2040-C51A4A.svg?style=for-the-badge&logo=raspberrypi" alt="Raspberry Pi Pico" />
+  <img src="https://img.shields.io/badge/firmware-CircuitPython-orange.svg?style=for-the-badge" alt="CircuitPython" />
+  <img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="Licença MIT" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/brunogbrl/pad-pro/releases/download/v1.0.9/PAD-Pro-Setup-1.0.9.exe">
+    <img src="https://img.shields.io/badge/Download-Instalador_PAD_Pro_v1.0.9_(Windows)-22C55E?style=for-the-badge&logo=windows&logoColor=white" alt="Baixar PAD Pro v1.0.9" />
+  </a>
 </p>
 
 ---
 
 ## 📖 Visão Geral
 
-O **PAD Pro** é uma solução completa de hardware e software que combina um teclado mecânico auxiliar (*macro pad*) com um aplicativo de configuração visual em tempo real. Desenvolvido com **Electron**, **Node.js** e integrado ao **CircuitPython** da **Raspberry Pi Pico**, o aplicativo permite customizar cada tecla, o display OLED e o encoder giratório (*knob*) de forma rápida, moderna e sem necessidade de reprogramar o microcontrolador manualmente.
+O **PAD Pro** é uma solução completa de hardware e software que combina um teclado mecânico auxiliar (*macro pad*) de 12 teclas, display OLED e botão giratório (*rotary knob*) com um aplicativo de configuração visual em tempo real para Windows.
+
+Integrado ao **CircuitPython**, o PAD Pro permite personalizar teclas, macros, sensibilidade do encoder e modos do display instantaneamente via comunicação serial USB — sem necessidade de reprogramar o microcontrolador manualmente.
 
 ---
 
-## 🚀 Principais Funcionalidades
+## 📸 Interface do Aplicativo (Screenshots)
 
-- **🗂️ Sistema Multi-Camadas (Layers)**: Suporte a camadas independentes (Camada 0 a 3+) com perfis customizáveis, nomes de exibição e temas de cores personalizados para cada camada.
-- **🔄 Sincronização Serial em Tempo Real**: Comunicação bidirecional direta via porta serial (USB) com a Raspberry Pi Pico. Qualquer alteração feita no app reflete no dispositivo instantaneamente.
-- **🎚️ Controle Avançado do Knob (Rotary Encoder)**:
-  - Modos pré-configurados: Volume, Scroll, Zoom, Faixa de Mídia, Controle de Brilho e Navegação de Camadas.
-  - Funções customizadas com gravação de atalhos e ações distintas para: **Girar Horário (CW)**, **Girar Anti-horário (CCW)** e **Clique do Knob**.
-- **📺 Simulador OLED Interativo**: Visualização fiel no aplicativo exatamente do que está sendo exibido na tela OLED física do hardware.
-- **⚡ Gravador e Biblioteca de Macros**: Crie sequências complexas de teclas e atalhos com temporizações precisas para automação de tarefas e jogos.
-- **🔊 Integração Nativa com Soundpad**: Leitura em tempo real da biblioteca de sons e reprodução rápida no toque ou pré-visualização ao segurar.
-- **🎙️ Integração com Discord RPC**: Acompanhe o status da chamada de voz e alterne mute/desmute diretamente pelo PAD Pro.
-- **🪟 HUD Flutuante Translúcido**: Notificação sutil na tela sempre que a camada ou o estado do PAD Pro for alterado, sem atrapalhar seus jogos ou trabalho em tela cheia.
-- **📦 Instalador Oficial & Atualizações Automáticas**: Instalador inteligente do Windows com atalhos e central integrada que busca, baixa e instala novas versões diretamente do GitHub.
+### 1. Mapeamento Visual de Teclas & Grade 3x4
+Visualize o estado de cada tecla, atribua atalhos simples, combos e ações de toque vs. segurar (*hold action*), além de acompanhar a pré-visualização em tempo real do display OLED.
+
+<p align="center">
+  <img src="docs/screenshots/01-keys-overview.png" alt="Visão Geral do Pad e Mapeamento de Teclas" width="900" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
 
 ---
 
-## 🌟 O Que Há de Novo (What's New)
+### 2. Criação Inteligente de Novas Camadas (Layers)
+Adicione camadas personalizadas definindo nome, cor de destaque, preenchimento com atalhos de fábrica padronizados (F13–F24 com modificadores sequenciais) e comportamento dedicado para o botão giratório (Knob).
 
-Acompanhe as novidades e a evolução contínua do projeto:
-
-### 🚀 [v1.0.5] — Em Breve (Próximo Lançamento)
-- **Central de Atualizações Automáticas (Auto-Updater)**:
-  - Sistema inteligente de verificação de atualizações ao vivo conectado às Releases do GitHub.
-  - Janela modal interativa com notas da nova versão e barra de progresso do download em tempo real.
-  - Instalação automática com um clique e reinício suave da aplicação.
-- **Instalador Oficial para Windows (NSIS)**:
-  - Geração de pacote instalável profissional com atalho na Área de Trabalho e inicialização do sistema.
-- **Pipeline de Integração Contínua (GitHub Actions)**:
-  - Compilação automatizada nas máquinas da nuvem a cada nova tag de versão publicada.
+<p align="center">
+  <img src="docs/screenshots/02-new-layer-modal.png" alt="Modal de Criação de Camadas" width="900" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
 
 ---
 
-### 💎 [v1.0.4] — Versão Atual Estável
-- **Novo Módulo de Personalização Visual**:
-  - Opções completas de ajuste do display OLED: alternância de exibição de camadas, timeout de tela e modos de descanso.
-  - Personalização de efeitos no aplicativo: brilho dinâmico (*glow*), texto corrido (*marquee*) e transições animadas.
-- **Sincronização Bidirecional Aprimorada**:
-  - Detecção imediata de conexão e reconexão automática da porta serial.
-  - Monitoramento de logs em tempo real para depuração técnica.
-- **Melhorias de Estabilidade**:
-  - Otimização do consumo de memória e ciclo de vida do processo em segundo plano (Bandeja do Sistema / System Tray).
+### 3. Botão Giratório Multi-função (Rotary Knob)
+Defina o comportamento do botão giratório de forma independente para cada camada: **Navegação de Camadas**, **Volume do Sistema**, **Controle de Brilho**, **Rolagem (Scroll)**, **Navegação de Música**, **Zoom** ou ações personalizadas com rotação horária (CW), anti-horária (CCW) e clique.
+
+<p align="center">
+  <img src="docs/screenshots/03-encoder-knob.png" alt="Configuração do Botão Giratório" width="900" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
 
 ---
 
-### 🛠️ [v1.0.3]
-- **Integração com Soundpad**:
-  - Suporte à leitura de atalhos de áudio diretamente do cache local do Soundpad.
-  - Modo *preview* de áudio mantendo a tecla pressionada (*hold action*).
-- **HUD Flutuante para Desktop**:
-  - Criação do HUD compacto sempre no topo para sinalizar mudanças de camada e ações multimídia.
+### 4. Gerenciador de Macros com Atribuição Visual
+Grave ou edite sequências complexas de teclas e atribua diretamente a qualquer tecla do PAD Pro através de um assistente interativo com grade 3x4 e escolha entre clique rápido (*tap*) ou clique longo (*hold*).
+
+<p align="center">
+  <img src="docs/screenshots/04-macros.png" alt="Biblioteca de Macros e Atribuição Visual" width="900" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
 
 ---
 
-### ⚙️ [v1.0.2]
-- **Gravador de Atalhos e Teclas**:
-  - Interface visual para gravação rápida de teclas do teclado (combinações Ctrl, Alt, Shift, Win + Tecla).
-  - Suporte às teclas estendidas de função F13 a F24.
+### 5. Personalização Visual: OLED & HUD Flutuante
+Ajuste elementos visuais do display OLED (divisores, ícones dinâmicos, indicadores de camada), efeitos luminosos no aplicativo e o HUD flutuante translúcido para exibição discreta durante jogos e trabalho.
+
+<p align="center">
+  <img src="docs/screenshots/05-customization.png" alt="Personalização do Display OLED e HUD" width="900" style="border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
 
 ---
 
-### 🎨 [v1.0.1]
-- **Redesign da Interface Gráfica**:
-  - Adoção de visual escuro *premium* (Dark Mode moderno com glassmorphism).
-  - Seletor de cores HSL para personalização da identidade de cada camada.
-  - Ferramenta de exportação e importação de backups no formato `.json`.
+## 🚀 Recursos Principais
+
+- **🗂️ Sistema Multi-Camadas Ilimitado**: Crie quantas camadas desejar com temas de cores, rótulos e perfis independentes.
+- **🔄 Navegação por Camadas no Knob**: Gire o botão giratório para alternar camadas suavemente e clique para voltar instantaneamente à Camada 0.
+- **⚡ Atalhos de Fábrica Inteligentes**: Padronização sequencial com teclas estendidas `F13` a `F24` e modificadores (`Alt`, `Ctrl`, `Shift`, `Win`) livres de conflito com jogos e programas.
+- **🔒 Teclas Físicas Fixas (Coluna 4)**:
+  - **B3**: Alternar Camada
+  - **B7**: Play / Pause
+  - **B11**: Mute / Desmute Discord (`Ctrl + Shift + F14`)
+- **🔁 Botão Resetar com Restauração de Fábrica**: Restaure qualquer tecla modificada de volta ao padrão exato de fábrica daquela camada com um único clique.
+- **🔊 Integração Nativa com Soundpad**: Suporte a execução instantânea e pré-visualização ao segurar (*hold action*).
+- **🎙️ Integração com Discord**: Atalhos dedicados para comunicação por voz.
+- **🪟 HUD Flutuante Translúcido**: Notificação visual sempre que a camada ou o modo do encoder for alterado.
+- **📦 Atualizador Automático (Auto-Updater)**: O aplicativo avisa, faz o download e aplica novas atualizações lançadas no GitHub automaticamente.
 
 ---
 
-### 📦 [v1.0.0]
-- **Lançamento Inicial**:
-  - Versão inicial do configurador desktop para o hardware PadPRO.
-  - Suporte a CircuitPython e protocolo serial padrão.
+## 🛠️ Hardware Suportado
+
+| Componente | Especificação |
+| :--- | :--- |
+| **Microcontrolador** | Raspberry Pi Pico (RP2040) |
+| **Firmware** | CircuitPython 9.x |
+| **Teclas** | 12 Switches Mecânicos Hotswap (Grade 3×4) |
+| **Display** | Tela OLED I2C 128×32 (Controlador SSD1306) |
+| **Encoder** | Encoder Rotativo EC11 com botão central de clique |
+| **Conexão** | USB-C com protocolo HID Keyboard, Consumer Control e Mouse |
 
 ---
 
-## 🛠️ Instalação e Uso
+## 🎨 Créditos do Gabinete 3D
 
-### Para Usuários Finais (Windows)
-1. Acesse a aba **[Releases](https://github.com/brunogbrl/pad-pro/releases)** no GitHub.
-2. Baixe o instalador mais recente: `PAD-Pro-Setup-x.x.x.exe`.
-3. Execute o instalador. O PAD Pro será instalado e criará um atalho na sua Área de Trabalho.
-4. Conecte seu **PAD Pro** via cabo USB e o aplicativo detectará o dispositivo automaticamente!
+O design físico e gabinete 3D do projeto é baseado no modelo **SuperPad**:
+- 🌐 **Modelo 3D no MakerWorld**: [Superpad Cool Macropad no MakerWorld](https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670)
+- 👏 **Agradecimento especial**: Um grande obrigado ao **@Scrypty** pela criação e disponibilização deste gabinete 3D espetacular!
+
+---
+
+## 📥 Instalação
+
+1. Acesse a aba de **[Releases](https://github.com/brunogbrl/pad-pro/releases/latest)**.
+2. Baixe o instalador mais recente: `PAD-Pro-Setup-1.0.9.exe`.
+3. Execute o instalador e siga as instruções na tela (você pode escolher a pasta de instalação e criação de atalho na Área de Trabalho).
+4. Conecte o PAD Pro à porta USB e o aplicativo fará o reconhecimento automático!
 
 ---
 
 ## 💻 Desenvolvimento Local
 
-Para clonar e executar o projeto em ambiente de desenvolvimento:
+Para executar o projeto a partir do código-fonte:
 
-### Pré-requisitos
-- [Node.js](https://nodejs.org/) versão 18 ou superior
-- [Git](https://git-scm.com/)
-
-### Passos:
 ```bash
-# 1. Clone o repositório
+# Clone o repositório
 git clone https://github.com/brunogbrl/pad-pro.git
 
-# 2. Acesse a pasta do projeto
+# Acesse o diretório
 cd pad-pro
 
-# 3. Instale as dependências
+# Instale as dependências
 npm install
 
-# 4. Inicie o aplicativo em modo de desenvolvimento
+# Inicie o aplicativo em modo de desenvolvimento
 npm start
 ```
-
-### Compilação do Instalador
-Para gerar os arquivos executáveis e instaladores do Windows localmente:
-```bash
-# Gera o instalador oficial (NSIS)
-npm run dist
-
-# Gera a versão executável portátil (Portable)
-npm run dist:portable
-```
-Os arquivos compilados estarão localizados dentro da pasta `dist/`.
-
----
-
-## 🔌 Hardware & Firmware
-
-O firmware que roda na **Raspberry Pi Pico** utiliza **CircuitPython** e está disponível na pasta `scripts/code.py`. 
-Para conferir esquemas elétricos e tutoriais passo a passo:
-- 📄 [Esquema de Ligação do Hardware (PDF)](Esquema_Ligacao_PadPRO.pdf)
-- 📄 [Tutorial Raspberry Pi Pico do Zero (PDF)](Tutorial_Raspberry_Pi_Pico_Do_Zero.pdf)
-
----
-
-## 🎨 Design do Hardware & Créditos
-
-O design físico e a modelagem 3D do case deste macro pad foram baseados no projeto **Superpad - Cool Macropad**:
-- 🖨️ **Modelo 3D no MakerWorld**: [Superpad - Cool Macropad (MakerWorld)](https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670)
-- 🤝 Um agradecimento especial ao criador **[@Scrypty](https://makerworld.com/pt/@Scrypty)** pelo excelente design e contribuição com a comunidade Maker!
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob a licença [MIT](LICENSE). Consulte o arquivo de licença para mais detalhes.
-
-<p align="center">
-  Desenvolvido com carinho para a comunidade Maker & Gamers 🚀
-</p>
+Este projeto está licenciado sob a licença **MIT** — consulte o arquivo [LICENSE](LICENSE) para obter detalhes.
