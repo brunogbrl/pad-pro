@@ -1,18 +1,15 @@
-const asar = require('@electron/asar');
 const path = require('path');
 const fs = require('fs');
+const { execSync } = require('child_process');
 
 async function main() {
   const asarPath = path.join(__dirname, '..', 'dist', 'win-unpacked', 'resources', 'app.asar');
+  const installedAsarPath = 'C:\\Users\\bruno\\AppData\\Local\\Programs\\PAD Pro\\resources\\app.asar';
   const tempExtract = path.join(__dirname, '..', 'dist', 'temp-asar');
 
   if (!fs.existsSync(path.join(tempExtract, 'node_modules'))) {
     console.log('Extracting asar from:', asarPath);
-    try {
-      asar.extractAll(asarPath, tempExtract);
-    } catch (e) {
-      console.warn('Warning during extractAll:', e.message);
-    }
+    execSync(`npx --yes @electron/asar extract "${asarPath}" "${tempExtract}"`, { stdio: 'inherit' });
   } else {
     console.log('Reusing existing node_modules in tempExtract...');
   }
@@ -71,7 +68,17 @@ async function main() {
   cleanDesktopIni(tempExtract);
 
   console.log('Repacking asar to:', asarPath);
-  await asar.createPackage(tempExtract, asarPath);
+  execSync(`npx --yes @electron/asar pack "${tempExtract}" "${asarPath}"`, { stdio: 'inherit' });
+
+  if (fs.existsSync(installedAsarPath)) {
+    console.log('Updating installed app asar at:', installedAsarPath);
+    try {
+      fs.copyFileSync(asarPath, installedAsarPath);
+      console.log('Installed app asar updated successfully!');
+    } catch (err) {
+      console.warn('Could not copy directly to installed app (process running?):', err.message);
+    }
+  }
 
   console.log('SUCCESS: app.asar updated successfully!');
 }

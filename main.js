@@ -1560,6 +1560,16 @@ ipcMain.handle('pad:sync-customization', (_, data) => {
   sendSerialCommand(`SET_OLED_CUSTOM:${sd}:${si}:${sdo}:${tout}:${anim}`);
   return true;
 });
+ipcMain.handle('pad:test-oled-boot', () => {
+  logDebug('[OLED TEST] Disparando animacao de boot no hardware');
+  sendSerialCommand('OLED:BOOT');
+  return { success: true };
+});
+ipcMain.handle('pad:test-oled-updating', () => {
+  logDebug('[OLED TEST] Disparando animacao de atualizacao no hardware');
+  sendSerialCommand('OLED:UPDATING');
+  return { success: true };
+});
 ipcMain.handle('pad:force-sync', async () => {
   try {
     const config = currentConfig || loadConfig();

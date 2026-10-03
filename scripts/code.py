@@ -1681,8 +1681,13 @@ while True:
                         except Exception as e:
                             print(f"[SERIAL ERRO] SET_OLED_CUSTOM: {e}")
 
-                    elif cmd_upper == "OLED:UPDATING":
-                        animar_engrenagem_atualizando(passos=6)
+                    elif cmd_upper in ("OLED:BOOT", "TEST_BOOT"):
+                        executar_animacao_boot()
+                        atualizar_oled_padrao(camada_atual)
+
+                    elif cmd_upper in ("OLED:UPDATING", "TEST_UPDATING"):
+                        animar_engrenagem_atualizando(passos=16)
+                        atualizar_oled_padrao(camada_atual)
 
                     elif cmd_upper in ("CONFIG_UPDATED", "RELOAD_CONFIG"):
                         animar_engrenagem_atualizando(passos=8)

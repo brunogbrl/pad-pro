@@ -20,6 +20,8 @@ contextBridge.exposeInMainWorld('api', {
   setHardwareLayer: (layer) => ipcRenderer.invoke('pad:set-layer', layer),
   syncEncoder: (data) => ipcRenderer.invoke('pad:sync-encoder', data),
   syncCustomization: (data) => ipcRenderer.invoke('pad:sync-customization', data),
+  testOledBoot: () => ipcRenderer.invoke('pad:test-oled-boot'),
+  testOledUpdating: () => ipcRenderer.invoke('pad:test-oled-updating'),
   forceSyncPad: () => ipcRenderer.invoke('pad:force-sync'),
   getRecentLogs: () => ipcRenderer.invoke('pad:get-logs'),
   exportSerialLogs: (text) => ipcRenderer.invoke('serial:export-logs', text),

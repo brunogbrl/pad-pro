@@ -1099,7 +1099,7 @@
     if (fn === 'volume') {
       simVolume = direction === 'cw' ? Math.min(100, simVolume + 2) : Math.max(0, simVolume - 2);
       showOledFlyout({
-        title: 'VOLUME DO SISTEMA',
+        title: 'VOLUME',
         value: `${simVolume}%`,
         pct: simVolume,
         icon: 'volume'
@@ -1109,7 +1109,7 @@
     if (fn === 'brightness') {
       simBrightness = direction === 'cw' ? Math.min(100, simBrightness + 5) : Math.max(0, simBrightness - 5);
       showOledFlyout({
-        title: 'BRILHO DA TELA',
+        title: 'BRILHO',
         value: `${simBrightness}%`,
         pct: simBrightness,
         icon: 'brightness'
@@ -1120,7 +1120,7 @@
       simZoom = direction === 'cw' ? Math.min(300, simZoom + 10) : Math.max(20, simZoom - 10);
       const pctZoom = Math.round(((simZoom - 20) / (300 - 20)) * 100);
       showOledFlyout({
-        title: 'ZOOM ESCALA',
+        title: 'ZOOM',
         value: `${simZoom}%`,
         pct: pctZoom,
         icon: 'zoom'
@@ -1130,7 +1130,7 @@
     if (fn === 'scroll') {
       simScroll = direction === 'cw' ? Math.min(100, simScroll + 4) : Math.max(0, simScroll - 4);
       showOledFlyout({
-        title: direction === 'cw' ? 'ROLAGEM (DESCER)' : 'ROLAGEM (SUBIR)',
+        title: 'ROLAGEM',
         value: `${simScroll}%`,
         pct: simScroll,
         icon: 'scroll'
@@ -2630,16 +2630,16 @@
       triggerKnobPressVisual();
       const enc = window.configStore.getLayerEncoder(currentLayer);
       if (enc?.function === 'volume') {
-        showOledFlyout({ title: 'VOLUME (MUTE)', value: 'MUDO', pct: 0, icon: 'volume' });
+        showOledFlyout({ title: 'VOLUME', value: 'MUDO', pct: 0, icon: 'mute' });
       } else if (enc?.function === 'brightness') {
         simBrightness = 70;
-        showOledFlyout({ title: 'BRILHO PADRÃO', value: '70%', pct: 70, icon: 'brightness' });
+        showOledFlyout({ title: 'BRILHO', value: '70%', pct: 70, icon: 'brightness' });
       } else if (enc?.function === 'zoom') {
         simZoom = 100;
-        showOledFlyout({ title: 'ZOOM 100% (RESET)', value: '100%', pct: 28, icon: 'zoom' });
+        showOledFlyout({ title: 'ZOOM', value: '100%', pct: 28, icon: 'zoom' });
       } else if (enc?.function === 'scroll') {
         simScroll = 50;
-        showOledFlyout({ title: 'CLIQUE DO MEIO', value: '50%', pct: 50, icon: 'scroll' });
+        showOledFlyout({ title: 'ROLAGEM', value: '50%', pct: 50, icon: 'scroll' });
       } else {
         setOLEDContent('ENCODER', 'CLIQUE', 1200);
       }
@@ -2661,16 +2661,16 @@
     triggerKnobPressVisual();
     const enc = window.configStore.getLayerEncoder(currentLayer);
     if (enc?.function === 'volume') {
-      showOledFlyout({ title: 'VOLUME (MUTE)', value: 'MUDO', pct: 0, icon: 'volume' });
+      showOledFlyout({ title: 'VOLUME', value: 'MUDO', pct: 0, icon: 'mute' });
     } else if (enc?.function === 'brightness') {
       simBrightness = 70;
-      showOledFlyout({ title: 'BRILHO PADRÃO', value: '70%', pct: 70, icon: 'brightness' });
+      showOledFlyout({ title: 'BRILHO', value: '70%', pct: 70, icon: 'brightness' });
     } else if (enc?.function === 'zoom') {
       simZoom = 100;
-      showOledFlyout({ title: 'ZOOM 100% (RESET)', value: '100%', pct: 28, icon: 'zoom' });
+      showOledFlyout({ title: 'ZOOM', value: '100%', pct: 28, icon: 'zoom' });
     } else if (enc?.function === 'scroll') {
       simScroll = 50;
-      showOledFlyout({ title: 'CLIQUE DO MEIO', value: '50%', pct: 50, icon: 'scroll' });
+      showOledFlyout({ title: 'ROLAGEM', value: '50%', pct: 50, icon: 'scroll' });
     } else {
       setOLEDContent('ENCODER', 'CLIQUE', 1200);
     }
@@ -4339,12 +4339,18 @@
     // Botões de teste das animações na telinha OLED
     document.getElementById('btn-preview-oled-boot')?.addEventListener('click', () => {
       showOledBoot(2200);
-      showToast('Exibindo inicialização limpa com logo PadPro', 'info');
+      if (window.api?.testOledBoot) {
+        window.api.testOledBoot();
+      }
+      showToast('Exibindo logo PadPro no OLED e no simulador', 'info');
     });
 
     document.getElementById('btn-preview-oled-updating')?.addEventListener('click', () => {
       showOledUpdating(2500);
-      showToast('Exibindo tela unificada com engrenagem girando e Atualizando...', 'info');
+      if (window.api?.testOledUpdating) {
+        window.api.testOledUpdating();
+      }
+      showToast('Exibindo engrenagem girando no OLED e no simulador', 'info');
     });
   }
 
@@ -4387,6 +4393,30 @@
     }
   }
 
+  function getOledIconSvg(fn) {
+    switch (fn) {
+      case 'brightness':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+      case 'zoom':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>`;
+      case 'scroll':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="6"/><line x1="12" y1="7" x2="12" y2="11"/></svg>`;
+      case 'media':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+      case 'video':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>`;
+      case 'layer_nav':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`;
+      case 'custom':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`;
+      case 'mute':
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+      case 'volume':
+      default:
+        return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+    }
+  }
+
   function updateOledSimulator(overrideLine1 = null, overrideLine2 = null) {
     const cust = window.configStore.getCustomization();
     const layer = window.configStore.getLayer(currentLayer);
@@ -4407,37 +4437,41 @@
         simDots.style.display = 'none';
       } else {
         const config = window.configStore.getConfig();
-        const numLayers = Math.min(4, config?.layers?.length || 4);
-        let dotsStr = '';
+        const numLayers = Math.min(6, Math.max(1, config?.layers?.length || 4));
+        let dotsHtml = '';
         for (let i = 0; i < numLayers; i++) {
-          dotsStr += (i === currentLayer) ? '● ' : '○ ';
+          const isActive = (i === currentLayer);
+          dotsHtml += `<span class="oled-sim-dot ${isActive ? 'active' : ''}"></span>`;
         }
-        simDots.textContent = dotsStr.trim();
-        simDots.style.display = (cust.oled.showLayerDots !== false) ? 'block' : 'none';
+        simDots.innerHTML = dotsHtml;
+        simDots.style.display = (cust.oled?.showLayerDots !== false) ? 'flex' : 'none';
       }
     }
 
     if (simDivider) {
-      simDivider.style.display = (cust.oled.showDivider !== false) ? 'block' : 'none';
+      simDivider.style.display = (cust.oled?.showDivider !== false) ? 'block' : 'none';
     }
 
+    const fn = encoder?.function || 'volume';
+
     if (simIconBox) {
-      simIconBox.style.display = (cust.oled.showIcons !== false && !overrideLine2) ? 'flex' : 'none';
+      simIconBox.style.display = (cust.oled?.showIcons !== false && !overrideLine2) ? 'flex' : 'none';
+      simIconBox.innerHTML = getOledIconSvg(fn);
     }
 
     if (simText) {
       if (overrideLine2) {
         simText.textContent = overrideLine2.toUpperCase();
       } else {
-        const fn = encoder?.function || 'volume';
         const titles = {
           volume: 'VOL & MUTE',
-          brightness: 'BRILHO',
-          scroll: 'SCROLL',
-          media: 'MULTIMIDIA',
-          zoom: 'ZOOM TELA',
-          video: 'VIDEO NAV',
-          custom: 'CUSTOM PAD'
+          brightness: 'BRILHO TELA',
+          zoom: 'ZOOM ESCALA',
+          media: 'PLAYER MIDIA',
+          scroll: 'ROLAGEM MOUSE',
+          video: 'NAVEGACAO VIDEO',
+          layer_nav: 'MUDAR CAMADA',
+          custom: 'CUSTOM ATALHOS'
         };
         simText.textContent = titles[fn] || fn.toUpperCase();
       }
