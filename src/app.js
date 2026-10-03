@@ -1957,16 +1957,17 @@
     showToast('Tecla salva com sucesso!', 'success');
   });
 
-  // Reset Key
+  // Reset Key to Factory Default
   document.getElementById('btn-reset-key')?.addEventListener('click', () => {
     if (selectedKeyIndex < 0) return;
-    const defaultKey = { type: 'key', value: '', holdAction: null, fixed: false, label: '' };
+    const defaultKey = window.configStore.getDefaultKey ? window.configStore.getDefaultKey(currentLayer, selectedKeyIndex) : { type: 'key', value: '', holdAction: null, fixed: false, label: '' };
     window.configStore.setKey(currentLayer, selectedKeyIndex, defaultKey);
     window.configStore.save();
     renderPadGrid();
     showKeyConfig(selectedKeyIndex);
     refreshSoundpadSoundMap();
-    showToast('Tecla resetada', 'info');
+    const actionDesc = defaultKey.label || formatActionDisplay(defaultKey) || 'Padrão';
+    showToast(`Tecla B${selectedKeyIndex} restaurada para o padrão de fábrica (${actionDesc})!`, 'success');
   });
 
   // ===================================================================

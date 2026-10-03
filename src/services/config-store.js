@@ -266,6 +266,19 @@ class ConfigStore {
     this._notify();
   }
 
+  getDefaultKey(layerIndex, keyIndex) {
+    const def = this._getDefaultConfig();
+    const layer = def.layers?.[layerIndex] || def.layers?.[0];
+    if (layer && layer.keys && layer.keys[keyIndex]) {
+      return JSON.parse(JSON.stringify(layer.keys[keyIndex]));
+    }
+    // Fallback de seguranca para as teclas da coluna fixa
+    if (keyIndex === 3) return { type: 'fixed', value: 'layer-switch', holdAction: null, fixed: true, label: 'Camada' };
+    if (keyIndex === 7) return { type: 'media', value: 'play_pause', holdAction: null, fixed: true, label: 'Play' };
+    if (keyIndex === 11) return { type: 'combo', value: ['Ctrl', 'Shift', 'F14'], holdAction: null, fixed: true, label: 'Mute' };
+    return { type: 'key', value: '', holdAction: null, fixed: false, label: '' };
+  }
+
   _getDefaultConfig() {
     return {
       version: '2.0',
