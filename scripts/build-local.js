@@ -39,8 +39,20 @@ async function main() {
   console.log('\n3. Instalando dependências limpas no SSD local...');
   execSync('npm install --no-audit', { cwd: tempDir, stdio: 'inherit' });
 
-  console.log('\n4. Executando electron-builder (gerando instalador NSIS para Windows)...');
-  execSync('npx electron-builder --win', { cwd: tempDir, stdio: 'inherit' });
+  console.log('\n4. Gerando diretório win-unpacked...');
+  execSync('npx electron-builder --win --dir', { cwd: tempDir, stdio: 'inherit' });
+
+  console.log('\n5. Injetando ícone oficial com rcedit...');
+  const rcedit = 'C:\\Users\\bruno\\AppData\\Local\\electron-builder\\Cache\\winCodeSign\\010591139\\rcedit-x64.exe';
+  const unpackedExe = path.join(tempDir, 'dist', 'win-unpacked', 'PAD Pro.exe');
+  const iconPath = path.join(tempDir, 'build', 'icon.ico');
+  if (fs.existsSync(rcedit) && fs.existsSync(unpackedExe)) {
+    execSync(`"${rcedit}" "${unpackedExe}" --set-icon "${iconPath}" --set-version-string "FileDescription" "PAD Pro" --set-version-string "ProductName" "PAD Pro"`, { stdio: 'inherit' });
+    console.log('-> Ícone injetado com sucesso no executável!');
+  }
+
+  console.log('\n6. Gerando instalador NSIS completo (com escolha de pasta e atalhos)...');
+  execSync('npx electron-builder --win --prepackaged "dist/win-unpacked"', { cwd: tempDir, stdio: 'inherit' });
 
   console.log('\n5. Copiando instalador gerado para a pasta dist do projeto...');
   const builtDist = path.join(tempDir, 'dist');

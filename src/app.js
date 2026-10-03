@@ -1848,7 +1848,15 @@
     window.api?.openURL?.('https://github.com/brunogbrl/pad-pro');
   });
 
+  document.getElementById('btn-about-github')?.addEventListener('click', () => {
+    window.api?.openURL?.('https://github.com/brunogbrl/pad-pro');
+  });
+
   document.getElementById('btn-open-makerworld')?.addEventListener('click', () => {
+    window.api?.openURL?.('https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670');
+  });
+
+  document.getElementById('btn-about-makerworld')?.addEventListener('click', () => {
     window.api?.openURL?.('https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670');
   });
 
@@ -3877,8 +3885,10 @@
     // Load current version into badge
     if (window.api?.getAppVersion) {
       window.api.getAppVersion().then(v => {
-        if (v && settingsAppVersion) {
-          settingsAppVersion.textContent = 'v' + v;
+        if (v) {
+          if (settingsAppVersion) settingsAppVersion.textContent = 'v' + v;
+          const aboutAppVersion = document.getElementById('about-app-version');
+          if (aboutAppVersion) aboutAppVersion.textContent = 'v' + v + ' PRO';
         }
       }).catch(() => {});
     }
