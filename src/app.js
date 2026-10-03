@@ -4469,36 +4469,92 @@
     btnCloseUpdateModal?.addEventListener('click', closeModal);
     btnCancelUpdate?.addEventListener('click', closeModal);
 
+    let isCheckingManually = false;
+
+    function handleUpdateAvailable(info, autoOpen = true) {
+      if (!info) return;
+      updateState = 'available';
+      const versionStr = info.version || '';
+      if (settingsUpdaterStatus) {
+        settingsUpdaterStatus.textContent = `Nova versão v${versionStr} disponível!`;
+      }
+      if (updateTargetVersion) updateTargetVersion.textContent = 'v' + versionStr;
+      if (updateModalTitle) updateModalTitle.textContent = `Nova Versão v${versionStr} Disponível!`;
+      if (updateReleaseDate && info.releaseDate) {
+        try {
+          const d = new Date(info.releaseDate);
+          updateReleaseDate.textContent = 'Lançada em ' + d.toLocaleDateString();
+        } catch {}
+      }
+      if (updateReleaseNotes && info.releaseNotes) {
+        updateReleaseNotes.innerHTML = typeof info.releaseNotes === 'string' ? info.releaseNotes : 'Novas melhorias inclusas.';
+      }
+      if (btnConfirmUpdateText) btnConfirmUpdateText.textContent = 'Baixar e Atualizar';
+      if (btnConfirmUpdate) btnConfirmUpdate.disabled = false;
+      updateProgressWrapper?.classList.add('hidden');
+
+      const shouldNotify = window.configStore?.getConfig()?.system?.notifyUpdates !== false;
+      if (autoOpen || shouldNotify) {
+        openModal();
+      } else {
+        showToast(`Nova versão v${versionStr} disponível!`, 'info');
+      }
+    }
+
+    function handleUpdateNotAvailable(version) {
+      updateState = 'idle';
+      const curVersion = version || (settingsAppVersion?.textContent?.replace(/^v/, '') || '');
+      const text = curVersion 
+        ? `Você já está usando a versão mais recente! (v${curVersion})` 
+        : 'Você já está usando a versão mais recente!';
+      if (settingsUpdaterStatus) {
+        settingsUpdaterStatus.textContent = text;
+      }
+      if (isCheckingManually) {
+        showToast('Seu PAD Pro já está na versão mais recente!', 'success');
+      }
+    }
+
     // Click on check updates button in Settings
     btnCheckUpdates?.addEventListener('click', async () => {
       if (!window.api?.checkForUpdates) return;
+      isCheckingManually = true;
       if (settingsUpdaterStatus) {
-        settingsUpdaterStatus.textContent = 'Verificando atualizações no GitHub...';
+        settingsUpdaterStatus.textContent = 'Consultando novas versões no GitHub...';
       }
       btnCheckUpdates.disabled = true;
       try {
         const res = await window.api.checkForUpdates();
         if (res?.isDev) {
-          showToast(res.message || 'Disponível na versão compilada/instalada.', 'info');
-          if (settingsUpdaterStatus) {
-            settingsUpdaterStatus.textContent = 'Em modo de desenvolvimento.';
-          }
-        } else if (res?.success) {
-          if (settingsUpdaterStatus) {
-            settingsUpdaterStatus.textContent = 'Verificação iniciada...';
+          if (res.isUpdateAvailable && res.updateInfo) {
+            handleUpdateAvailable(res.updateInfo, false);
+            showToast(res.message || `Nova versão v${res.updateInfo?.version} encontrada!`, 'info');
+          } else {
+            handleUpdateNotAvailable(res.currentVersion);
+            showToast(res.message || 'Você já está na versão mais recente.', 'info');
           }
         } else if (res?.error) {
           showToast('Não foi possível verificar atualizações: ' + res.error, 'error');
           if (settingsUpdaterStatus) {
-            settingsUpdaterStatus.textContent = 'Falha ao verificar atualizações.';
+            settingsUpdaterStatus.textContent = 'Falha ao verificar atualizações: ' + res.error;
+          }
+        } else if (res?.success) {
+          if (res.isUpdateAvailable && res.updateInfo) {
+            handleUpdateAvailable(res.updateInfo, true);
+          } else {
+            handleUpdateNotAvailable(res.currentVersion);
           }
         }
       } catch (err) {
         showToast('Erro ao checar atualizações: ' + err.message, 'error');
+        if (settingsUpdaterStatus) {
+          settingsUpdaterStatus.textContent = 'Erro ao verificar atualizações.';
+        }
       } finally {
         setTimeout(() => {
           btnCheckUpdates.disabled = false;
-        }, 2000);
+          isCheckingManually = false;
+        }, 1500);
       }
     });
 
@@ -4535,31 +4591,9 @@
         if (data.status === 'checking') {
           if (settingsUpdaterStatus) settingsUpdaterStatus.textContent = 'Consultando novas versões...';
         } else if (data.status === 'not-available') {
-          if (settingsUpdaterStatus) settingsUpdaterStatus.textContent = 'Você já está usando a versão mais recente!';
-          showToast('Seu PAD Pro já está na versão mais recente!', 'success');
+          handleUpdateNotAvailable(data.version);
         } else if (data.status === 'available') {
-          updateState = 'available';
-          if (settingsUpdaterStatus) settingsUpdaterStatus.textContent = `Nova versão v${data.version} disponível!`;
-          if (updateTargetVersion) updateTargetVersion.textContent = 'v' + data.version;
-          if (updateModalTitle) updateModalTitle.textContent = `Nova Versão v${data.version} Disponível!`;
-          if (updateReleaseDate && data.releaseDate) {
-            try {
-              const d = new Date(data.releaseDate);
-              updateReleaseDate.textContent = 'Lançada em ' + d.toLocaleDateString();
-            } catch {}
-          }
-          if (updateReleaseNotes && data.releaseNotes) {
-            updateReleaseNotes.innerHTML = typeof data.releaseNotes === 'string' ? data.releaseNotes : 'Novas melhorias inclusas.';
-          }
-          if (btnConfirmUpdateText) btnConfirmUpdateText.textContent = 'Baixar e Atualizar';
-          if (btnConfirmUpdate) btnConfirmUpdate.disabled = false;
-          updateProgressWrapper?.classList.add('hidden');
-          const shouldNotify = window.configStore.getConfig()?.system?.notifyUpdates !== false;
-          if (shouldNotify) {
-            openModal();
-          } else {
-            showToast(`Nova versão v${data.version} disponível!`, 'info');
-          }
+          handleUpdateAvailable(data, false);
         } else if (data.status === 'downloading') {
           updateState = 'downloading';
           updateProgressWrapper?.classList.remove('hidden');
@@ -4590,7 +4624,11 @@
         } else if (data.status === 'error') {
           updateState = 'error';
           console.warn('Updater status error:', data.message);
-          if (settingsUpdaterStatus) settingsUpdaterStatus.textContent = 'Erro ao verificar atualizações.';
+          const errorMsg = data.message ? `: ${data.message}` : '';
+          if (settingsUpdaterStatus) settingsUpdaterStatus.textContent = 'Erro ao verificar atualizações' + errorMsg;
+          if (isCheckingManually) {
+            showToast('Erro ao verificar atualizações' + errorMsg, 'error');
+          }
         }
       });
     }

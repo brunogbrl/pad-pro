@@ -2041,13 +2041,54 @@ function setupAutoUpdater() {
 
 ipcMain.handle('updater:check', async () => {
   if (!app.isPackaged) {
-    return { success: false, isDev: true, message: 'Verificação em desenvolvimento indisponível (requer app instalado).' };
+    // Modo de desenvolvimento: consulta informativa via API do GitHub
+    try {
+      const https = require('https');
+      const latestRelease = await new Promise((resolve, reject) => {
+        const req = https.request({
+          hostname: 'api.github.com',
+          path: '/repos/brunogbrl/pad-pro/releases/latest',
+          method: 'GET',
+          headers: { 'User-Agent': 'PAD-Pro' }
+        }, (res) => {
+          let body = '';
+          res.on('data', chunk => body += chunk);
+          res.on('end', () => {
+            try { resolve(JSON.parse(body)); } catch (e) { reject(e); }
+          });
+        });
+        req.on('error', reject);
+        req.setTimeout(5000, () => { req.destroy(new Error('Timeout')); });
+        req.end();
+      });
+
+      if (latestRelease && latestRelease.tag_name) {
+        const latestVer = latestRelease.tag_name.replace(/^v/, '');
+        const curVer = app.getVersion();
+        const hasUpdate = latestVer !== curVer;
+        return {
+          success: true,
+          isDev: true,
+          isUpdateAvailable: hasUpdate,
+          updateInfo: { version: latestVer, releaseNotes: latestRelease.body },
+          currentVersion: curVer,
+          message: hasUpdate ? `Nova versão v${latestVer} disponível no GitHub!` : `Você já está usando a versão mais recente (v${curVer})!`
+        };
+      }
+    } catch {}
+    return { success: false, isDev: true, message: 'Verificação em desenvolvimento (requer app instalado para download automático).' };
   }
   try {
     const result = await autoUpdater.checkForUpdates();
-    return { success: true, updateInfo: result?.updateInfo };
+    return {
+      success: true,
+      isUpdateAvailable: Boolean(result?.isUpdateAvailable),
+      updateInfo: result?.updateInfo || null,
+      currentVersion: app.getVersion()
+    };
   } catch (err) {
-    return { success: false, error: err.message };
+    console.warn('Erro ao verificar atualizações no autoUpdater:', err?.message);
+    return { success: false, error: err.message || String(err) };
   }
 });
 
