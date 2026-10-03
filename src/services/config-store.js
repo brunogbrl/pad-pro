@@ -27,9 +27,11 @@ class ConfigStore {
       this.config.hud = { enabled: true };
     }
     if (!this.config.system) {
-      this.config.system = { startOnBoot: false, startMinimized: false, closeToTray: true, developerMode: false };
-    } else if (this.config.system.developerMode === undefined) {
-      this.config.system.developerMode = false;
+      this.config.system = { startOnBoot: false, startMinimized: false, closeToTray: true, developerMode: false, autoCheckUpdates: true, notifyUpdates: true };
+    } else {
+      if (this.config.system.developerMode === undefined) this.config.system.developerMode = false;
+      if (this.config.system.autoCheckUpdates === undefined) this.config.system.autoCheckUpdates = true;
+      if (this.config.system.notifyUpdates === undefined) this.config.system.notifyUpdates = true;
     }
 
     this._notify();
@@ -267,7 +269,7 @@ class ConfigStore {
       version: '2.0',
       language: 'pt-BR',
       hud: { enabled: true },
-      system: { startOnBoot: false, startMinimized: false, closeToTray: true, developerMode: false },
+      system: { startOnBoot: false, startMinimized: false, closeToTray: true, developerMode: false, autoCheckUpdates: true, notifyUpdates: true },
       soundpad: { enabled: true, previewOnHold: true, holdDelay: 380 },
       encoder: { function: 'volume', customCW: null, customCCW: null, customPress: null },
       customization: {

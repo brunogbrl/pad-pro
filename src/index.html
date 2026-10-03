@@ -1294,7 +1294,9 @@
 
         <!-- Atualizações do Sistema -->
         <div class="settings-section">
-          <div class="settings-section-title">Atualizações e Versão</div>
+          <div class="settings-section-title">Central de Atualizações</div>
+          
+          <!-- Versão e Botão Procurar Atualizações -->
           <div class="settings-row">
             <div class="settings-row-label">
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -1304,10 +1306,32 @@
               <small id="settings-updater-status">Verifique se há novas melhorias ou correções disponíveis para seu aplicativo.</small>
             </div>
             <div style="display: flex; gap: 8px; align-items: center;">
-              <button class="btn btn-outline btn-sm" id="btn-check-updates">
+              <button class="btn btn-primary btn-sm" id="btn-check-updates">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                <span>Verificar Atualizações</span>
+                <span>Procurar Atualizações</span>
               </button>
+            </div>
+          </div>
+
+          <!-- Toggle: Procurar Atualizações Automaticamente (Liga / Desliga) -->
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Procurar Atualizações Automaticamente</span>
+              <small>Verifica se há novas versões disponíveis no GitHub ao abrir o aplicativo</small>
+            </div>
+            <div class="toggle-switch active" id="toggle-auto-updates">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+
+          <!-- Toggle: Notificar Novas Versões (Liga / Desliga) -->
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Notificações de Novas Versões</span>
+              <small>Exibe uma janela com o que há de novo e botão de download imediato</small>
+            </div>
+            <div class="toggle-switch active" id="toggle-update-notifications">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
             </div>
           </div>
         </div>

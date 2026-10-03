@@ -1832,6 +1832,18 @@
     showToast(active ? 'Modo Desenvolvedor ativado' : 'Modo Desenvolvedor desativado', 'info');
   });
 
+  setupToggle('toggle-auto-updates', (active) => {
+    window.configStore.setSystem({ autoCheckUpdates: active });
+    window.configStore.save();
+    showToast(active ? 'Procurar atualizações automaticamente: Ativado' : 'Procurar atualizações automaticamente: Desativado', 'info');
+  });
+
+  setupToggle('toggle-update-notifications', (active) => {
+    window.configStore.setSystem({ notifyUpdates: active });
+    window.configStore.save();
+    showToast(active ? 'Notificações de atualização ativadas' : 'Notificações de atualização desativadas', 'info');
+  });
+
   function syncSettingsToggles() {
     const config = window.configStore.getConfig();
     const isHUD = config?.hud?.enabled !== false;
@@ -1842,6 +1854,8 @@
     const isSp = config?.soundpad?.enabled !== false;
     const isPrev = config?.soundpad?.previewOnHold !== false;
     const isDev = !!config?.system?.developerMode;
+    const isAutoUpdates = config?.system?.autoCheckUpdates !== false;
+    const isNotifyUpdates = config?.system?.notifyUpdates !== false;
 
     document.getElementById('toggle-hud')?.classList.toggle('active', isHUD);
     document.getElementById('toggle-start-boot')?.classList.toggle('active', isBoot);
@@ -1850,6 +1864,8 @@
     document.getElementById('toggle-soundpad')?.classList.toggle('active', isSp);
     document.getElementById('toggle-preview')?.classList.toggle('active', isPrev);
     document.getElementById('toggle-developer-mode')?.classList.toggle('active', isDev);
+    document.getElementById('toggle-auto-updates')?.classList.toggle('active', isAutoUpdates);
+    document.getElementById('toggle-update-notifications')?.classList.toggle('active', isNotifyUpdates);
 
     const btnToggleLogs = document.getElementById('btn-toggle-logs');
     if (btnToggleLogs) {
@@ -3958,7 +3974,12 @@
           if (btnConfirmUpdateText) btnConfirmUpdateText.textContent = 'Baixar e Atualizar';
           if (btnConfirmUpdate) btnConfirmUpdate.disabled = false;
           updateProgressWrapper?.classList.add('hidden');
-          openModal();
+          const shouldNotify = window.configStore.getConfig()?.system?.notifyUpdates !== false;
+          if (shouldNotify) {
+            openModal();
+          } else {
+            showToast(`Nova versão v${data.version} disponível!`, 'info');
+          }
         } else if (data.status === 'downloading') {
           updateState = 'downloading';
           updateProgressWrapper?.classList.remove('hidden');

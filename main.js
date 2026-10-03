@@ -67,7 +67,9 @@ function getDefaultConfig() {
       startOnBoot: false,
       startMinimized: false,
       closeToTray: true,
-      developerMode: false
+      developerMode: false,
+      autoCheckUpdates: true,
+      notifyUpdates: true
     },
     soundpad: {
       enabled: true,
@@ -1978,9 +1980,9 @@ function setupAutoUpdater() {
     });
   });
 
-  // Check for updates automatically 4 seconds after startup (only in packaged app)
+  // Check for updates automatically 4 seconds after startup (only in packaged app and if enabled)
   setTimeout(() => {
-    if (app.isPackaged) {
+    if (app.isPackaged && currentConfig?.system?.autoCheckUpdates !== false) {
       autoUpdater.checkForUpdates().catch(err => {
         console.warn('Auto-updater startup check error:', err?.message);
       });
