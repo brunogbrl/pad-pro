@@ -1611,6 +1611,7 @@
     const addedIndex = window.configStore.addLayer(layerData);
     if (addedIndex !== null) {
       currentLayer = addedIndex;
+      selectedKeyIndex = -1;
       window.configStore.save();
       applyCurrentLayerTheme();
       renderLayerSelector();
@@ -1618,6 +1619,19 @@
       renderPadGrid();
       renderOLED();
       renderEncoderCaption();
+      showKeyConfigEmpty();
+
+      // Sincroniza hardware e HUD
+      window.api?.setHardwareLayer?.(currentLayer);
+      updateOledSimulator();
+      window.api?.updateTrayColor?.(selectedNewLayerColor, name);
+      window.api?.notifyHUD?.({
+        layer: currentLayer,
+        layerName: name,
+        layerColor: selectedNewLayerColor,
+        profile: 'CUSTOM'
+      });
+
       showToast(`Nova camada "${name}" criada com sucesso!`, 'success');
       closeNewLayerModal();
     }
