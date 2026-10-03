@@ -1559,7 +1559,7 @@ def executar_encoder_click():
             consumer_ctrl.send(ConsumerControlCode.MUTE)
             mostrar_acao_oled("CLIQUE", "MUTE")
 
-print("[INFO] PadPRO firmware iniciado e pronto!")
+print("[INFO] PadPro firmware iniciado e pronto!")
 executar_animacao_boot()
 atualizar_oled_padrao(camada_atual)
 

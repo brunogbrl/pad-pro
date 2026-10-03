@@ -59,7 +59,9 @@
       "build/**/*",
       "src/**/*",
       "locales/**/*",
-      "scripts/code.py"
+      "scripts/code.py",
+      "scripts/boot.py",
+      "scripts/autorun.inf"
     ]
   }
 }

@@ -220,6 +220,24 @@ function saveConfig(config) {
               logDebug(`[FIRMWARE SYNC AVISO] ${errCodeSync.message}`);
             }
           }
+          // Sincronizar boot.py, autorun.inf e icon.ico para identidade oficial PadPro
+          try {
+            const localBoot = path.join(__dirname, 'scripts', 'boot.py');
+            if (fs.existsSync(localBoot)) {
+              const targetBoot = path.join(drv, 'boot.py');
+              if (!fs.existsSync(targetBoot) || fs.readFileSync(localBoot, 'utf8') !== fs.readFileSync(targetBoot, 'utf8')) {
+                fs.writeFileSync(targetBoot, fs.readFileSync(localBoot, 'utf8'), 'utf8');
+              }
+            }
+            const localAutorun = path.join(__dirname, 'scripts', 'autorun.inf');
+            if (fs.existsSync(localAutorun)) {
+              fs.copyFileSync(localAutorun, path.join(drv, 'autorun.inf'));
+            }
+            const localIcon = path.join(__dirname, 'build', 'icon.ico');
+            if (fs.existsSync(localIcon)) {
+              fs.copyFileSync(localIcon, path.join(drv, 'icon.ico'));
+            }
+          } catch {}
           fs.writeFileSync(path.join(drv, 'config.json'), JSON.stringify(configForPad, null, 2), 'utf8');
           logDebug(`[CONFIG SYNC] Configuração gravada diretamente no pad (${drv}config.json com ${Object.keys(soundMap).length} sons)`);
           
@@ -1599,6 +1617,24 @@ ipcMain.handle('pad:force-sync', async () => {
               logDebug(`[FIRMWARE FORCED SYNC ERRO] ${errCode.message}`);
             }
           }
+          // Sincronizar boot.py, autorun.inf e icon.ico para identidade oficial PadPro
+          try {
+            const localBoot = path.join(__dirname, 'scripts', 'boot.py');
+            if (fs.existsSync(localBoot)) {
+              const targetBoot = path.join(drv, 'boot.py');
+              if (!fs.existsSync(targetBoot) || fs.readFileSync(localBoot, 'utf8') !== fs.readFileSync(targetBoot, 'utf8')) {
+                fs.writeFileSync(targetBoot, fs.readFileSync(localBoot, 'utf8'), 'utf8');
+              }
+            }
+            const localAutorun = path.join(__dirname, 'scripts', 'autorun.inf');
+            if (fs.existsSync(localAutorun)) {
+              fs.copyFileSync(localAutorun, path.join(drv, 'autorun.inf'));
+            }
+            const localIcon = path.join(__dirname, 'build', 'icon.ico');
+            if (fs.existsSync(localIcon)) {
+              fs.copyFileSync(localIcon, path.join(drv, 'icon.ico'));
+            }
+          } catch {}
           fs.writeFileSync(path.join(drv, 'config.json'), JSON.stringify(configForPad, null, 2), 'utf8');
           logDebug(`[CONFIG FORCED SYNC] Gravado com sucesso em ${drv}config.json`);
           driveSynced = true;
