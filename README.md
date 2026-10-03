@@ -155,6 +155,14 @@ Para conferir esquemas elétricos e tutoriais passo a passo:
 
 ---
 
+## 🎨 Design do Hardware & Créditos
+
+O design físico e a modelagem 3D do case deste macro pad foram baseados no projeto **Superpad - Cool Macropad**:
+- 🖨️ **Modelo 3D no MakerWorld**: [Superpad - Cool Macropad (MakerWorld)](https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670)
+- 🤝 Um agradecimento especial ao criador **[@Scrypty](https://makerworld.com/pt/@Scrypty)** pelo excelente design e contribuição com a comunidade Maker!
+
+---
+
 ## 📄 Licença
 
 Este projeto está sob a licença [MIT](LICENSE). Consulte o arquivo de licença para mais detalhes.
