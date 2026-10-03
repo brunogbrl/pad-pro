@@ -802,6 +802,7 @@
       media: 'MÍDIA',
       zoom: 'ZOOM',
       video: 'VÍDEO',
+      layer_nav: 'CAMADAS',
       custom: 'CUSTOM'
     };
     if (caption) {
@@ -1236,11 +1237,155 @@
     setLayerColor(e.target.value);
   });
 
-  // Add Layer Button
-  btnAddLayer?.addEventListener('click', () => {
-    const newIndex = window.configStore.addLayer();
-    if (newIndex !== null) {
-      currentLayer = newIndex;
+  // ===================================================================
+  // MODAL: CRIAR NOVA CAMADA
+  // ===================================================================
+  const modalNewLayer = document.getElementById('modal-new-layer');
+  const btnCloseNewLayer = document.getElementById('btn-close-new-layer');
+  const btnCancelNewLayer = document.getElementById('btn-cancel-new-layer');
+  const btnConfirmNewLayer = document.getElementById('btn-confirm-new-layer');
+  const newLayerNameInput = document.getElementById('new-layer-name-input');
+  const newLayerColorPresets = document.getElementById('new-layer-color-presets');
+  const newLayerColorPicker = document.getElementById('new-layer-color-picker');
+  const newLayerColorHex = document.getElementById('new-layer-color-hex');
+  const newLayerTypePreset = document.getElementById('new-layer-type-preset');
+  const newLayerTypeBlank = document.getElementById('new-layer-type-blank');
+  const newLayerEncoderGrid = document.getElementById('new-layer-encoder-grid');
+
+  let selectedNewLayerColor = '#38BDF8';
+  let selectedNewLayerType = 'preset'; // 'preset' | 'blank'
+  let selectedNewLayerEncoder = 'layer_nav';
+
+  const NEW_LAYER_COLORS = [
+    '#38BDF8', // Cyan
+    '#F87171', // Red
+    '#FB923C', // Orange
+    '#4ADE80', // Green
+    '#A78BFA', // Purple
+    '#F472B6', // Pink
+    '#FBBF24', // Yellow
+    '#2DD4BF', // Teal
+    '#6366F1', // Indigo
+    '#EC4899'  // Rose
+  ];
+
+  function openNewLayerModal() {
+    const config = window.configStore.getConfig();
+    const newIndex = config?.layers?.length || 0;
+
+    // Default name
+    if (newLayerNameInput) {
+      newLayerNameInput.value = `CAMADA ${newIndex}`;
+    }
+
+    // Default color based on layer index
+    selectedNewLayerColor = NEW_LAYER_COLORS[newIndex % NEW_LAYER_COLORS.length];
+    if (newLayerColorPicker) newLayerColorPicker.value = selectedNewLayerColor;
+    if (newLayerColorHex) newLayerColorHex.textContent = selectedNewLayerColor.toUpperCase();
+
+    // Render color swatches
+    if (newLayerColorPresets) {
+      newLayerColorPresets.innerHTML = '';
+      NEW_LAYER_COLORS.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = `new-layer-color-dot ${c.toLowerCase() === selectedNewLayerColor.toLowerCase() ? 'active' : ''}`;
+        dot.style.backgroundColor = c;
+        dot.style.color = c;
+        dot.title = c;
+        dot.addEventListener('click', () => {
+          selectedNewLayerColor = c;
+          if (newLayerColorPicker) newLayerColorPicker.value = c;
+          if (newLayerColorHex) newLayerColorHex.textContent = c.toUpperCase();
+          newLayerColorPresets.querySelectorAll('.new-layer-color-dot').forEach(d => d.classList.remove('active'));
+          dot.classList.add('active');
+        });
+        newLayerColorPresets.appendChild(dot);
+      });
+    }
+
+    // Default key fill: 'preset' (Com atalhos de fábrica)
+    selectedNewLayerType = 'preset';
+    newLayerTypePreset?.classList.add('active');
+    newLayerTypeBlank?.classList.remove('active');
+
+    // Default encoder: 'layer_nav' (Navegação por Camadas como padrão do Knob)
+    selectedNewLayerEncoder = 'layer_nav';
+    if (newLayerEncoderGrid) {
+      newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(card => {
+        if (card.dataset.encoder === selectedNewLayerEncoder) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+
+    modalNewLayer?.classList.remove('hidden');
+    setTimeout(() => newLayerNameInput?.select(), 60);
+  }
+
+  function closeNewLayerModal() {
+    modalNewLayer?.classList.add('hidden');
+  }
+
+  // Key fill type selection
+  newLayerTypePreset?.addEventListener('click', () => {
+    selectedNewLayerType = 'preset';
+    newLayerTypePreset.classList.add('active');
+    newLayerTypeBlank?.classList.remove('active');
+  });
+
+  newLayerTypeBlank?.addEventListener('click', () => {
+    selectedNewLayerType = 'blank';
+    newLayerTypeBlank.classList.add('active');
+    newLayerTypePreset?.classList.remove('active');
+  });
+
+  // Color picker change
+  newLayerColorPicker?.addEventListener('input', (e) => {
+    selectedNewLayerColor = e.target.value;
+    if (newLayerColorHex) newLayerColorHex.textContent = selectedNewLayerColor.toUpperCase();
+    if (newLayerColorPresets) {
+      newLayerColorPresets.querySelectorAll('.new-layer-color-dot').forEach(d => {
+        if (d.title.toLowerCase() === selectedNewLayerColor.toLowerCase()) {
+          d.classList.add('active');
+        } else {
+          d.classList.remove('active');
+        }
+      });
+    }
+  });
+
+  // Encoder cards selection
+  if (newLayerEncoderGrid) {
+    newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(card => {
+      card.addEventListener('click', () => {
+        newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedNewLayerEncoder = card.dataset.encoder || 'layer_nav';
+      });
+    });
+  }
+
+  // Confirm New Layer
+  btnConfirmNewLayer?.addEventListener('click', () => {
+    const config = window.configStore.getConfig();
+    const newIndex = config?.layers?.length || 0;
+    const name = (newLayerNameInput?.value || '').trim() || `CAMADA ${newIndex}`;
+    const isBlank = selectedNewLayerType === 'blank';
+    const keys = window.configStore.getDefaultKeysForLayer(newIndex, isBlank);
+
+    const layerData = {
+      name: name,
+      profile: 'CUSTOM',
+      color: selectedNewLayerColor,
+      encoder: { function: selectedNewLayerEncoder },
+      keys: keys
+    };
+
+    const addedIndex = window.configStore.addLayer(layerData);
+    if (addedIndex !== null) {
+      currentLayer = addedIndex;
       window.configStore.save();
       applyCurrentLayerTheme();
       renderLayerSelector();
@@ -1248,8 +1393,20 @@
       renderPadGrid();
       renderOLED();
       renderEncoderCaption();
-      showToast('Nova camada adicionada!', 'success');
+      showToast(`Nova camada "${name}" criada com sucesso!`, 'success');
+      closeNewLayerModal();
     }
+  });
+
+  btnCloseNewLayer?.addEventListener('click', closeNewLayerModal);
+  btnCancelNewLayer?.addEventListener('click', closeNewLayerModal);
+  modalNewLayer?.addEventListener('click', (e) => {
+    if (e.target === modalNewLayer) closeNewLayerModal();
+  });
+
+  // Add Layer Button opens configuration modal
+  btnAddLayer?.addEventListener('click', () => {
+    openNewLayerModal();
   });
 
   // Delete Layer Button
@@ -3115,6 +3272,14 @@
       } else if (e.key === 'Enter') {
         e.preventDefault();
         closeConfirmModal(true);
+      }
+    } else if (modalNewLayer && !modalNewLayer.classList.contains('hidden')) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeNewLayerModal();
+      } else if (e.key === 'Enter' && e.target === newLayerNameInput) {
+        e.preventDefault();
+        btnConfirmNewLayer?.click();
       }
     }
   });

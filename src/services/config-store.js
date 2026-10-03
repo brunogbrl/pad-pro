@@ -116,28 +116,15 @@ class ConfigStore {
   addLayer(layerData = null) {
     if (!this.config) return null;
     const newIndex = this.config.layers.length;
-    const defaultColors = ['#38BDF8', '#F87171', '#FB923C', '#4ADE80', '#A78BFA', '#F472B6', '#FBBF24', '#2DD4BF'];
+    const defaultColors = ['#38BDF8', '#F87171', '#FB923C', '#4ADE80', '#A78BFA', '#F472B6', '#FBBF24', '#2DD4BF', '#6366F1', '#EC4899'];
     const color = defaultColors[newIndex % defaultColors.length];
 
     const newLayer = layerData || {
       name: `CAMADA ${newIndex}`,
       profile: 'CUSTOM',
       color: color,
-      encoder: { function: 'volume', customCW: null, customCCW: null, customPress: null },
-      keys: {
-        0: { type: 'key', value: `F${13 + (newIndex % 12)}`, holdAction: null, fixed: false, label: '' },
-        1: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        2: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        3: { type: 'fixed', value: 'layer-switch', holdAction: null, fixed: true, label: 'Camada' },
-        4: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        5: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        6: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        7: { type: 'media', value: 'play_pause', holdAction: null, fixed: true, label: 'Play' },
-        8: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        9: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        10: { type: 'key', value: '', holdAction: null, fixed: false, label: '' },
-        11: { type: 'combo', value: ['Ctrl', 'Shift', 'F14'], holdAction: null, fixed: true, label: 'Mute' }
-      }
+      encoder: { function: 'layer_nav' },
+      keys: this.getDefaultKeysForLayer(newIndex, false)
     };
 
     this.config.layers.push(newLayer);
@@ -266,11 +253,72 @@ class ConfigStore {
     this._notify();
   }
 
-  getDefaultKey(layerIndex, keyIndex) {
+  getDefaultKeysForLayer(layerIndex, isBlank = false) {
+    // Teclas fixas da direita (B3, B7, B11) permanecem sempre padronizadas de fábrica
+    const fixedKeys = {
+      3: { type: 'fixed', value: 'layer-switch', holdAction: null, fixed: true, label: 'Camada' },
+      7: { type: 'media', value: 'play_pause', holdAction: null, fixed: true, label: 'Play' },
+      11: { type: 'combo', value: ['Ctrl', 'Shift', 'F14'], holdAction: null, fixed: true, label: 'Mute' }
+    };
+
+    const keys = {};
+    const configurableIndices = [0, 1, 2, 4, 5, 6, 8, 9, 10];
+
+    if (isBlank) {
+      configurableIndices.forEach(idx => {
+        keys[idx] = { type: 'key', value: '', holdAction: null, fixed: false, label: '' };
+      });
+      return { ...keys, ...fixedKeys };
+    }
+
+    // Camadas padrão predefinidas de fábrica (0 a 3)
     const def = this._getDefaultConfig();
-    const layer = def.layers?.[layerIndex] || def.layers?.[0];
-    if (layer && layer.keys && layer.keys[keyIndex]) {
-      return JSON.parse(JSON.stringify(layer.keys[keyIndex]));
+    if (layerIndex < 4 && def.layers?.[layerIndex]?.keys) {
+      return JSON.parse(JSON.stringify(def.layers[layerIndex].keys));
+    }
+
+    // Camadas 4 em diante: gerador sequencial inteligente com modificadores
+    const modifierSchemes = [
+      ['Alt', 'Shift'],
+      ['Ctrl', 'Alt'],
+      ['Ctrl', 'Alt', 'Shift'],
+      ['Shift'],
+      ['Ctrl', 'Win'],
+      ['Alt', 'Win']
+    ];
+
+    const schemeIdx = (layerIndex - 4) % modifierSchemes.length;
+    const mods = modifierSchemes[schemeIdx];
+    const fKeys = ['F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20', 'F21'];
+
+    configurableIndices.forEach((keyIdx, i) => {
+      const fKey = fKeys[i % fKeys.length];
+      if (mods && mods.length > 0) {
+        keys[keyIdx] = {
+          type: 'combo',
+          value: [...mods, fKey],
+          holdAction: null,
+          fixed: false,
+          label: ''
+        };
+      } else {
+        keys[keyIdx] = {
+          type: 'key',
+          value: fKey,
+          holdAction: null,
+          fixed: false,
+          label: ''
+        };
+      }
+    });
+
+    return { ...keys, ...fixedKeys };
+  }
+
+  getDefaultKey(layerIndex, keyIndex) {
+    const keys = this.getDefaultKeysForLayer(layerIndex, false);
+    if (keys && keys[keyIndex]) {
+      return JSON.parse(JSON.stringify(keys[keyIndex]));
     }
     // Fallback de seguranca para as teclas da coluna fixa
     if (keyIndex === 3) return { type: 'fixed', value: 'layer-switch', holdAction: null, fixed: true, label: 'Camada' };

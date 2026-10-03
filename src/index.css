@@ -5313,6 +5313,72 @@ body.no-animations * {
   margin-top: 3px;
 }
 
+/* ===================================================================
+   Modal Nova Camada
+   =================================================================== */
+.new-layer-color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+.new-layer-color-dot:hover {
+  transform: scale(1.15);
+}
+.new-layer-color-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.18);
+  box-shadow: 0 0 10px currentColor;
+}
+
+.encoder-choice-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.encoder-choice-card:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+.encoder-choice-card.active {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: #6366F1;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+}
+.encoder-choice-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #F8FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.encoder-choice-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 6px;
+  background: rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #A5B4FC;
+  border-radius: 4px;
+}
+.encoder-choice-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
 
 
 
