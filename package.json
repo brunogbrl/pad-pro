@@ -58,7 +58,8 @@
       "preload-hud.js",
       "build/**/*",
       "src/**/*",
-      "locales/**/*"
+      "locales/**/*",
+      "scripts/code.py"
     ]
   }
 }

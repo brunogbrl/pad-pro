@@ -5268,6 +5268,19 @@ body.no-animations * {
   box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
   transform: translateY(-1px);
 }
+.assign-pad-key-btn.assigned-current-macro {
+  border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(56, 189, 248, 0.08);
+}
+.assign-pad-macro-badge {
+  font-size: 8.5px;
+  background: #38BDF8;
+  color: #0F172A;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
 .assign-pad-key-num {
   font-size: 10px;
   font-weight: 700;

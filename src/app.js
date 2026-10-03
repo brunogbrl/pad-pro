@@ -3871,9 +3871,42 @@
   function openAssignMacroModal(macro) {
     if (!macro) return;
     pendingAssignMacro = macro;
-    assignSelectedLayer = currentLayer || 0;
-    assignSelectedKey = (selectedKeyIndex >= 0 && selectedKeyIndex < 12) ? selectedKeyIndex : 0;
-    assignSelectedSlot = 'click';
+
+    // Detecta se a macro já está atribuída a alguma tecla para pré-selecionar
+    const config = window.configStore.getConfig();
+    let foundLayer = -1;
+    let foundKey = -1;
+    let foundSlot = 'click';
+
+    (config?.layers || []).forEach((l, lIdx) => {
+      const keys = l.keys || {};
+      for (let k = 0; k < 12; k++) {
+        const kd = keys[k] || keys[String(k)];
+        if (kd?.type === 'macro' && kd?.value === macro.id) {
+          if (foundLayer === -1) {
+            foundLayer = lIdx;
+            foundKey = k;
+            foundSlot = 'click';
+          }
+        } else if (kd?.holdAction?.type === 'macro' && kd?.holdAction?.value === macro.id) {
+          if (foundLayer === -1) {
+            foundLayer = lIdx;
+            foundKey = k;
+            foundSlot = 'hold';
+          }
+        }
+      }
+    });
+
+    if (foundLayer !== -1) {
+      assignSelectedLayer = foundLayer;
+      assignSelectedKey = foundKey;
+      assignSelectedSlot = foundSlot;
+    } else {
+      assignSelectedLayer = currentLayer || 0;
+      assignSelectedKey = (selectedKeyIndex >= 0 && selectedKeyIndex < 12) ? selectedKeyIndex : 0;
+      assignSelectedSlot = 'click';
+    }
 
     const modal = document.getElementById('modal-assign-macro');
     const nameEl = document.getElementById('assign-macro-modal-name');
@@ -3882,9 +3915,15 @@
     renderAssignMacroLayerPills();
     renderAssignMacroPadGrid();
 
-    document.getElementById('assign-type-click')?.classList.add('active');
-    document.getElementById('assign-type-hold')?.classList.remove('active');
+    if (assignSelectedSlot === 'hold') {
+      document.getElementById('assign-type-hold')?.classList.add('active');
+      document.getElementById('assign-type-click')?.classList.remove('active');
+    } else {
+      document.getElementById('assign-type-click')?.classList.add('active');
+      document.getElementById('assign-type-hold')?.classList.remove('active');
+    }
 
+    updateAssignMacroSummary();
     modal?.classList.remove('hidden');
   }
 
@@ -3906,6 +3945,7 @@
         assignSelectedLayer = parseInt(btn.dataset.layer);
         renderAssignMacroLayerPills();
         renderAssignMacroPadGrid();
+        updateAssignMacroSummary();
       });
     });
   }
@@ -3921,16 +3961,26 @@
     for (let i = 0; i < 12; i++) {
       const kData = keys[i] || keys[String(i)];
       let label = 'Vazio';
-      if (i === 3 || kData?.value === 'layer-switch') {
-        label = 'Camada';
+      if (i === 3 || kData?.value === 'layer-switch' || kData?.type === 'fixed') {
+        label = 'Troca Camada';
       } else if (kData) {
-        label = kData.label || formatActionDisplay(kData) || 'Tecla';
+        const info = getKeyDisplayInfo(kData);
+        label = info.label || 'Vazio';
       }
       const isSelected = (i === assignSelectedKey);
+      const isCurrentMacro = (kData?.type === 'macro' && kData?.value === pendingAssignMacro?.id) ||
+                             (kData?.holdAction?.type === 'macro' && kData?.holdAction?.value === pendingAssignMacro?.id);
+
+      const assignedClass = isCurrentMacro ? 'assigned-current-macro' : '';
+      const badgeHtml = isCurrentMacro ? '<span class="assign-pad-macro-badge">Vinculada</span>' : '';
+
       html += `
-        <div class="assign-pad-key-btn ${isSelected ? 'selected' : ''}" data-key="${i}">
-          <span class="assign-pad-key-num">B${i}</span>
-          <span class="assign-pad-key-lbl" title="${label}">${label}</span>
+        <div class="assign-pad-key-btn ${isSelected ? 'selected' : ''} ${assignedClass}" data-key="${i}" title="${escapeHtml(label)}">
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <span class="assign-pad-key-num">B${i}</span>
+            ${badgeHtml}
+          </div>
+          <span class="assign-pad-key-lbl">${escapeHtml(label)}</span>
         </div>
       `;
     }
@@ -3940,20 +3990,53 @@
       btn.addEventListener('click', () => {
         assignSelectedKey = parseInt(btn.dataset.key);
         renderAssignMacroPadGrid();
+        updateAssignMacroSummary();
       });
     });
+  }
+
+  function updateAssignMacroSummary() {
+    const summaryEl = document.getElementById('assign-macro-summary');
+    if (!summaryEl) return;
+    const config = window.configStore.getConfig();
+    const layer = config?.layers?.[assignSelectedLayer];
+    const layerName = layer?.name || `Camada ${assignSelectedLayer}`;
+    const kData = layer?.keys?.[assignSelectedKey] || layer?.keys?.[String(assignSelectedKey)];
+    const info = getKeyDisplayInfo(kData);
+    const currentVal = (assignSelectedKey === 3 || kData?.value === 'layer-switch' || kData?.type === 'fixed') 
+      ? 'Troca Camada' 
+      : (info.label || 'Vazio');
+    const slotText = assignSelectedSlot === 'hold' ? '⏳ Clique Longo (Segurar)' : '⚡ Clique Rápido (Toque)';
+    const macroName = pendingAssignMacro?.name || 'Macro';
+    const isSpecialKey3 = (assignSelectedKey === 3);
+
+    summaryEl.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <span style="color: var(--text-muted); font-size: 11px;">Alvo: <strong style="color: #38BDF8;">"${escapeHtml(macroName)}"</strong></span>
+          <div style="font-size: 12.5px; font-weight: 600; color: #F8FAFC; margin-top: 2px;">
+            ${escapeHtml(layerName)} · <span style="color: #38BDF8;">Tecla B${assignSelectedKey}</span> 
+            <span style="font-weight: 400; color: var(--text-muted); font-size: 11px;">(Atual: ${escapeHtml(currentVal)})</span>
+          </div>
+          ${isSpecialKey3 ? '<div style="color: #F59E0B; font-size: 10.5px; margin-top: 2px;">⚠️ Tecla B3 é o botão padrão de troca de camada.</div>' : ''}
+        </div>
+        <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">${slotText}</span>
+      </div>
+    `;
   }
 
   document.getElementById('assign-type-click')?.addEventListener('click', () => {
     assignSelectedSlot = 'click';
     document.getElementById('assign-type-click')?.classList.add('active');
     document.getElementById('assign-type-hold')?.classList.remove('active');
+    updateAssignMacroSummary();
   });
 
   document.getElementById('assign-type-hold')?.addEventListener('click', () => {
     assignSelectedSlot = 'hold';
     document.getElementById('assign-type-hold')?.classList.add('active');
     document.getElementById('assign-type-click')?.classList.remove('active');
+    updateAssignMacroSummary();
   });
 
   document.getElementById('btn-close-assign-macro')?.addEventListener('click', () => {
@@ -4026,6 +4109,7 @@
     if (!listEl) return;
 
     const macros = window.configStore.getMacros() || [];
+    const config = window.configStore.getConfig();
     if (badgeEl) badgeEl.textContent = macros.length;
 
     if (macros.length === 0) {
@@ -4033,18 +4117,43 @@
       return;
     }
 
-    listEl.innerHTML = macros.map(m => `
-      <div class="macro-library-item" data-id="${m.id}">
-        <div class="macro-item-info">
-          <span class="macro-item-name">${m.name}</span>
-          <span class="macro-item-meta">${(m.events || []).length} eventos</span>
+    listEl.innerHTML = macros.map(m => {
+      // Procura todas as atribuições desta macro nas camadas
+      const assignments = [];
+      (config?.layers || []).forEach((l, lIdx) => {
+        const lName = l.name || `Camada ${lIdx}`;
+        const keys = l.keys || {};
+        for (let k = 0; k < 12; k++) {
+          const kd = keys[k] || keys[String(k)];
+          if (kd?.type === 'macro' && kd?.value === m.id) {
+            assignments.push(`${lName}: B${k}`);
+          }
+          if (kd?.holdAction?.type === 'macro' && kd?.holdAction?.value === m.id) {
+            assignments.push(`${lName}: B${k} [Longo]`);
+          }
+        }
+      });
+
+      const assignBadge = assignments.length > 0
+        ? `<span class="macro-assigned-pill" style="background: rgba(56, 189, 248, 0.12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.28); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;" title="Atribuída em: ${assignments.join(', ')}">🎯 ${assignments.join(', ')}</span>`
+        : `<span style="color: var(--text-muted); font-size: 10px; font-weight: 500;">⚪ Não atribuída</span>`;
+
+      return `
+        <div class="macro-library-item" data-id="${m.id}">
+          <div class="macro-item-info">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span class="macro-item-name">${escapeHtml(m.name)}</span>
+              ${assignBadge}
+            </div>
+            <span class="macro-item-meta">${(m.events || []).length} eventos gravados</span>
+          </div>
+          <div class="macro-item-actions">
+            <button type="button" class="btn btn-outline btn-sm btn-assign-macro" data-id="${m.id}" title="Escolher camada e tecla para vincular esta macro">Atribuir</button>
+            <button type="button" class="btn btn-danger btn-sm btn-del-macro" data-id="${m.id}" title="Excluir macro">✕</button>
+          </div>
         </div>
-        <div class="macro-item-actions">
-          <button type="button" class="btn btn-outline btn-sm btn-assign-macro" data-id="${m.id}" title="Escolher tecla para atribuir">Atribuir</button>
-          <button type="button" class="btn btn-danger btn-sm btn-del-macro" data-id="${m.id}" title="Excluir macro">✕</button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     listEl.querySelectorAll('.btn-del-macro').forEach(btn => {
       btn.addEventListener('click', async (e) => {

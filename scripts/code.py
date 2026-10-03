@@ -125,6 +125,18 @@ ICONES_STR = {
         ". . . . . . . . .\n"
         ". . . . . . . . .\n"
     ),
+    'mute': (
+        ". . . # # . . # .\n"
+        ". . # # # . . . #\n"
+        ". # # # # . . # .\n"
+        "# # # # # . # . .\n"
+        "# # # # # # . . .\n"
+        "# # # # # . # . .\n"
+        "# # # # # . . # .\n"
+        ". # # # # . . . #\n"
+        ". . # # # . . # .\n"
+        ". . . # # . . . .\n"
+    ),
     'brightness': (
         ". . . # . # . . .\n"
         ". # . . . . . # .\n"
@@ -247,9 +259,9 @@ try:
     grupo_oled.append(icone_grid)
 
     # Barra de Progresso Grafica Dinamica para OLED (Volume, Brilho, Zoom, etc.)
-    # Largura: 78 pixels, Altura: 7 pixels, Posicionada a direita (x=48, y=20)
-    bmp_barra_progresso = displayio.Bitmap(78, 7, 2)
-    tile_barra_progresso = displayio.TileGrid(bmp_barra_progresso, pixel_shader=paleta_oled, x=48, y=20)
+    # Largura: 108 pixels, Altura: 7 pixels, Estilo Windows 11 Slider (x=16, y=20)
+    bmp_barra_progresso = displayio.Bitmap(108, 7, 2)
+    tile_barra_progresso = displayio.TileGrid(bmp_barra_progresso, pixel_shader=paleta_oled, x=16, y=20)
     tile_barra_progresso.hidden = True
     grupo_oled.append(tile_barra_progresso)
 
@@ -415,6 +427,11 @@ def mostrar_acao_oled(linha1, linha2, duracao=1.1, icone=None):
         if tile_barra_progresso:
             tile_barra_progresso.hidden = True
 
+        # Restaura divisoria se configurada
+        cust = config_ativa.get("customization", {}) if config_ativa else {}
+        if linha_div:
+            linha_div.hidden = not cust.get("oled", {}).get("showDivider", True)
+
         t1 = str(linha1)[:21] if linha1 is not None else ""
         t2 = str(linha2)[:21] if linha2 is not None else ""
         if txt_linha1.text != t1:
@@ -453,24 +470,32 @@ def mostrar_acao_oled(linha1, linha2, duracao=1.1, icone=None):
         pass
 
 def atualizar_bmp_barra(pct):
-    """Desenha a moldura e preenchimento proporcional da barra de progresso no hardware."""
+    """Desenha a moldura em cápsula e preenchimento da barra de progresso estilo Windows 11 (108x7)."""
     if not bmp_barra_progresso:
         return
     pct_val = max(0, min(100, int(pct)))
-    # Borda do retângulo (largura 78, altura 7)
-    for bx in range(78):
-        bmp_barra_progresso[bx, 0] = 1
-        bmp_barra_progresso[bx, 6] = 1
-    for by in range(7):
-        bmp_barra_progresso[0, by] = 1
-        bmp_barra_progresso[77, by] = 1
 
-    # Preenchimento interno (x de 1 a 76, y de 1 a 5)
-    pixels_cheios = int(round((pct_val / 100.0) * 76))
-    for bx in range(1, 77):
-        bit_val = 1 if bx <= pixels_cheios else 0
+    # 1. Bordas da cápsula (cantos arredondados: cantos (0,0), (107,0), (0,6), (107,6) desligados)
+    for bx in range(108):
+        is_topo_base = 1 if (1 <= bx <= 106) else 0
+        bmp_barra_progresso[bx, 0] = is_topo_base
+        bmp_barra_progresso[bx, 6] = is_topo_base
+
+    for by in range(7):
+        is_lateral = 1 if (1 <= by <= 5) else 0
+        bmp_barra_progresso[0, by] = is_lateral
+        bmp_barra_progresso[107, by] = is_lateral
+
+    # 2. Preenchimento interno (x de 1 a 106, y de 1 a 5)
+    pixels_cheios = int(round((pct_val / 100.0) * 106))
+    for bx in range(1, 107):
+        is_cheio = 1 if bx <= pixels_cheios else 0
         for by in range(1, 6):
-            bmp_barra_progresso[bx, by] = bit_val
+            if is_cheio:
+                bmp_barra_progresso[bx, by] = 1
+            else:
+                # Trilho central discreto guia estilo slider
+                bmp_barra_progresso[bx, by] = 1 if by == 3 else 0
 
 def mostrar_barra_oled(titulo, valor_str, pct, icone=None, duracao=1.2):
     """Exibe barra de progresso gráfica com ícone, valor e barra horizontal animada (estilo Windows 11)."""
@@ -478,15 +503,18 @@ def mostrar_barra_oled(titulo, valor_str, pct, icone=None, duracao=1.2):
     if not TEM_OLED:
         return
     try:
-        t1 = str(titulo)[:20] if titulo is not None else ""
-        if txt_linha1.text != t1:
-            txt_linha1.text = t1
+        t_clean = str(titulo).strip()[:14]
+        v_clean = str(valor_str).strip()[:7]
+        espacos = 21 - len(t_clean) - len(v_clean)
+        if espacos < 1:
+            espacos = 1
+        txt_l1 = t_clean + (" " * espacos) + v_clean
+        if txt_linha1.text != txt_l1:
+            txt_linha1.text = txt_l1[:21]
         txt_linha1.x = 2
 
-        val_s = str(valor_str)[:6]
-        if txt_linha2.text != val_s:
-            txt_linha2.text = val_s
-        txt_linha2.x = 14
+        # Linha 2 de texto fica vazia para dar espaço total à barra de progresso e ao ícone
+        txt_linha2.text = ""
 
         if icone:
             atualizar_icone_oled(icone)
@@ -1354,7 +1382,7 @@ def executar_encoder(direcao):
                 time.sleep(0.004)
             nivel_volume = max(0, nivel_volume - step_ccw * 2)
             vol_mudo = False
-        mostrar_barra_oled("VOLUME DO SISTEMA", f"{nivel_volume}%", nivel_volume, icone='volume')
+        mostrar_barra_oled("VOLUME", f"{nivel_volume}%", nivel_volume, icone='volume')
         print(f"[SERIAL] OSD_BAR|volume|{nivel_volume}")
 
     elif fn == 'brightness':
@@ -1374,7 +1402,7 @@ def executar_encoder(direcao):
                 except Exception:
                     pass
             nivel_brilho = max(0, nivel_brilho - step_ccw * 5)
-        mostrar_barra_oled("BRILHO DA TELA", f"{nivel_brilho}%", nivel_brilho, icone='brightness')
+        mostrar_barra_oled("BRILHO", f"{nivel_brilho}%", nivel_brilho, icone='brightness')
         print(f"[SERIAL] OSD_BAR|brightness|{nivel_brilho}")
 
     elif fn == 'zoom':
@@ -1393,18 +1421,18 @@ def executar_encoder(direcao):
             nivel_zoom = max(20, nivel_zoom - step_ccw * 10)
 
         pct_zoom = int(round(((nivel_zoom - 20) / (300 - 20)) * 100))
-        mostrar_barra_oled("ZOOM ESCALA", f"{nivel_zoom}%", pct_zoom, icone='zoom')
+        mostrar_barra_oled("ZOOM", f"{nivel_zoom}%", pct_zoom, icone='zoom')
         print(f"[SERIAL] OSD_BAR|zoom|{nivel_zoom}")
 
     elif fn == 'scroll':
         if direcao > 0:
             mouse.move(wheel=-step_cw)
             nivel_scroll = min(100, nivel_scroll + step_cw * 4)
-            mostrar_barra_oled("ROLAGEM (DESCER)", f"{nivel_scroll}%", nivel_scroll, icone='scroll')
+            mostrar_barra_oled("ROLAGEM", f"{nivel_scroll}%", nivel_scroll, icone='scroll')
         else:
             mouse.move(wheel=step_ccw)
             nivel_scroll = max(0, nivel_scroll - step_ccw * 4)
-            mostrar_barra_oled("ROLAGEM (SUBIR)", f"{nivel_scroll}%", nivel_scroll, icone='scroll')
+            mostrar_barra_oled("ROLAGEM", f"{nivel_scroll}%", nivel_scroll, icone='scroll')
         print(f"[SERIAL] OSD_BAR|scroll|{nivel_scroll}")
 
     elif fn == 'video':
@@ -1474,15 +1502,15 @@ def executar_encoder_click():
         consumer_ctrl.send(ConsumerControlCode.MUTE)
         vol_mudo = not vol_mudo
         if vol_mudo:
-            mostrar_barra_oled("VOLUME (SILENCIADO)", "MUDO", 0, icone='volume')
+            mostrar_barra_oled("VOLUME", "MUDO", 0, icone='mute')
             print(f"[SERIAL] OSD_BAR|volume|0")
         else:
-            mostrar_barra_oled("VOLUME DO SISTEMA", f"{nivel_volume}%", nivel_volume, icone='volume')
+            mostrar_barra_oled("VOLUME", f"{nivel_volume}%", nivel_volume, icone='volume')
             print(f"[SERIAL] OSD_BAR|volume|{nivel_volume}")
 
     elif fn == 'brightness':
         nivel_brilho = 70
-        mostrar_barra_oled("BRILHO PADRAO", "70%", 70, icone='brightness')
+        mostrar_barra_oled("BRILHO", "70%", 70, icone='brightness')
         print(f"[SERIAL] OSD_BAR|brightness|70")
 
     elif fn == 'zoom':
@@ -1491,7 +1519,7 @@ def executar_encoder_click():
         teclado.release(Keycode.CONTROL, Keycode.ZERO)
         nivel_zoom = 100
         pct_zoom = int(round(((100 - 20) / (300 - 20)) * 100))
-        mostrar_barra_oled("ZOOM 100% (CTRL+0)", "100%", pct_zoom, icone='zoom')
+        mostrar_barra_oled("ZOOM", "100%", pct_zoom, icone='zoom')
         print(f"[SERIAL] OSD_BAR|zoom|100")
 
     elif fn == 'video':
@@ -1505,7 +1533,7 @@ def executar_encoder_click():
     elif fn == 'scroll':
         mouse.click(Mouse.MIDDLE_BUTTON)
         nivel_scroll = 50
-        mostrar_barra_oled("CLIQUE DO MEIO", "50%", 50, icone='scroll')
+        mostrar_barra_oled("ROLAGEM", "50%", 50, icone='scroll')
         print(f"[SERIAL] OSD_BAR|scroll|50")
 
     elif fn == 'layer_nav':
@@ -1675,6 +1703,20 @@ while True:
                         parts = cmd[5:].split("|")
                         nome_som = parts[1] if len(parts) > 1 else "SOUNDPAD"
                         iniciar_animacao_som(nome_som, duracao=2.5)
+
+                    elif cmd_upper.startswith("OLED:BAR"):
+                        parts = cmd[8:].lstrip("|").split("|")
+                        titulo_bar = parts[0] if len(parts) > 0 and parts[0] else "VALOR"
+                        try:
+                            pct_bar = int(parts[1]) if len(parts) > 1 and parts[1] else 50
+                        except Exception:
+                            pct_bar = 50
+                        icone_bar = parts[2] if len(parts) > 2 and parts[2] else 'volume'
+                        try:
+                            dur_bar = float(parts[3]) if len(parts) > 3 and parts[3] else 1.2
+                        except Exception:
+                            dur_bar = 1.2
+                        mostrar_barra_oled(titulo_bar, f"{pct_bar}%", pct_bar, icone=icone_bar, duracao=dur_bar)
 
                     elif cmd_upper.startswith("OLED:"):
                         parts = cmd[5:].split("|")
