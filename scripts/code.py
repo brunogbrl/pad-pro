@@ -720,40 +720,13 @@ def parar_animacao_som():
 def animar_troca_camada(nova_camada, direcao=1):
     global camada_atual, anim_som_ativa
     anim_som_ativa = False
+    camada_atual = nova_camada
     if not TEM_OLED:
-        camada_atual = nova_camada
         return
     try:
-        if not verificar_animacoes_habilitadas():
-            camada_atual = nova_camada
-            atualizar_oled_padrao(camada_atual)
-            return
-
-        # Micro slide out suave
-        dx = -8 if direcao > 0 else 8
-        txt_linha1.x += dx
-        txt_linha2.x += dx
-        time.sleep(0.015)
-        
-        camada_atual = nova_camada
-        
-        nome, perfil, fn, _, _, _ = obter_info_camada(camada_atual)
-        fn_label = obter_nome_funcao_amigavel(fn)
-        txt_linha1.text = str(nome)[:11]
-        txt_linha2.text = str(fn_label)[:18]
-        
-        txt_linha1.x = 20 if direcao > 0 else -16
-        txt_linha2.x = 34 if direcao > 0 else -2
-        atualizar_icone_oled(fn)
-        time.sleep(0.015)
-        
-        txt_linha1.x = 2
-        txt_linha2.x = 16
         atualizar_oled_padrao(camada_atual)
     except Exception as e:
         print(f"[TRANSICAO ERRO] {e}")
-        camada_atual = nova_camada
-        atualizar_oled_padrao(camada_atual)
 
 def animar_engrenagem_atualizando(passos=14):
     """Tela unificada de atualizacao: engrenagem animada girando na esquerda e 'Atualizando...' na direita."""
