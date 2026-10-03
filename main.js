@@ -1283,6 +1283,24 @@ function handleSerialLine(line) {
     return;
   }
 
+  // 1.5 Dual Function Hold: "HOLD Botao 11: Mute | Camada 3"
+  const holdMatch = line.match(/(?:\[SERIAL\]\s*)?HOLD\s+(?:Botao|B)\s*(\d+):\s*(.*?)\s*\|\s*Camada\s*(\d+)/i);
+  if (holdMatch) {
+    const keyIndex = parseInt(holdMatch[1]);
+    const holdName = holdMatch[2].trim();
+    const layer = parseInt(holdMatch[3]);
+    dispatchPadEvent({
+      type: 'key-press',
+      keyIndex,
+      keyName: holdName,
+      layer,
+      soundTitle: null,
+      actionText: `⏳ ${holdName}`,
+      isPreview: false
+    });
+    return;
+  }
+
   // 2. Normal Key Press: "Botao 2: F17 | Camada 0" or "[SERIAL] Botao 2..." or "[HUD] C0 | B2: F17"
   const btnMatch = line.match(/(?:\[SERIAL\]\s*)?(?:DOWN\s+)?(?:Botao|B)\s*(\d+):\s*(.*?)\s*\|\s*Camada\s*(\d+)/i) ||
                    line.match(/\[HUD\]\s*C(\d+)\s*\|\s*B(\d+):\s*(.*)/i);

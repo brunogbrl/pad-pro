@@ -2074,6 +2074,55 @@
         <button class="btn btn-primary custom-modal-btn-confirm" id="btn-confirm-create-fn">Salvar e Adicionar Função</button>
       </div>
     </div>
+  <!-- Modal: Atribuir Macro à Tecla com Escolha Visual -->
+  <div class="custom-modal-overlay hidden" id="modal-assign-macro">
+    <div class="custom-modal-card" style="max-width: 520px;">
+      <div class="custom-modal-header">
+        <div class="custom-modal-header-icon" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.3);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38BDF8" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+        </div>
+        <div class="custom-modal-header-text">
+          <h3 class="custom-modal-title">Atribuir Macro à Tecla</h3>
+          <p class="custom-modal-subtitle">Macro selecionada: <strong id="assign-macro-modal-name" style="color: #38BDF8;">Macro</strong></p>
+        </div>
+        <button class="custom-modal-close-btn" id="btn-close-assign-macro">✕</button>
+      </div>
+      <div class="custom-modal-body">
+        <!-- 1. Seletor de Camada -->
+        <div class="form-group mb-12">
+          <span class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">1. Escolha a Camada do PadPRO:</span>
+          <div class="layer-pills-row" id="assign-macro-layer-pills" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;"></div>
+        </div>
+
+        <!-- 2. Grade Visual 3x4 do PadPRO -->
+        <div class="form-group mb-12">
+          <span class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">2. Selecione a tecla desejada (3 Linhas × 4 Colunas):</span>
+          <div id="assign-macro-pad-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 6px;"></div>
+        </div>
+
+        <!-- 3. Tipo de Acionamento: Clique Rápido ou Clique Longo -->
+        <div class="form-group mb-0">
+          <span class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">3. Modo de Acionamento:</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+            <div class="assign-action-type-card active" id="assign-type-click">
+              <div class="assign-type-title">⚡ Clique Rápido (Toque)</div>
+              <div class="assign-type-desc">Dispara ao pressionar a tecla normalmente.</div>
+            </div>
+            <div class="assign-action-type-card" id="assign-type-hold">
+              <div class="assign-type-title">⏳ Clique Longo (Segurar)</div>
+              <div class="assign-type-desc">Dispara como dupla função ao segurar a tecla.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="btn-cancel-assign-macro">Cancelar</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="btn-confirm-assign-macro">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><polyline points="20 6 9 17 4 12"/></svg>
+          Confirmar Atribuição
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal: Atualização do Aplicativo -->

@@ -3408,14 +3408,150 @@
     showToast(`Macro "${name}" salva com sucesso!`, 'success');
   });
 
+  // ===================================================================
+  // MODAL: ATRIBUIR MACRO À TECLA COM ESCOLHA VISUAL
+  // ===================================================================
+  let pendingAssignMacro = null;
+  let assignSelectedLayer = 0;
+  let assignSelectedKey = 0;
+  let assignSelectedSlot = 'click'; // 'click' | 'hold'
+
+  function openAssignMacroModal(macro) {
+    if (!macro) return;
+    pendingAssignMacro = macro;
+    assignSelectedLayer = currentLayer || 0;
+    assignSelectedKey = (selectedKeyIndex >= 0 && selectedKeyIndex < 12) ? selectedKeyIndex : 0;
+    assignSelectedSlot = 'click';
+
+    const modal = document.getElementById('modal-assign-macro');
+    const nameEl = document.getElementById('assign-macro-modal-name');
+    if (nameEl) nameEl.textContent = macro.name;
+
+    renderAssignMacroLayerPills();
+    renderAssignMacroPadGrid();
+
+    document.getElementById('assign-type-click')?.classList.add('active');
+    document.getElementById('assign-type-hold')?.classList.remove('active');
+
+    modal?.classList.remove('hidden');
+  }
+
+  function renderAssignMacroLayerPills() {
+    const container = document.getElementById('assign-macro-layer-pills');
+    if (!container) return;
+    const config = window.configStore.getConfig();
+    const layers = config?.layers || [];
+
+    container.innerHTML = layers.map((l, idx) => `
+      <button type="button" class="layer-pill ${idx === assignSelectedLayer ? 'active' : ''}" data-layer="${idx}" style="font-size: 11px; padding: 5px 12px; border-radius: 9999px; cursor: pointer;">
+        <span class="layer-pill-dot" style="background: ${l.color || '#38BDF8'}; width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px;"></span>
+        ${l.name || `Camada ${idx}`}
+      </button>
+    `).join('');
+
+    container.querySelectorAll('button[data-layer]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        assignSelectedLayer = parseInt(btn.dataset.layer);
+        renderAssignMacroLayerPills();
+        renderAssignMacroPadGrid();
+      });
+    });
+  }
+
+  function renderAssignMacroPadGrid() {
+    const grid = document.getElementById('assign-macro-pad-grid');
+    if (!grid) return;
+    const config = window.configStore.getConfig();
+    const layer = config?.layers?.[assignSelectedLayer];
+    const keys = layer?.keys || {};
+
+    let html = '';
+    for (let i = 0; i < 12; i++) {
+      const kData = keys[i] || keys[String(i)];
+      let label = 'Vazio';
+      if (i === 3 || kData?.value === 'layer-switch') {
+        label = 'Camada';
+      } else if (kData) {
+        label = kData.label || formatActionDisplay(kData) || 'Tecla';
+      }
+      const isSelected = (i === assignSelectedKey);
+      html += `
+        <div class="assign-pad-key-btn ${isSelected ? 'selected' : ''}" data-key="${i}">
+          <span class="assign-pad-key-num">B${i}</span>
+          <span class="assign-pad-key-lbl" title="${label}">${label}</span>
+        </div>
+      `;
+    }
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.assign-pad-key-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        assignSelectedKey = parseInt(btn.dataset.key);
+        renderAssignMacroPadGrid();
+      });
+    });
+  }
+
+  document.getElementById('assign-type-click')?.addEventListener('click', () => {
+    assignSelectedSlot = 'click';
+    document.getElementById('assign-type-click')?.classList.add('active');
+    document.getElementById('assign-type-hold')?.classList.remove('active');
+  });
+
+  document.getElementById('assign-type-hold')?.addEventListener('click', () => {
+    assignSelectedSlot = 'hold';
+    document.getElementById('assign-type-hold')?.classList.add('active');
+    document.getElementById('assign-type-click')?.classList.remove('active');
+  });
+
+  document.getElementById('btn-close-assign-macro')?.addEventListener('click', () => {
+    document.getElementById('modal-assign-macro')?.classList.add('hidden');
+  });
+  document.getElementById('btn-cancel-assign-macro')?.addEventListener('click', () => {
+    document.getElementById('modal-assign-macro')?.classList.add('hidden');
+  });
+
+  document.getElementById('btn-confirm-assign-macro')?.addEventListener('click', async () => {
+    if (!pendingAssignMacro) return;
+    const macro = pendingAssignMacro;
+    const layerIdx = assignSelectedLayer;
+    const keyIdx = assignSelectedKey;
+
+    const currentKeyData = window.configStore.getKey(layerIdx, keyIdx) || { type: 'key', value: '' };
+
+    if (assignSelectedSlot === 'hold') {
+      currentKeyData.holdAction = {
+        type: 'macro',
+        value: macro.id,
+        name: macro.name,
+        label: macro.name
+      };
+    } else {
+      currentKeyData.type = 'macro';
+      currentKeyData.value = macro.id;
+      currentKeyData.name = macro.name;
+      currentKeyData.label = macro.name;
+    }
+
+    window.configStore.setKey(layerIdx, keyIdx, currentKeyData);
+    await window.configStore.save();
+
+    document.getElementById('modal-assign-macro')?.classList.add('hidden');
+    renderPadGrid();
+    if (currentLayer === layerIdx) {
+      showKeyConfig(keyIdx);
+    }
+    renderMacroLibrary();
+    renderMacroKeyPicker();
+
+    const slotLabel = assignSelectedSlot === 'hold' ? 'Clique Longo (Dupla Função)' : 'Clique Rápido';
+    showToast(`Macro "${macro.name}" vinculada à tecla B${keyIdx} da Camada ${layerIdx} em [${slotLabel}]!`, 'success');
+  });
+
   document.getElementById('btn-macro-assign-key')?.addEventListener('click', async () => {
     if (isRecordingMacro) stopMacroRecording();
     if (recordedMacroEvents.length === 0) {
       showToast('Grave uma sequência de teclas primeiro', 'error');
-      return;
-    }
-    if (selectedKeyIndex < 0) {
-      showToast('Selecione uma tecla no menu Teclas primeiro', 'error');
       return;
     }
     const nameInput = document.getElementById('macro-name-input');
@@ -3427,23 +3563,9 @@
       events: [...recordedMacroEvents]
     });
     await window.configStore.save();
-
-    const keyData = {
-      type: 'macro',
-      value: saved.id,
-      name: saved.name,
-      label: saved.name,
-      holdAction: null,
-      fixed: false
-    };
-    window.configStore.setKey(currentLayer, selectedKeyIndex, keyData);
-    await window.configStore.save();
-
-    renderPadGrid();
-    showKeyConfig(selectedKeyIndex);
     renderMacroLibrary();
-    renderMacroKeyPicker();
-    showToast(`Macro "${name}" atribuída à tecla B${selectedKeyIndex}!`, 'success');
+
+    openAssignMacroModal(saved);
   });
 
   function renderMacroLibrary() {
@@ -3466,7 +3588,7 @@
           <span class="macro-item-meta">${(m.events || []).length} eventos</span>
         </div>
         <div class="macro-item-actions">
-          <button type="button" class="btn btn-outline btn-sm btn-assign-macro" data-id="${m.id}" title="Atribuir à tecla selecionada">Atribuir</button>
+          <button type="button" class="btn btn-outline btn-sm btn-assign-macro" data-id="${m.id}" title="Escolher tecla para atribuir">Atribuir</button>
           <button type="button" class="btn btn-danger btn-sm btn-del-macro" data-id="${m.id}" title="Excluir macro">✕</button>
         </div>
       </div>
@@ -3486,28 +3608,12 @@
     });
 
     listEl.querySelectorAll('.btn-assign-macro').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const id = btn.dataset.id;
         const macro = (window.configStore.getMacros() || []).find(m => m.id === id);
         if (!macro) return;
-        if (selectedKeyIndex < 0) {
-          showToast('Selecione uma tecla no menu Teclas primeiro', 'error');
-          return;
-        }
-        const keyData = {
-          type: 'macro',
-          value: macro.id,
-          name: macro.name,
-          label: macro.name,
-          holdAction: null,
-          fixed: false
-        };
-        window.configStore.setKey(currentLayer, selectedKeyIndex, keyData);
-        await window.configStore.save();
-        renderPadGrid();
-        showKeyConfig(selectedKeyIndex);
-        showToast(`Macro "${macro.name}" atribuída à tecla B${selectedKeyIndex}!`, 'success');
+        openAssignMacroModal(macro);
       });
     });
   }

@@ -879,11 +879,90 @@ def formatar_tecla(tecla, key_number):
         return " + ".join(nomes.get(k, str(k)) for k in tecla)
     return nomes.get(tecla, str(tecla))
 
+def obter_dados_tecla(camada_idx, key_number):
+    if config_ativa and "layers" in config_ativa and camada_idx < len(config_ativa["layers"]):
+        keys_dict = config_ativa["layers"][camada_idx].get("keys", {})
+        k_data = keys_dict.get(str(key_number)) or keys_dict.get(key_number)
+        if isinstance(k_data, dict):
+            return k_data
+    return None
+
+def obter_nome_acao(item_acao, default=""):
+    if not item_acao:
+        return default
+    if isinstance(item_acao, dict):
+        if item_acao.get("label"):
+            return item_acao["label"]
+        tipo = item_acao.get("type", "key")
+        val = item_acao.get("value")
+        if isinstance(val, list):
+            return " + ".join(str(v) for v in val)
+        return str(val) if val else str(tipo or default)
+    if isinstance(item_acao, list):
+        return " + ".join(str(v) for v in item_acao)
+    return str(item_acao)
+
+def abrir_url_hid(url_val):
+    app_conectado = False
+    if TEM_SUPERVISOR:
+        try:
+            app_conectado = bool(supervisor.runtime.serial_connected)
+        except:
+            pass
+    if not app_conectado and url_val and teclado_layout:
+        if not url_val.startswith("http://") and not url_val.startswith("https://"):
+            url_val = "https://" + url_val
+        try:
+            teclado.press(Keycode.GUI, Keycode.R)
+            time.sleep(0.08)
+            teclado.release_all()
+            time.sleep(0.18)
+            teclado_layout.write(url_val)
+            time.sleep(0.05)
+            teclado.press(Keycode.ENTER)
+            time.sleep(0.05)
+            teclado.release_all()
+            print(f"[URL HID] Aberto nativamente: {url_val}")
+        except Exception as e:
+            print(f"[URL HID ERRO] {e}")
+
 def executar_acao_generica(acao):
-    """Executa atalhos de teclado, midia, mouse ou comandos de camada."""
+    """Executa atalhos de teclado, midia, mouse, URLs ou comandos de camada."""
     if not acao:
         return
     
+    if isinstance(acao, dict):
+        tipo = acao.get("type", "key")
+        val = acao.get("value")
+        if tipo in ("combo", "key"):
+            if isinstance(val, list):
+                executar_atalho_string("+".join(str(v) for v in val))
+            elif val:
+                executar_atalho_string(str(val))
+            return
+        elif tipo == "media":
+            executar_acao_generica(str(val))
+            return
+        elif tipo == "mouse":
+            executar_acao_generica(str(val))
+            return
+        elif tipo == "fixed":
+            if str(val) == "layer-switch":
+                total_c = len(config_ativa.get("layers", [])) if config_ativa else 4
+                prox_c = (camada_atual + 1) % max(1, total_c)
+                animar_troca_camada(prox_c, direcao=1)
+            return
+        elif tipo == "url":
+            abrir_url_hid((val or "").strip())
+            return
+        elif val:
+            executar_acao_generica(val)
+            return
+
+    if isinstance(acao, list):
+        executar_atalho_string("+".join(str(v) for v in acao))
+        return
+
     # Se for string simples
     if isinstance(acao, str):
         acao_upper = acao.upper().strip()
@@ -908,13 +987,13 @@ def executar_acao_generica(acao):
             return
 
         # Funcoes de Mouse
-        elif acao_upper == 'MOUSE_LEFT':
+        elif acao_upper in ('MOUSE_LEFT', 'CLICK_LEFT'):
             mouse.click(Mouse.LEFT_BUTTON)
             return
-        elif acao_upper == 'MOUSE_RIGHT':
+        elif acao_upper in ('MOUSE_RIGHT', 'CLICK_RIGHT'):
             mouse.click(Mouse.RIGHT_BUTTON)
             return
-        elif acao_upper == 'MOUSE_MIDDLE':
+        elif acao_upper in ('MOUSE_MIDDLE', 'CLICK_MIDDLE'):
             mouse.click(Mouse.MIDDLE_BUTTON)
             return
         elif acao_upper in ('MOUSE_WHEEL_UP', 'SCROLL_UP'):
@@ -1149,6 +1228,7 @@ TEMPO_PREVIEW = 0.38
 tempo_inicio_tecla = [0.0] * 12
 preview_disparado = [False] * 12
 tecla_segurada = [False] * 12
+hold_executado = [False] * 12
 ultimo_heartbeat = time.monotonic()
 serial_buffer = ""
 
@@ -1297,7 +1377,7 @@ while True:
                     if len(serial_buffer) > 128:
                         serial_buffer = ""
 
-        # F. Varredura da Matriz de Teclas (Standalone + Som Soundpad)
+        # F. Varredura da Matriz de Teclas (Standalone + Som Soundpad + Dupla Funcao)
         eventos = matriz.ler_eventos()
         total_camadas = len(config_ativa["layers"]) if config_ativa and "layers" in config_ativa else len(mapas)
         total_camadas = max(1, total_camadas)
@@ -1306,17 +1386,21 @@ while True:
         for key_number, pressed in eventos:
             tecla_pressionada = mapa_ativo[key_number]
             nome_acao = formatar_tecla(tecla_pressionada, key_number)
+            k_data = obter_dados_tecla(camada_atual, key_number)
+            tem_hold = bool(k_data and k_data.get("holdAction") and k_data.get("holdAction") != "none")
 
             if pressed:
                 tempo_inicio_tecla[key_number] = agora
                 preview_disparado[key_number] = False
                 tecla_segurada[key_number] = True
+                hold_executado[key_number] = False
 
-                print(f"[SERIAL] Botao {key_number}: {nome_acao} | Camada {camada_atual}")
                 if key_number == 3 or tecla_pressionada == "BOTAO_CAMADA":
                     mostrar_acao_oled(f"CAMADA {camada_atual}", "Mudar Camada", duracao=1.5)
-                elif key_number in (7, 11):
-                    mostrar_acao_oled(f"CAMADA {camada_atual}", nome_acao, duracao=1.5)
+                elif tem_hold:
+                    # Tecla com dupla função: feedback imediato no OLED
+                    nome_hold = obter_nome_acao(k_data.get("holdAction"), "Dupla Funcao")
+                    mostrar_acao_oled(f"B{key_number} PRESS", f"{nome_acao[:10]} / {nome_hold[:10]}", duracao=1.5)
                 else:
                     som_titulo = obter_titulo_som(nome_acao)
                     if som_titulo:
@@ -1338,44 +1422,18 @@ while True:
                         animar_troca_camada(prox_c, direcao=1)
                         print(f"[SERIAL] Mudou para Camada {camada_atual}")
                 else:
-                    if preview_disparado[key_number]:
+                    if hold_executado[key_number]:
+                        # Clique longo ja foi executado enquanto segurava; nao dispara clique rapido
+                        pass
+                    elif preview_disparado[key_number]:
+                        # Espiar soundpad ja disparou
                         pass
                     else:
-                        is_url = False
-                        if config_ativa and "layers" in config_ativa and camada_atual < len(config_ativa["layers"]):
-                            keys_dict = config_ativa["layers"][camada_atual].get("keys", {})
-                            k_data = keys_dict.get(str(key_number)) or keys_dict.get(key_number)
-                            if k_data and isinstance(k_data, dict) and k_data.get("type") == "url":
-                                is_url = True
-                                # Quando o app PadPRO do PC está conectado, ele abre todas as abas nativamente via shell
-                                # O envio de Win+R pelo teclado HID só ocorre como fallback se o app do PC estiver fechado
-                                app_conectado = False
-                                if TEM_SUPERVISOR:
-                                    try:
-                                        app_conectado = bool(supervisor.runtime.serial_connected)
-                                    except:
-                                        pass
-                                if not app_conectado:
-                                    url_val = (k_data.get("value") or "").strip()
-                                    if url_val and teclado_layout:
-                                        if not url_val.startswith("http://") and not url_val.startswith("https://"):
-                                            url_val = "https://" + url_val
-                                        try:
-                                            # Abertura nativa no Windows mesmo com o app fechado (Win+R -> URL -> Enter)
-                                            teclado.press(Keycode.GUI, Keycode.R)
-                                            time.sleep(0.08)
-                                            teclado.release_all()
-                                            time.sleep(0.18)
-                                            teclado_layout.write(url_val)
-                                            time.sleep(0.05)
-                                            teclado.press(Keycode.ENTER)
-                                            time.sleep(0.05)
-                                            teclado.release_all()
-                                            print(f"[URL HID] Aberto nativamente: {url_val}")
-                                        except Exception as e_url:
-                                            print(f"[URL HID ERRO] {e_url}")
-
-                        if not is_url:
+                        # TOQUE RAPIDO (Dispara acao principal):
+                        print(f"[SERIAL] Botao {key_number}: {nome_acao} | Camada {camada_atual}")
+                        if k_data:
+                            executar_acao_generica(k_data)
+                        else:
                             if isinstance(tecla_pressionada, (tuple, list)):
                                 teclado.press(*tecla_pressionada)
                                 time.sleep(0.01)
@@ -1385,21 +1443,32 @@ while True:
                                 time.sleep(0.01)
                                 teclado.release(tecla_pressionada)
 
-                        print(f"[SERIAL] UP Botao {key_number} | Camada {camada_atual}")
+                print(f"[SERIAL] UP Botao {key_number} | Camada {camada_atual}")
 
-        # G. Long Press para Preview do Soundpad
+        # G. Checagem de Long Press (Clique Longo de Dupla Funcao OU Preview Soundpad)
         for k in range(12):
-            if k != 3 and tecla_segurada[k] and not preview_disparado[k]:
+            if k != 3 and tecla_segurada[k] and not hold_executado[k] and not preview_disparado[k]:
                 if agora - tempo_inicio_tecla[k] >= TEMPO_PREVIEW:
-                    preview_disparado[k] = True
-                    tecla_pressionada = mapa_ativo[k]
-                    nome_acao = formatar_tecla(tecla_pressionada, k)
-                    som_titulo = obter_titulo_som(nome_acao)
-                    print(f"[SERIAL] PREVIEW Botao {k}: {nome_acao} | Camada {camada_atual}")
-                    if som_titulo:
-                        iniciar_animacao_som(som_titulo, duracao=2.5)
+                    k_data = obter_dados_tecla(camada_atual, k)
+                    if k_data and k_data.get("holdAction") and k_data.get("holdAction") != "none":
+                        # CLIQUE LONGO DISPARADO!
+                        hold_executado[k] = True
+                        acao_hold = k_data["holdAction"]
+                        nome_hold = obter_nome_acao(acao_hold, "Clique Longo")
+                        print(f"[SERIAL] HOLD Botao {k}: {nome_hold} | Camada {camada_atual}")
+                        mostrar_acao_oled("CLIQUE LONGO", nome_hold[:18], duracao=2.0)
+                        executar_acao_generica(acao_hold)
                     else:
-                        mostrar_acao_oled("ESPIAR SOUNDPAD", nome_acao, duracao=2.5)
+                        # Espiar Soundpad apenas se NAO tiver dupla funcao
+                        preview_disparado[k] = True
+                        tecla_pressionada = mapa_ativo[k]
+                        nome_acao = formatar_tecla(tecla_pressionada, k)
+                        som_titulo = obter_titulo_som(nome_acao)
+                        print(f"[SERIAL] PREVIEW Botao {k}: {nome_acao} | Camada {camada_atual}")
+                        if som_titulo:
+                            iniciar_animacao_som(som_titulo, duracao=2.5)
+                        else:
+                            mostrar_acao_oled("ESPIAR SOUNDPAD", nome_acao, duracao=2.5)
 
         # H. Heartbeat periodico
         if agora - ultimo_heartbeat >= 3.5:

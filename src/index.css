@@ -5242,6 +5242,78 @@ body.no-animations * {
   font-family: var(--font-mono, monospace);
 }
 
+/* Modal: Atribuir Macro à Tecla */
+.assign-pad-key-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  user-select: none;
+}
+.assign-pad-key-btn:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateY(-1px);
+}
+.assign-pad-key-btn.selected {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: #38BDF8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+  transform: translateY(-1px);
+}
+.assign-pad-key-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.assign-pad-key-btn.selected .assign-pad-key-num {
+  color: #38BDF8;
+}
+.assign-pad-key-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: #F8FAFC;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+.assign-action-type-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.assign-action-type-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+.assign-action-type-card.active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: #38BDF8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+.assign-type-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #F8FAFC;
+}
+.assign-type-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+
 
 
 
