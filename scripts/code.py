@@ -224,7 +224,10 @@ ICONES_STR = {
 }
 
 icone_grid = None
-grupo_oled = None
+grupo_normal = None
+grupo_boot = None
+grupo_atualizando = None
+em_animacao_especial = False
 bmp_barra_progresso = None
 tile_barra_progresso = None
 tile_boot_logo = None
@@ -244,43 +247,27 @@ try:
     bus = I2CDisplayBus(i2c, device_address=0x3C)
     display = adafruit_displayio_ssd1306.SSD1306(bus, width=128, height=32)
 
-    grupo_oled = displayio.Group()
+    # 1. Grupo Normal (Interface padrao com linha, icones, barra, dots e texto)
+    grupo_normal = displayio.Group()
 
     # Linha divisoria sutil e moderna
     bmp_linha = displayio.Bitmap(128, 1, 2)
     for x in range(128):
         bmp_linha[x, 0] = 1 if (x % 2 == 0) else 0 # Linha pontilhada elegante
     linha_div = displayio.TileGrid(bmp_linha, pixel_shader=paleta_oled, x=0, y=14)
-    grupo_oled.append(linha_div)
+    grupo_normal.append(linha_div)
 
     # Slot para icone 10x10 no canto inferior esquerdo
     bmp_vazio = displayio.Bitmap(10, 10, 2)
     icone_grid = displayio.TileGrid(bmp_vazio, pixel_shader=paleta_oled, x=2, y=18)
-    grupo_oled.append(icone_grid)
+    grupo_normal.append(icone_grid)
 
     # Barra de Progresso Grafica Dinamica para OLED (Volume, Brilho, Zoom, etc.)
     # Largura: 108 pixels, Altura: 7 pixels, Estilo Windows 11 Slider (x=16, y=20)
     bmp_barra_progresso = displayio.Bitmap(108, 7, 2)
     tile_barra_progresso = displayio.TileGrid(bmp_barra_progresso, pixel_shader=paleta_oled, x=16, y=20)
     tile_barra_progresso.hidden = True
-    grupo_oled.append(tile_barra_progresso)
-
-    # Boot Logo Oficial PadPro 128x32 (exibicao limpa e exclusiva na inicializacao)
-    bmp_boot_logo = criar_bmp_de_hex(BOOT_LOGO_HEX, 128, 32)
-    tile_boot_logo = displayio.TileGrid(bmp_boot_logo, pixel_shader=paleta_oled, x=0, y=0)
-    tile_boot_logo.hidden = True
-    grupo_oled.append(tile_boot_logo)
-
-    # Tela de Atualizacao Unificada Oficial: Engrenagem 24x24 + Texto "Atualizando..."
-    BMP_GEAR_ANIM = [criar_bmp_de_hex(f, 24, 24) for f in GEAR_ANIM_HEX]
-    tile_gear = displayio.TileGrid(BMP_GEAR_ANIM[0], pixel_shader=paleta_oled, x=7, y=4)
-    tile_gear.hidden = True
-    grupo_oled.append(tile_gear)
-
-    bmp_updating_text = criar_bmp_de_hex(UPDATING_TEXT_HEX, 88, 7)
-    tile_updating_text = displayio.TileGrid(bmp_updating_text, pixel_shader=paleta_oled, x=36, y=12)
-    tile_updating_text.hidden = True
-    grupo_oled.append(tile_updating_text)
+    grupo_normal.append(tile_barra_progresso)
 
     # Bitmaps para os Dots de Camada no topo direito (4x4 pixels nítidos)
     bmp_dot_on = displayio.Bitmap(4, 4, 2)
@@ -300,20 +287,36 @@ try:
     for di in range(6):
         dg = displayio.TileGrid(bmp_dot_off, pixel_shader=paleta_oled, x=128, y=4)
         dg.hidden = True
-        grupo_oled.append(dg)
+        grupo_normal.append(dg)
         dot_grids.append(dg)
 
     # Texto Superior (Linha 1 - Camada & Perfil)
     txt_linha1 = label.Label(terminalio.FONT, text="", color=0xFFFFFF, x=2, y=6)
-    grupo_oled.append(txt_linha1)
+    grupo_normal.append(txt_linha1)
 
     # Texto Inferior (Linha 2 - Funcao/Acao sem a palavra Rotary)
     txt_linha2 = label.Label(terminalio.FONT, text="", color=0xFFFFFF, x=16, y=24)
-    grupo_oled.append(txt_linha2)
+    grupo_normal.append(txt_linha2)
 
-    display.root_group = grupo_oled
+    # 2. Grupo Boot Exclusivo (Apenas a logo oficial PadPro centralizada)
+    grupo_boot = displayio.Group()
+    bmp_boot_logo = criar_bmp_de_hex(BOOT_LOGO_HEX, 128, 32)
+    tile_boot_logo = displayio.TileGrid(bmp_boot_logo, pixel_shader=paleta_oled, x=0, y=0)
+    grupo_boot.append(tile_boot_logo)
+
+    # 3. Grupo Atualizacao Exclusivo (Engrenagem 24x24 animada + Texto "Atualizando...")
+    grupo_atualizando = displayio.Group()
+    BMP_GEAR_ANIM = [criar_bmp_de_hex(f, 24, 24) for f in GEAR_ANIM_HEX]
+    tile_gear = displayio.TileGrid(BMP_GEAR_ANIM[0], pixel_shader=paleta_oled, x=7, y=4)
+    grupo_atualizando.append(tile_gear)
+
+    bmp_updating_text = criar_bmp_de_hex(UPDATING_TEXT_HEX, 88, 7)
+    tile_updating_text = displayio.TileGrid(bmp_updating_text, pixel_shader=paleta_oled, x=36, y=12)
+    grupo_atualizando.append(tile_updating_text)
+
+    display.root_group = grupo_normal
     TEM_OLED = True
-    print("[OLED] Display SSD1306 128x32 ativo com layout moderno, icones, logo e barra!")
+    print("[OLED] Display SSD1306 128x32 ativo com grupos dedicados (normal, boot, atualizando)!")
 except Exception as e:
     print(f"[OLED ERRO] {e}")
 
@@ -350,21 +353,18 @@ def obter_nome_funcao_amigavel(fn):
 
 def atualizar_oled_padrao(camada_idx):
     """Renderiza tela padrao da camada com personalizacoes e dots de status."""
-    if not TEM_OLED:
+    if not TEM_OLED or em_animacao_especial:
         return
     try:
+        if display.root_group != grupo_normal:
+            display.root_group = grupo_normal
+
         nome, perfil, fn, _, _, _ = obter_info_camada(camada_idx)
         fn_label = obter_nome_funcao_amigavel(fn)
         
-        # Oculta barra de progresso e telas especiais no modo normal de camada
+        # Oculta barra de progresso no modo normal de camada
         if tile_barra_progresso:
             tile_barra_progresso.hidden = True
-        if tile_boot_logo:
-            tile_boot_logo.hidden = True
-        if tile_gear:
-            tile_gear.hidden = True
-        if tile_updating_text:
-            tile_updating_text.hidden = True
 
         # Opcoes de personalizacao
         cust = config_ativa.get("customization", {}) if config_ativa else {}
@@ -420,9 +420,12 @@ def atualizar_oled_padrao(camada_idx):
 def mostrar_acao_oled(linha1, linha2, duracao=1.1, icone=None):
     """Exibe feedback de acao rapida sem sobreposicao de icones ou texto."""
     global tempo_reset_oled
-    if not TEM_OLED:
+    if not TEM_OLED or em_animacao_especial:
         return
     try:
+        if display.root_group != grupo_normal:
+            display.root_group = grupo_normal
+
         # Oculta barra de progresso em acoes simples
         if tile_barra_progresso:
             tile_barra_progresso.hidden = True
@@ -500,9 +503,12 @@ def atualizar_bmp_barra(pct):
 def mostrar_barra_oled(titulo, valor_str, pct, icone=None, duracao=1.2):
     """Exibe barra de progresso gráfica com ícone, valor e barra horizontal animada (estilo Windows 11)."""
     global tempo_reset_oled
-    if not TEM_OLED:
+    if not TEM_OLED or em_animacao_especial:
         return
     try:
+        if display.root_group != grupo_normal:
+            display.root_group = grupo_normal
+
         t_clean = str(titulo).strip()[:14]
         v_clean = str(valor_str).strip()[:7]
         espacos = 21 - len(t_clean) - len(v_clean)
@@ -681,8 +687,10 @@ def verificar_animacoes_habilitadas():
 
 def iniciar_animacao_som(titulo, duracao=2.5):
     global anim_som_ativa, anim_som_frame, anim_som_ultimo_tempo, tempo_reset_oled
-    if not TEM_OLED:
+    if not TEM_OLED or em_animacao_especial:
         return
+    if display.root_group != grupo_normal:
+        display.root_group = grupo_normal
     anim_som_ativa = True
     anim_som_frame = 0
     anim_som_ultimo_tempo = time.monotonic()
@@ -728,83 +736,52 @@ def animar_troca_camada(nova_camada, direcao=1):
     except Exception as e:
         print(f"[TRANSICAO ERRO] {e}")
 
-def animar_engrenagem_atualizando(passos=14):
-    """Tela unificada de atualizacao: engrenagem animada girando na esquerda e 'Atualizando...' na direita."""
-    global anim_som_ativa
+def animar_engrenagem_atualizando(passos=20):
+    """Tela unificada de atualizacao: engrenagem animada girando na esquerda e 'Atualizando...' na direita com grupo dedicado."""
+    global anim_som_ativa, em_animacao_especial
     anim_som_ativa = False
-    if not TEM_OLED or not tile_gear or not tile_updating_text:
+    if not TEM_OLED or not grupo_atualizando:
         return
     try:
         if not verificar_animacoes_habilitadas():
+            display.root_group = grupo_normal
             atualizar_oled_padrao(camada_atual)
             return
 
-        # Oculta todos os outros elementos para uma tela unica, limpa e moderna
-        if dot_grids:
-            for dg in dot_grids:
-                dg.hidden = True
-        if linha_div:
-            linha_div.hidden = True
-        if icone_grid:
-            icone_grid.hidden = True
-        if tile_barra_progresso:
-            tile_barra_progresso.hidden = True
-        if tile_boot_logo:
-            tile_boot_logo.hidden = True
-
-        txt_linha1.text = ""
-        txt_linha2.text = ""
-
-        # Exibe a tela unificada com a engrenagem e o texto oficial
-        tile_updating_text.hidden = False
-        tile_gear.hidden = False
+        em_animacao_especial = True
+        print("[OLED] Exibindo tela de ATUALIZACAO (engrenagem girando)...")
+        display.root_group = grupo_atualizando
 
         # Rotação animada contínua e suave da engrenagem
         for i in range(passos):
             if BMP_GEAR_ANIM:
                 tile_gear.bitmap = BMP_GEAR_ANIM[i % len(BMP_GEAR_ANIM)]
-            time.sleep(0.075)
+            time.sleep(0.08)
 
-        # Oculta elementos de atualizacao
-        tile_updating_text.hidden = True
-        tile_gear.hidden = True
-        if icone_grid:
-            icone_grid.hidden = False
+        em_animacao_especial = False
+        display.root_group = grupo_normal
+        atualizar_oled_padrao(camada_atual)
+        print("[OLED] Atualizacao concluida, tela normal restaurada.")
     except Exception as e:
+        em_animacao_especial = False
         print(f"[ENGRENAGEM ERRO] {e}")
 
-def executar_animacao_boot():
-    """Tela de inicializacao: apenas a logo oficial PadPro centralizada, sem nenhum outro elemento."""
-    if not TEM_OLED or not tile_boot_logo:
+def executar_animacao_boot(duracao=2.2):
+    """Tela de inicializacao: exibe exclusivamente o logo oficial PadPro centralizado com grupo dedicado."""
+    global em_animacao_especial
+    if not TEM_OLED or not grupo_boot:
         return
     try:
-        # Garante tela 100% limpa antes da logo
-        if dot_grids:
-            for dg in dot_grids:
-                dg.hidden = True
-        if linha_div:
-            linha_div.hidden = True
-        if icone_grid:
-            icone_grid.hidden = True
-        if tile_barra_progresso:
-            tile_barra_progresso.hidden = True
-        if tile_gear:
-            tile_gear.hidden = True
-        if tile_updating_text:
-            tile_updating_text.hidden = True
-
-        txt_linha1.text = ""
-        txt_linha2.text = ""
-
-        # Exibe exclusivamente o logo oficial PadPro
-        tile_boot_logo.hidden = False
-        time.sleep(1.8)
-
-        # Oculta a logo para entrar na interface normal
-        tile_boot_logo.hidden = True
-        if icone_grid:
-            icone_grid.hidden = False
+        em_animacao_especial = True
+        print("[OLED] Exibindo tela de BOOT PadPro...")
+        display.root_group = grupo_boot
+        time.sleep(duracao)
+        em_animacao_especial = False
+        display.root_group = grupo_normal
+        atualizar_oled_padrao(camada_atual)
+        print("[OLED] Boot concluido, tela normal ativa.")
     except Exception as e:
+        em_animacao_especial = False
         print(f"[BOOT ERRO] {e}")
 
 # =====================================================================
@@ -1655,15 +1632,15 @@ while True:
                             print(f"[SERIAL ERRO] SET_OLED_CUSTOM: {e}")
 
                     elif cmd_upper in ("OLED:BOOT", "TEST_BOOT"):
-                        executar_animacao_boot()
-                        atualizar_oled_padrao(camada_atual)
+                        print("[SERIAL] Comando OLED:BOOT recebido")
+                        executar_animacao_boot(duracao=2.2)
 
                     elif cmd_upper in ("OLED:UPDATING", "TEST_UPDATING"):
-                        animar_engrenagem_atualizando(passos=16)
-                        atualizar_oled_padrao(camada_atual)
+                        print("[SERIAL] Comando OLED:UPDATING recebido")
+                        animar_engrenagem_atualizando(passos=20)
 
                     elif cmd_upper in ("CONFIG_UPDATED", "RELOAD_CONFIG"):
-                        animar_engrenagem_atualizando(passos=8)
+                        print("[SERIAL] Comando CONFIG_UPDATED recebido")
                         carregar_config()
                         atualizar_oled_padrao(camada_atual)
 
