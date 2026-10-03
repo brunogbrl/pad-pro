@@ -127,7 +127,8 @@
     "picoRP2040": "PAD Pro (RP2040)",
     "display": "Display OLED 128×32",
     "matrix": "Matriz de Teclas 3×4",
-    "encoderHw": "Encoder Rotativo"
+    "encoderHw": "Encoder Rotativo",
+    "developer": "Desenvolvedor"
   },
   "common": {
     "save": "Salvar",

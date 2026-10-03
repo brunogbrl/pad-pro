@@ -1368,6 +1368,18 @@
         <div class="settings-section">
           <div class="settings-section-title">Sobre & Comunidade</div>
 
+          <!-- Desenvolvedor Oficial -->
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span style="font-weight: 600;">Desenvolvedor do Aplicativo</span>
+              <small>Desenvolvido e mantido por Bruno Gabriel (@brunogbrl).</small>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-open-dev-profile">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>GitHub @brunogbrl</span>
+            </button>
+          </div>
+
           <!-- Repositório GitHub Oficial -->
           <div class="settings-row">
             <div class="settings-row-label">
@@ -1624,10 +1636,23 @@
               <div class="about-spec-label">Matriz</div>
               <div class="about-spec-value">3 Linhas × 4 Colunas (12 Teclas) + Encoder EC11</div>
             </div>
+            <div class="about-spec">
+              <div class="about-spec-label" data-i18n="about.developer">Desenvolvedor</div>
+              <div class="about-spec-value">
+                <a href="#" id="link-about-dev" style="color: var(--accent-primary, #38bdf8); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  <span>Bruno Gabriel (@brunogbrl)</span>
+                </a>
+              </div>
+            </div>
           </div>
 
           <!-- Links Oficiais & Créditos -->
           <div class="about-links" style="display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" id="btn-about-dev">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Desenvolvedor: @brunogbrl</span>
+            </button>
             <button class="btn btn-outline btn-sm" id="btn-about-github">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
               <span>Repositório no GitHub</span>
@@ -1637,7 +1662,8 @@
               <span>Case 3D: @Scrypty</span>
             </button>
           </div>
-          <p style="font-size: 11px; color: var(--text-muted); margin-top: 14px; text-align: center;">
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 14px; text-align: center; line-height: 1.5;">
+            Aplicativo e firmware desenvolvidos por <strong><a href="#" id="link-about-author" style="color: inherit; text-decoration: underline;">@brunogbrl</a></strong>.<br>
             Design físico 3D baseado no projeto Superpad por <strong>@Scrypty</strong> no MakerWorld. Obrigado @Scrypty!
           </p>
         </div>

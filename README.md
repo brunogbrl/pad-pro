@@ -110,11 +110,12 @@ Ajuste elementos visuais do display OLED (divisores, ícones dinâmicos, indicad
 
 ---
 
-## 🎨 Créditos do Gabinete 3D
+## 👨‍💻 Desenvolvedor & Créditos
 
-O design físico e gabinete 3D do projeto é baseado no modelo **SuperPad**:
-- 🌐 **Modelo 3D no MakerWorld**: [Superpad Cool Macropad no MakerWorld](https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670)
-- 👏 **Agradecimento especial**: Um grande obrigado ao **@Scrypty** pela criação e disponibilização deste gabinete 3D espetacular!
+- 🚀 **Desenvolvedor do Aplicativo & Firmware**: [Bruno Gabriel (@brunogbrl)](https://github.com/brunogbrl)
+- 🎨 **Gabinete 3D**: O design físico e modelagem 3D do case original é baseado no projeto **SuperPad**:
+  - 🌐 **Modelo 3D no MakerWorld**: [Superpad Cool Macropad no MakerWorld](https://makerworld.com/pt/models/1142984-superpad-cool-macropad#profileId-1145670)
+  - 👏 **Agradecimento especial**: Um grande obrigado ao **@Scrypty** pela criação e disponibilização deste gabinete 3D espetacular!
 
 ---
 

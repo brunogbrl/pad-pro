@@ -2257,6 +2257,15 @@
     showToast(active ? 'Notificações de atualização ativadas' : 'Notificações de atualização desativadas', 'info');
   });
 
+  const openDevProfile = (e) => {
+    e?.preventDefault?.();
+    window.api?.openURL?.('https://github.com/brunogbrl');
+  };
+  document.getElementById('btn-open-dev-profile')?.addEventListener('click', openDevProfile);
+  document.getElementById('btn-about-dev')?.addEventListener('click', openDevProfile);
+  document.getElementById('link-about-dev')?.addEventListener('click', openDevProfile);
+  document.getElementById('link-about-author')?.addEventListener('click', openDevProfile);
+
   document.getElementById('btn-open-github')?.addEventListener('click', () => {
     window.api?.openURL?.('https://github.com/brunogbrl/pad-pro');
   });

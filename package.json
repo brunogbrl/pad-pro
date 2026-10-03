@@ -11,7 +11,7 @@
     "release": "electron-builder --win --publish always",
     "deploy": "node scripts/deploy.js"
   },
-  "author": "PAD Pro",
+  "author": "Bruno Gabriel (@brunogbrl)",
   "license": "MIT",
   "devDependencies": {
     "electron": "^33.0.0",
