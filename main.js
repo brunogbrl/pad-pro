@@ -30,7 +30,8 @@ if (!gotTheLock) {
 
 // Paths
 const CONFIG_DIR = path.join(app.getPath('userData'), 'config');
-const CONFIG_FILE = path.join(CONFIG_DIR, 'sharkropad-config.json');
+const OLD_CONFIG_FILE = path.join(CONFIG_DIR, 'sharkropad-config.json');
+const CONFIG_FILE = path.join(CONFIG_DIR, 'padpro-config.json');
 const ICON_PATH = path.join(__dirname, 'build', 'icon.ico');
 
 let mainWindow = null;
@@ -170,8 +171,9 @@ function getDefaultConfig() {
 
 function loadConfig() {
   try {
-    if (fs.existsSync(CONFIG_FILE)) {
-      const data = fs.readFileSync(CONFIG_FILE, 'utf8');
+    const targetFile = fs.existsSync(CONFIG_FILE) ? CONFIG_FILE : (fs.existsSync(OLD_CONFIG_FILE) ? OLD_CONFIG_FILE : null);
+    if (targetFile) {
+      const data = fs.readFileSync(targetFile, 'utf8');
       currentConfig = { ...getDefaultConfig(), ...JSON.parse(data) };
       return currentConfig;
     }
@@ -189,6 +191,7 @@ function saveConfig(config) {
       fs.mkdirSync(CONFIG_DIR, { recursive: true });
     }
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf8');
+    try { fs.writeFileSync(OLD_CONFIG_FILE, JSON.stringify(config, null, 2), 'utf8'); } catch {}
 
     // Build pad configuration with soundpad_sounds embedded
     const soundMap = generateSoundpadSoundsMap();
@@ -460,7 +463,7 @@ function createTintedTrayIcon(hexColor) {
   const buf = Buffer.from(rawBuf);
   const { r: tr, g: tg, b: tb } = hexToRgb(hexColor);
 
-  // 1. Tint cyan/blue highlight pixels of the Sharkropad icon
+  // 1. Tint cyan/blue highlight pixels of the PadPRO icon
   for (let i = 0; i < buf.length; i += 4) {
     const b = buf[i];
     const g = buf[i + 1];
@@ -1125,7 +1128,7 @@ function generateSoundpadSoundsMap() {
 // =====================================================================
 // DEBUG LOGGING & SERIAL COMMUNICATION
 // =====================================================================
-const LOG_FILE = path.join(CONFIG_DIR, 'sharkropad-serial.log');
+const LOG_FILE = path.join(CONFIG_DIR, 'padpro-serial.log');
 const recentLogs = [];
 
 function logDebug(msg) {
@@ -1616,7 +1619,7 @@ ipcMain.handle('serial:export-logs', async (_, logsText) => {
     const dateStr = new Date().toISOString().slice(0, 10);
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
       title: 'Exportar Logs Seriais',
-      defaultPath: `sharkropad-serial-log-${dateStr}.txt`,
+      defaultPath: `padpro-serial-log-${dateStr}.txt`,
       filters: [{ name: 'Arquivo de Texto (*.txt)', extensions: ['txt'] }]
     });
     if (canceled || !filePath) return { success: false, canceled: true };
@@ -1650,7 +1653,7 @@ ipcMain.handle('config:export', async (_, configData) => {
     const dateStr = new Date().toISOString().slice(0, 10);
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
       title: 'Exportar Backup de Configuração',
-      defaultPath: `sharkropad-config-backup-${dateStr}.json`,
+      defaultPath: `padpro-config-backup-${dateStr}.json`,
       filters: [{ name: 'Arquivo JSON (*.json)', extensions: ['json'] }]
     });
     if (canceled || !filePath) return { success: false, canceled: true };
@@ -1936,6 +1939,30 @@ autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
 
 function setupAutoUpdater() {
+  try {
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'brunogbrl',
+      repo: 'pad-pro'
+    });
+  } catch (err) {
+    console.warn('Falha ao definir setFeedURL no autoUpdater:', err?.message);
+  }
+
+  // Se estiver instalado e por qualquer motivo o app-update.yml não existir em resources, cria o arquivo
+  if (app.isPackaged && process.resourcesPath) {
+    try {
+      const updateConfigPath = path.join(process.resourcesPath, 'app-update.yml');
+      if (!fs.existsSync(updateConfigPath)) {
+        const ymlContent = `owner: brunogbrl\nrepo: pad-pro\nprovider: github\nupdaterCacheDirName: pad-pro-updater\n`;
+        fs.writeFileSync(updateConfigPath, ymlContent, 'utf8');
+        console.log('Restaurado app-update.yml de fallback em:', updateConfigPath);
+      }
+    } catch (err) {
+      console.warn('Não foi possível gravar app-update.yml de fallback:', err?.message);
+    }
+  }
+
   autoUpdater.on('checking-for-update', () => {
     safeSend(mainWindow, 'updater:status', { status: 'checking' });
   });

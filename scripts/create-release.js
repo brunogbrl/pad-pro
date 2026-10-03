@@ -60,7 +60,9 @@ async function main() {
 
   const owner = 'brunogbrl';
   const repo = 'pad-pro';
-  const tag = 'v1.0.4';
+  const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+  const version = pkg.version;
+  const tag = `v${version}`;
 
   console.log(`2. Criando / Verificando Release no repositório ${owner}/${repo} para tag ${tag}...`);
 
@@ -80,7 +82,7 @@ async function main() {
       tag_name: tag,
       target_commitish: 'main',
       name: `PAD Pro ${tag}`,
-      body: `## 🚀 PAD Pro ${tag}\n\nInstalador executável oficial do PAD Pro para Windows com suporte à nova Central de Atualizações, personalização visual e integrações completas.\n\n### 📦 Download:\nBaixe o arquivo **PAD Pro 1.0.4.exe** abaixo e execute diretamente no seu Windows.`,
+      body: `## 🚀 PAD Pro ${tag}\n\nInstalador executável oficial do PAD Pro para Windows com suporte à nova Central de Atualizações, assistente guiado de instalação com escolha de diretório e atalhos, personalização visual e correções completas de nomenclatura para PadPRO.\n\n### 📦 Download:\nBaixe o arquivo **PAD-Pro-Setup-${version}.exe** abaixo e instale diretamente no seu Windows.`,
       draft: false,
       prerelease: false
     });
@@ -107,7 +109,7 @@ async function main() {
 
   // 3. Upload assets
   const filesToUpload = [
-    { local: 'PAD Pro Setup 1.0.4.exe', remoteName: 'PAD-Pro-Setup-1.0.4.exe', contentType: 'application/octet-stream' },
+    { local: `PAD Pro Setup ${version}.exe`, remoteName: `PAD-Pro-Setup-${version}.exe`, contentType: 'application/octet-stream' },
     { local: 'latest.yml', remoteName: 'latest.yml', contentType: 'text/yaml' }
   ];
 

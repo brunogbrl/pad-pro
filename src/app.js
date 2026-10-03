@@ -1,5 +1,5 @@
 // =====================================================================
-// SHARKROPAD CONFIGURATOR — Main Application Logic v2.0
+// PADPRO CONFIGURATOR — Main Application Logic v2.0
 // =====================================================================
 
 (function () {
@@ -3781,7 +3781,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `sharkropad-config-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.download = `padpro-config-backup-${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
         URL.revokeObjectURL(url);
         showToast('Backup baixado com sucesso!', 'success');

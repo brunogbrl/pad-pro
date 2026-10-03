@@ -199,7 +199,7 @@ try:
         dot_grids.append(dg)
 
     # Texto Superior (Linha 1 - Camada & Perfil)
-    txt_linha1 = label.Label(terminalio.FONT, text="SHARKROPAD PRO", color=0xFFFFFF, x=2, y=6)
+    txt_linha1 = label.Label(terminalio.FONT, text="PADPRO", color=0xFFFFFF, x=2, y=6)
     grupo_oled.append(txt_linha1)
 
     # Texto Inferior (Linha 2 - Funcao/Acao sem a palavra Rotary)
@@ -598,9 +598,9 @@ def executar_animacao_boot():
             icone_grid.bitmap = bmp_vazio
             
         # 1. Logo futurista centralizado
-        txt_linha1.x = 18
+        txt_linha1.x = 42
         txt_linha1.y = 8
-        txt_linha1.text = "SHARKROPAD PRO"
+        txt_linha1.text = "PADPRO"
         txt_linha2.text = ""
         time.sleep(0.25)
         
@@ -1138,7 +1138,7 @@ def executar_encoder_click():
             consumer_ctrl.send(ConsumerControlCode.MUTE)
             mostrar_acao_oled("CLIQUE", "MUTE")
 
-print("[INFO] Sharkropad Pro firmware iniciado e pronto!")
+print("[INFO] PadPRO firmware iniciado e pronto!")
 executar_animacao_boot()
 atualizar_oled_padrao(camada_atual)
 

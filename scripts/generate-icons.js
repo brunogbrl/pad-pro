@@ -151,7 +151,7 @@ app.whenReady().then(() => {
         }
 
         // autorun.inf for Windows Explorer drive icon:
-        const autorun = '[autorun]\r\nicon=icon.ico\r\nlabel=Sharkropad\r\n';
+        const autorun = '[autorun]\r\nicon=icon.ico\r\nlabel=PadPRO\r\n';
         fs.writeFileSync(path.join(picoDriveDir, 'autorun.inf'), autorun, 'utf8');
 
         console.log('Successfully updated Pico drive with lightweight DIB icon.ico (' + picoIcoBuffer.length + ' bytes) and autorun.inf!');

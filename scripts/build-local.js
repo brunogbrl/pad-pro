@@ -51,7 +51,14 @@ async function main() {
     console.log('-> Ícone injetado com sucesso no executável!');
   }
 
-  console.log('\n6. Gerando instalador NSIS completo (com escolha de pasta e atalhos)...');
+  console.log('\n6. Garantindo app-update.yml na pasta resources para o Auto-Updater...');
+  const appUpdateYml = `owner: brunogbrl\nrepo: pad-pro\nprovider: github\nupdaterCacheDirName: pad-pro-updater\n`;
+  const resDir = path.join(tempDir, 'dist', 'win-unpacked', 'resources');
+  fs.mkdirSync(resDir, { recursive: true });
+  fs.writeFileSync(path.join(resDir, 'app-update.yml'), appUpdateYml, 'utf8');
+  console.log('-> app-update.yml gravado em:', path.join(resDir, 'app-update.yml'));
+
+  console.log('\n7. Gerando instalador NSIS completo (com escolha de pasta e atalhos)...');
   execSync('npx electron-builder --win --prepackaged "dist/win-unpacked"', { cwd: tempDir, stdio: 'inherit' });
 
   console.log('\n5. Copiando instalador gerado para a pasta dist do projeto...');

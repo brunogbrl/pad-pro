@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const cfgPath = path.join(process.env.APPDATA, 'pad-pro', 'config', 'sharkropad-config.json');
+const cfgPathPadPro = path.join(process.env.APPDATA, 'pad-pro', 'config', 'padpro-config.json');
+const cfgPathLegacy = path.join(process.env.APPDATA, 'pad-pro', 'config', 'sharkropad-config.json');
+const cfgPath = fs.existsSync(cfgPathPadPro) ? cfgPathPadPro : cfgPathLegacy;
 const splPath = path.join(process.env.APPDATA, 'Leppsoft', 'soundlist.spl');
 
 const config = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));

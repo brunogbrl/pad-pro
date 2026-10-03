@@ -13,7 +13,8 @@ class ConfigStore {
     if (window.api) {
       this.config = await window.api.loadConfig();
     } else {
-      this.config = this._getDefaultConfig();
+      const saved = localStorage.getItem('padpro-config') || localStorage.getItem('sharkropad-config');
+      this.config = saved ? JSON.parse(saved) : this._getDefaultConfig();
     }
 
     // Ensure layers array and modern schema
@@ -219,7 +220,7 @@ class ConfigStore {
     if (window.api) {
       return await window.api.saveConfig(this.config);
     }
-    localStorage.setItem('sharkropad-config', JSON.stringify(this.config));
+    localStorage.setItem('padpro-config', JSON.stringify(this.config));
     return true;
   }
 
@@ -228,6 +229,7 @@ class ConfigStore {
       this.config = await window.api.resetConfig();
     } else {
       this.config = this._getDefaultConfig();
+      localStorage.removeItem('padpro-config');
       localStorage.removeItem('sharkropad-config');
     }
     this._notify();

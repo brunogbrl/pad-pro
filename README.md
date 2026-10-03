@@ -95,7 +95,7 @@ Acompanhe as novidades e a evolução contínua do projeto:
 
 ### 📦 [v1.0.0]
 - **Lançamento Inicial**:
-  - Versão inicial do configurador desktop para o hardware Sharkropad Pro.
+  - Versão inicial do configurador desktop para o hardware PadPRO.
   - Suporte a CircuitPython e protocolo serial padrão.
 
 ---
