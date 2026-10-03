@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "PAD Pro Configurator",
+    "version": "v1.0"
+  },
+  "sidebar": {
+    "keys": "Teclas",
+    "macro": "Macro",
+    "encoder": "Botão Giratório",
+    "soundpad": "Soundpad",
+    "settings": "Configurações",
+    "about": "Sobre"
+  },
+  "layers": {
+    "title": "Camada",
+    "layer": "Camada",
+    "addLayer": "Adicionar Camada",
+    "removeLayer": "Remover Camada",
+    "rename": "Renomear",
+    "profile": "Perfil"
+  },
+  "keys": {
+    "title": "Definição de Tecla",
+    "noSelection": "Nenhuma Tecla Selecionada",
+    "selected": "Tecla Selecionada",
+    "combination": "Combinação",
+    "functions": "Funções do Pad",
+    "macro": "Macro",
+    "media": "Mídia",
+    "mouse": "Mouse",
+    "soundpad": "Soundpad",
+    "confirm": "Confirmar",
+    "reset": "Resetar",
+    "notSet": "Não Definida",
+    "fixed": "Fixar Tecla",
+    "fixedDesc": "Manter mesma função em todas as camadas",
+    "dualFunction": "Dupla Função",
+    "dualFunctionDesc": "Ação diferente ao segurar",
+    "clickAction": "Clique Rápido",
+    "holdAction": "Clique Longo",
+    "record": "Gravar Atalho",
+    "recording": "Pressione as teclas desejadas...",
+    "recordStop": "Parar Gravação",
+    "recordCancel": "Cancelar"
+  },
+  "modifiers": {
+    "ctrl": "Ctrl",
+    "alt": "Alt",
+    "shift": "Shift",
+    "win": "Win"
+  },
+  "media": {
+    "player": "Player",
+    "playPause": "Play/Pause",
+    "stop": "Stop",
+    "prev": "Anterior",
+    "next": "Próxima",
+    "volumeUp": "Volume +",
+    "volumeDown": "Volume -",
+    "mute": "Mudo"
+  },
+  "mouse": {
+    "leftClick": "Clique Esquerdo",
+    "rightClick": "Clique Direito",
+    "middleClick": "Clique do Meio",
+    "scrollUp": "Scroll Cima",
+    "scrollDown": "Scroll Baixo",
+    "forward": "Avançar",
+    "back": "Voltar"
+  },
+  "encoder": {
+    "title": "Configuração do Botão Giratório (Knob)",
+    "function": "Função",
+    "volume": "Volume do Sistema",
+    "brightness": "Brilho da Tela",
+    "scroll": "Scroll",
+    "mediaNav": "Navegação de Música",
+    "layerNav": "Navegação de Camadas",
+    "custom": "Personalizado",
+    "clockwise": "Giro Horário (CW)",
+    "counterClockwise": "Giro Anti-horário (CCW)",
+    "press": "Pressionar",
+    "sensitivity": "Sensibilidade"
+  },
+  "recording": {
+    "title": "Pressione as Teclas",
+    "instruction": "Pressione o atalho desejado no teclado físico...",
+    "cancel": "Cancelar",
+    "reset": "Resetar",
+    "apply": "Aplicar"
+  },
+  "soundpad": {
+    "title": "Integração Soundpad",
+    "enabled": "Ativado",
+    "disabled": "Desativado",
+    "status": "Status",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "previewOnHold": "Preview ao segurar tecla",
+    "soundList": "Lista de Sons",
+    "noSounds": "Nenhum som encontrado",
+    "assignSound": "Atribuir som à tecla"
+  },
+  "settings": {
+    "title": "Configurações",
+    "language": "Idioma",
+    "connection": "Conexão",
+    "serialPort": "Porta Serial",
+    "autoDetect": "Detecção Automática",
+    "refresh": "Atualizar",
+    "noDevice": "Nenhum dispositivo encontrado",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "general": "Geral",
+    "startMinimized": "Iniciar minimizado",
+    "startWithWindows": "Iniciar com o Windows",
+    "resetAll": "Restaurar Padrões",
+    "resetConfirm": "Tem certeza? Todas as configurações serão perdidas.",
+    "exportConfig": "Exportar Configuração",
+    "importConfig": "Importar Configuração"
+  },
+  "about": {
+    "title": "Sobre",
+    "description": "Configurador visual para o macro pad PAD Pro",
+    "firmware": "Firmware",
+    "hardware": "Hardware",
+    "picoRP2040": "PAD Pro (RP2040)",
+    "display": "Display OLED 128×32",
+    "matrix": "Matriz de Teclas 3×4",
+    "encoderHw": "Encoder Rotativo"
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "ok": "OK",
+    "yes": "Sim",
+    "no": "Não",
+    "on": "Ligado",
+    "off": "Desligado",
+    "loading": "Carregando..."
+  }
+}

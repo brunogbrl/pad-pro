@@ -1,0 +1,59 @@
+{
+  "name": "pad-pro",
+  "version": "1.0.4",
+  "description": "Configurador visual para o macro pad PAD Pro",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "generate-icons": "electron scripts/generate-icons.js",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
+    "release": "electron-builder --win --publish always"
+  },
+  "author": "PAD Pro",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9",
+    "serialport": "^12.0.0"
+  },
+  "build": {
+    "appId": "com.padpro.configurator",
+    "productName": "PAD Pro",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "brunogbrl",
+        "repo": "pad-pro"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico",
+      "sign": null,
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PAD Pro",
+      "runAfterFinish": true
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "preload-hud.js",
+      "build/**/*",
+      "src/**/*",
+      "locales/**/*"
+    ]
+  }
+}

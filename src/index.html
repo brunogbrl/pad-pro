@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAD Pro Configurator</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../build/icon.png">
+</head>
+<body>
+  <!-- ================================================================= -->
+  <!-- TITLE BAR                                                         -->
+  <!-- ================================================================= -->
+  <div class="titlebar">
+    <div class="titlebar-drag">
+      <div class="titlebar-brand">
+        <img class="titlebar-logo-img" src="../build/icon.png" alt="PAD Pro Logo" width="20" height="20" style="border-radius: 6px; flex-shrink: 0; box-shadow: 0 0 10px rgba(59, 108, 251, 0.4);">
+        <span class="titlebar-title">PAD Pro Configurator</span>
+        <span class="titlebar-badge">PRO</span>
+      </div>
+    </div>
+    <div class="titlebar-actions">
+      <button class="btn-console-toggle hidden" id="btn-toggle-logs" title="Abrir Console de Comunicação Serial">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span>Serial Log</span>
+      </button>
+    </div>
+    <div class="titlebar-controls">
+      <button class="titlebar-btn" id="btn-minimize" title="Minimizar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="titlebar-btn" id="btn-maximize" title="Maximizar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      </button>
+      <button class="titlebar-btn titlebar-btn-close" id="btn-close" title="Fechar para Bandeja">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- APP CONTAINER                                                     -->
+  <!-- ================================================================= -->
+  <div class="app-container">
+
+    <!-- ============================================================= -->
+    <!-- SIDEBAR                                                       -->
+    <!-- ============================================================= -->
+    <nav class="sidebar">
+      <div class="sidebar-items">
+        <!-- Keys -->
+        <div class="sidebar-item active" data-page="keys">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M8 16h8"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.keys">Teclas</span>
+        </div>
+
+        <!-- Encoder -->
+        <div class="sidebar-item" data-page="encoder">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.encoder">Botão Giratório</span>
+        </div>
+
+        <!-- Soundpad -->
+        <div class="sidebar-item" data-page="soundpad">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.soundpad">Soundpad</span>
+        </div>
+
+        <!-- Macro -->
+        <div class="sidebar-item" data-page="macro">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.macro">Macro</span>
+        </div>
+
+        <!-- Personalização -->
+        <div class="sidebar-item" data-page="customization">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+              <circle cx="7.5" cy="11.5" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="7.5" r="1.5" fill="currentColor"/>
+              <circle cx="16.5" cy="11.5" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label">Personalização</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Settings -->
+        <div class="sidebar-item" data-page="settings">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.settings">Configurações</span>
+        </div>
+
+        <!-- About -->
+        <div class="sidebar-item" data-page="about">
+          <div class="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+          </div>
+          <span class="sidebar-item-label" data-i18n="sidebar.about">Sobre</span>
+        </div>
+      </div>
+
+      <!-- Footer: Connection Status & Update Button -->
+      <div class="sidebar-footer">
+        <button type="button" class="btn-sidebar-update-pad hidden" id="btn-sidebar-update-pad" title="Enviar configurações completas para o PAD Pro">
+          <svg class="sync-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span class="btn-update-text">Atualizar Pad</span>
+        </button>
+        <div class="status-indicator sidebar-status" id="status-indicator">
+          <div class="status-dot" id="status-dot"></div>
+          <div class="status-info">
+            <span class="status-text" id="status-text">PAD Pro Desconectado</span>
+            <span class="status-port" id="status-port">—</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============================================================= -->
+    <!-- MAIN CONTENT                                                   -->
+    <!-- ============================================================= -->
+    <div class="main-content">
+
+      <!-- =========================================================== -->
+      <!-- PAGE: KEYS (Main Page)                                       -->
+      <!-- =========================================================== -->
+      <div class="page active" id="page-keys">
+        <!-- Pad Visual -->
+        <div class="pad-container">
+          <div class="pad-visual">
+            <!-- Sleek flush USB-C chassis slot & physical cable -->
+            <div class="pad-chassis-port" id="pad-chassis-port" title="Porta USB-C">
+              <div class="usb-cable-plug" id="usb-cable-plug">
+                <div class="usb-cable-wire"></div>
+                <div class="usb-cable-strain"></div>
+                <div class="usb-cable-head">
+                  <div class="usb-cable-grooves"></div>
+                  <div class="usb-cable-led"></div>
+                  <div class="usb-cable-collar"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Row: OLED Display (Left) + Rotary Encoder Knob (Right) -->
+            <div class="pad-top-row">
+              <!-- OLED Frame -->
+              <div class="pad-oled-frame" id="pad-oled-frame">
+                <div class="pad-oled-glass">
+                  <div class="pad-oled-screen">
+                    <div class="pad-oled-header">
+                      <span class="pad-oled-dot">●</span>
+                      <span class="pad-oled-layer" id="pad-oled-layer">CAMADA 0</span>
+                    </div>
+                    <div class="pad-oled-sub" id="pad-oled-sub">DIRETAS (F15-F23)</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rotary Encoder Knob (Scale to real pad: large circular knob above col 4) -->
+              <div class="pad-encoder-container">
+                <div class="pad-encoder-knob" id="pad-encoder" title="Encoder Rotativo (Clique para configurar)">
+                  <div class="knob-outer-ring">
+                    <div class="knob-knurling"></div>
+                    <div class="knob-cap">
+                      <div class="knob-notch"></div>
+                      <div class="knob-center-dot"></div>
+                    </div>
+                  </div>
+                </div>
+                <span class="knob-caption" id="encoder-caption">VOLUME</span>
+              </div>
+            </div>
+
+            <!-- Key Grid 3x4 -->
+            <div class="pad-grid" id="pad-grid">
+              <!-- Keys generated dynamically by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer Selector & Customization Bar -->
+        <div class="layer-bar">
+          <div class="layer-selector" id="layer-selector">
+            <!-- Layer tabs generated by JS -->
+          </div>
+          <div class="layer-actions">
+            <!-- Add Layer Button -->
+            <button class="btn btn-sm btn-layer-add" id="btn-add-layer" title="Adicionar Nova Camada">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Nova Camada</span>
+            </button>
+            <!-- Rename Layer Button -->
+            <button class="btn btn-sm btn-layer-rename" id="btn-rename-layer" type="button" title="Renomear camada atual">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Renomear</span>
+            </button>
+            <!-- Layer Color Button & Dropdown -->
+            <div class="layer-color-popover-container" id="layer-color-popover-container">
+              <button class="btn btn-sm btn-layer-color" id="btn-toggle-layer-color" type="button" title="Alterar cor da camada">
+                <span class="layer-color-indicator" id="layer-color-indicator"></span>
+                <span>Alterar cor</span>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              <div class="layer-color-dropdown hidden" id="layer-color-dropdown">
+                <div class="layer-color-dropdown-header">
+                  <span>Cor da Camada</span>
+                </div>
+                <div class="layer-color-dropdown-content">
+                  <div class="color-palette" id="color-palette">
+                    <!-- Color dots -->
+                  </div>
+                  <div class="custom-color-wrap" title="Círculo cromático">
+                    <label class="chromatic-wheel" for="custom-color-input" title="Escolher cor personalizada (Círculo cromático)">
+                      <input type="color" id="custom-color-input" class="custom-color-input" title="Escolher cor personalizada">
+                    </label>
+                  </div>
+                </div>
+                <!-- Hex Color Customization -->
+                <div class="layer-color-hex-row">
+                  <div class="color-hex-input-wrap" title="Código hexadecimal (Ex: 38BDF8)">
+                    <span class="hex-prefix">#</span>
+                    <input type="text" id="custom-hex-input" class="color-hex-input" maxlength="6" placeholder="38BDF8" spellcheck="false" autocomplete="off">
+                    <span class="color-hex-preview-dot" id="color-hex-preview-dot"></span>
+                  </div>
+                  <button type="button" class="btn btn-apply-hex" id="btn-apply-hex" title="Aplicar cor hexadecimal">OK</button>
+                </div>
+              </div>
+            </div>
+            <!-- Quick Soundpad Sync Button -->
+            <button class="btn btn-sm btn-soundpad-sync" id="btn-quick-sync-soundpad" type="button" title="Sincronizar nomes e novos áudios do Soundpad">
+              <svg class="sync-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Atualizar Sons</span>
+            </button>
+            <!-- Delete Layer Button -->
+            <button class="btn btn-sm btn-danger btn-layer-del hidden" id="btn-del-layer" title="Excluir esta camada">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Key Configuration Panel -->
+        <div class="key-config-panel" id="key-config-panel">
+          <!-- Empty state -->
+          <div class="key-config-empty" id="key-config-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01"/>
+              <path d="M8 16h8"/>
+            </svg>
+            <p data-i18n="keys.noSelection">Clique em uma tecla ou no encoder para configurar</p>
+          </div>
+
+          <!-- Config content (hidden until key selected) -->
+          <div id="key-config-content" class="hidden">
+            <!-- Header -->
+            <div class="key-config-header">
+              <div class="key-config-title">
+                <h3 data-i18n="keys.title">Definição de Tecla</h3>
+                <span class="key-id" id="selected-key-id">—</span>
+              </div>
+              <div class="key-config-actions">
+                <button class="btn btn-record" id="btn-record-shortcut">
+                  <span class="rec-dot"></span>
+                  <span data-i18n="keys.record">Gravar Atalho</span>
+                </button>
+                <button class="btn btn-danger btn-sm" id="btn-reset-key" data-i18n="keys.reset">Resetar</button>
+                <button class="btn btn-primary btn-sm" id="btn-confirm-key" data-i18n="keys.confirm">Confirmar</button>
+              </div>
+            </div>
+
+            <!-- Key Name / Label Field -->
+            <div class="key-name-bar">
+              <div class="key-name-input-wrap">
+                <div class="key-name-label-row">
+                  <label for="key-label-input" class="key-name-label">
+                    <span>Nome / Rótulo da Tecla</span>
+                    <small class="key-name-sublabel">Aparece na tecla (opcional)</small>
+                  </label>
+                  <div class="soundpad-key-badge hidden" id="soundpad-key-badge" title="Som vinculado detectado no Soundpad">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                    <span id="soundpad-badge-text">Soundpad</span>
+                  </div>
+                </div>
+                <input type="text" class="input-field key-name-input" id="key-label-input" placeholder="Ex: Risada, Discord Mute, Troca Camada..." maxlength="28" autocomplete="off" spellcheck="false">
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="config-tabs">
+              <button class="config-tab active" data-tab="combination" data-i18n="keys.combination">Combinação</button>
+              <button class="config-tab" data-tab="functions" data-i18n="keys.functions">Funções do Pad</button>
+              <button class="config-tab" data-tab="media" data-i18n="keys.media">Mídia</button>
+              <button class="config-tab" data-tab="mouse" data-i18n="keys.mouse">Mouse</button>
+              <button class="config-tab" data-tab="macro" data-i18n="keys.macro">Macro</button>
+              <button class="config-tab" data-tab="url">Abrir URL</button>
+            </div>
+
+            <!-- Tab Content: Combination -->
+            <div class="config-tab-content active" id="tab-combination">
+              <div class="form-row">
+                <!-- Modifiers -->
+                <div class="form-group flex-1">
+                  <span class="form-label">Modificadores</span>
+                  <div class="checkbox-group">
+                    <label class="checkbox-item" data-mod="Ctrl">
+                      <input type="checkbox"><span class="checkbox-mark"></span>Ctrl
+                    </label>
+                    <label class="checkbox-item" data-mod="Alt">
+                      <input type="checkbox"><span class="checkbox-mark"></span>Alt
+                    </label>
+                    <label class="checkbox-item" data-mod="Shift">
+                      <input type="checkbox"><span class="checkbox-mark"></span>Shift
+                    </label>
+                    <label class="checkbox-item" data-mod="Win">
+                      <input type="checkbox"><span class="checkbox-mark"></span>Win
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Key select -->
+                <div class="form-group">
+                  <span class="form-label">Tecla Base</span>
+                  <select class="select-field" id="key-select">
+                    <option value="">Selecionar...</option>
+                    <optgroup label="Funções do Sharkropad">
+                      <option value="layer-switch">🔄 Troca de Camada</option>
+                      <option value="zoom_in">🔍 Zoom In (+)</option>
+                      <option value="zoom_out">🔍 Zoom Out (-)</option>
+                      <option value="zoom_reset">🔍 Resetar Zoom (100%)</option>
+                      <option value="brightness_up">☀️ Brilho (+)</option>
+                      <option value="brightness_down">🌙 Brilho (-)</option>
+                    </optgroup>
+                    <optgroup label="Controles de Mídia">
+                      <option value="play_pause">⏯ Play/Pause</option>
+                      <option value="volume_up">🔊 Volume (+)</option>
+                      <option value="volume_down">🔉 Volume (-)</option>
+                      <option value="mute">🔇 Mute / Desmute</option>
+                      <option value="next">⏭ Próxima</option>
+                      <option value="prev">⏮ Anterior</option>
+                      <option value="stop">⏹ Stop</option>
+                    </optgroup>
+                    <optgroup label="F-Keys Estendidas">
+                      <option value="F13">F13</option><option value="F14">F14</option>
+                      <option value="F15">F15</option><option value="F16">F16</option>
+                      <option value="F17">F17</option><option value="F18">F18</option>
+                      <option value="F19">F19</option><option value="F20">F20</option>
+                      <option value="F21">F21</option><option value="F22">F22</option>
+                      <option value="F23">F23</option><option value="F24">F24</option>
+                    </optgroup>
+                    <optgroup label="F-Keys Padrão">
+                      <option value="F1">F1</option><option value="F2">F2</option>
+                      <option value="F3">F3</option><option value="F4">F4</option>
+                      <option value="F5">F5</option><option value="F6">F6</option>
+                      <option value="F7">F7</option><option value="F8">F8</option>
+                      <option value="F9">F9</option><option value="F10">F10</option>
+                      <option value="F11">F11</option><option value="F12">F12</option>
+                    </optgroup>
+                    <optgroup label="Letras">
+                      <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                      <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                      <option value="I">I</option><option value="J">J</option><option value="K">K</option><option value="L">L</option>
+                      <option value="M">M</option><option value="N">N</option><option value="O">O</option><option value="P">P</option>
+                      <option value="Q">Q</option><option value="R">R</option><option value="S">S</option><option value="T">T</option>
+                      <option value="U">U</option><option value="V">V</option><option value="W">W</option><option value="X">X</option>
+                      <option value="Y">Y</option><option value="Z">Z</option>
+                    </optgroup>
+                    <optgroup label="Números">
+                      <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                      <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                      <option value="8">8</option><option value="9">9</option>
+                    </optgroup>
+                    <optgroup label="Especiais">
+                      <option value="Enter">Enter</option><option value="Space">Espaço</option>
+                      <option value="Backspace">Backspace</option><option value="Tab">Tab</option>
+                      <option value="Escape">Escape</option><option value="Delete">Delete</option>
+                      <option value="Insert">Insert</option><option value="Home">Home</option>
+                      <option value="End">End</option><option value="PageUp">Page Up</option>
+                      <option value="PageDown">Page Down</option><option value="PrintScreen">Print Screen</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Sharkropad Functions -->
+            <div class="config-tab-content" id="tab-functions">
+              <div class="action-list functions-action-list">
+                <div class="action-item" data-value="layer-switch" data-type="fixed">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span class="action-item-label">Troca de Camada</span>
+                </div>
+                <div class="action-item" data-value="zoom_in" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span class="action-item-label">Zoom In (+)</span>
+                </div>
+                <div class="action-item" data-value="zoom_out" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span class="action-item-label">Zoom Out (-)</span>
+                </div>
+                <div class="action-item" data-value="zoom_reset" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><text x="7" y="14" font-size="7" font-weight="bold" fill="currentColor">1:1</text></svg>
+                  <span class="action-item-label">Resetar Zoom (100%)</span>
+                </div>
+                <div class="action-item" data-value="brightness_up" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                  <span class="action-item-label">Brilho (+)</span>
+                </div>
+                <div class="action-item" data-value="discord_mute" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                  <span class="action-item-label">Discord: Mute / Desmute</span>
+                </div>
+                <div class="action-item" data-value="discord_deafen" data-type="function">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                  <span class="action-item-label">Discord: Ensurdecer (Deafen)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Media -->
+            <div class="config-tab-content" id="tab-media">
+              <div class="action-list functions-action-list">
+                <div class="action-item" data-value="play_pause">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span class="action-item-label" data-i18n="media.playPause">Play/Pause</span>
+                </div>
+                <div class="action-item" data-value="stop">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+                  <span class="action-item-label" data-i18n="media.stop">Stop</span>
+                </div>
+                <div class="action-item" data-value="prev">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+                  <span class="action-item-label" data-i18n="media.prev">Anterior</span>
+                </div>
+                <div class="action-item" data-value="next">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                  <span class="action-item-label" data-i18n="media.next">Próxima</span>
+                </div>
+                <div class="action-item" data-value="volume_up">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  <span class="action-item-label" data-i18n="media.volumeUp">Volume +</span>
+                </div>
+                <div class="action-item" data-value="volume_down">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  <span class="action-item-label" data-i18n="media.volumeDown">Volume -</span>
+                </div>
+                <div class="action-item" data-value="mute">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                  <span class="action-item-label" data-i18n="media.mute">Mute</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Mouse -->
+            <div class="config-tab-content" id="tab-mouse">
+              <div class="action-list functions-action-list">
+                <div class="action-item" data-value="click_left">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="10"/></svg>
+                  <span class="action-item-label" data-i18n="mouse.leftClick">Clique Esquerdo</span>
+                </div>
+                <div class="action-item" data-value="click_right">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="10"/></svg>
+                  <span class="action-item-label" data-i18n="mouse.rightClick">Clique Direito</span>
+                </div>
+                <div class="action-item" data-value="click_middle">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><circle cx="12" cy="7" r="1.5"/></svg>
+                  <span class="action-item-label" data-i18n="mouse.middleClick">Clique Meio</span>
+                </div>
+                <div class="action-item" data-value="scroll_up">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                  <span class="action-item-label" data-i18n="mouse.scrollUp">Scroll Cima</span>
+                </div>
+                <div class="action-item" data-value="scroll_down">
+                  <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  <span class="action-item-label" data-i18n="mouse.scrollDown">Scroll Baixo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Macro -->
+            <div class="config-tab-content" id="tab-macro">
+              <div class="macro-tab-note hidden" id="macro-tab-note">
+                <span>Selecione uma macro gravada para acionar nesta tecla:</span>
+              </div>
+              <div class="action-list functions-action-list" id="macro-key-picker-list">
+                <!-- Dynamically populated with saved macros -->
+              </div>
+            </div>
+
+            <!-- Tab Content: URL / Navegador -->
+            <div class="config-tab-content" id="tab-url">
+              <div class="url-config-box">
+                <div class="form-group mb-12">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                    <span class="form-label" style="margin-bottom: 0;">Endereços Web / Links (URL)</span>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <button type="button" class="btn btn-secondary btn-sm" id="btn-test-url" title="Testar abrir links no navegador padrão" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                          <polyline points="15 3 21 3 21 9"/>
+                          <line x1="10" y1="14" x2="21" y2="3"/>
+                        </svg>
+                        <span id="btn-test-url-label">Testar Links</span>
+                      </button>
+                      <button type="button" class="btn btn-outline btn-sm" id="btn-add-url" title="Adicionar mais uma URL para abrir simultaneamente" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Adicionar Link</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div id="url-inputs-list" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Dynamically populated rows -->
+                  </div>
+                  <div class="url-info-hint">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>Ao pressionar esta tecla no Sharkropad, o navegador abrirá todos os links configurados simultaneamente.</span>
+                  </div>
+                </div>
+
+                <div class="url-suggestions-box">
+                  <span class="url-suggestions-title">Atalhos Populares (clique para preencher):</span>
+                  <div class="url-chips-grid">
+                    <button type="button" class="url-chip" data-url="https://youtube.com">YouTube</button>
+                    <button type="button" class="url-chip" data-url="https://twitch.tv">Twitch</button>
+                    <button type="button" class="url-chip" data-url="https://discord.com/app">Discord</button>
+                    <button type="button" class="url-chip" data-url="https://open.spotify.com">Spotify</button>
+                    <button type="button" class="url-chip" data-url="https://github.com">GitHub</button>
+                    <button type="button" class="url-chip" data-url="https://chatgpt.com">ChatGPT</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Options Cards (Modern descriptive layout - Integrated Crystal Design) -->
+            <div class="key-options-grid">
+              <div class="key-option-card" id="card-option-fixed">
+                <div class="key-option-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v10M12 12l4 4M12 12l-4 4"/><circle cx="12" cy="12" r="9"/></svg>
+                </div>
+                <div class="key-option-content">
+                  <span class="key-option-title">Fixar Tecla em todas as Camadas</span>
+                  <span class="key-option-desc">Mantém este comando ativo em todas as camadas sem precisar reconfigurar.</span>
+                </div>
+                <div class="toggle-switch" id="toggle-fixed">
+                  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                </div>
+              </div>
+              <div class="key-option-card" id="card-option-dual">
+                <div class="key-option-icon">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="key-option-content">
+                  <span class="key-option-title">Habilitar Dupla Função</span>
+                  <span class="key-option-desc">Executa um comando no toque rápido e outro ao segurar a tecla.</span>
+                </div>
+                <div class="toggle-switch" id="toggle-dual">
+                  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dual function interactive section -->
+            <div class="dual-function-section hidden mt-8" id="dual-function-section">
+              <div class="dual-function-header">
+                <span class="form-label">Configuração de Dupla Função</span>
+                <span class="dual-hint">Clique na caixa desejada para definir seu atalho:</span>
+              </div>
+              <div class="dual-function-actions">
+                <div class="dual-action-box active" id="dual-box-click" data-target="click">
+                  <div class="dual-action-badge">1</div>
+                  <div class="dual-action-info">
+                    <div class="dual-action-label" data-i18n="keys.clickAction">Clique Rápido (Toque)</div>
+                    <div class="dual-action-value" id="dual-click-value">—</div>
+                  </div>
+                </div>
+                <div class="dual-action-box" id="dual-box-hold" data-target="hold">
+                  <div class="dual-action-badge">2</div>
+                  <div class="dual-action-info">
+                    <div class="dual-action-label" data-i18n="keys.holdAction">Clique Longo (Segurar)</div>
+                    <div class="dual-action-value" id="dual-hold-value">—</div>
+                  </div>
+                  <button type="button" class="btn-clear-hold" id="btn-clear-hold" title="Limpar clique longo">✕</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: MACRO                                                  -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-macro">
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="macro.title">Gravador de Macro</h1>
+          <p class="page-header-subtitle">Crie e gerencie automações de teclado com intervalos de tempo precisos para atribuir a qualquer tecla.</p>
+        </div>
+        <div class="macro-layout-container">
+          <!-- Left: Recorder Card -->
+          <div class="macro-card macro-recorder-card">
+            <div class="macro-card-header">
+              <div class="macro-name-group">
+                <label for="macro-name-input" class="form-label">Nome da Macro</label>
+                <input type="text" id="macro-name-input" class="input-field macro-name-input" placeholder="Ex: Copiar & Colar, Git Push, Combo..." maxlength="28" autocomplete="off">
+              </div>
+              <div class="macro-recording-status-pill" id="macro-status-pill">
+                <span class="macro-status-dot" id="macro-status-dot"></span>
+                <span id="macro-status-text">Pronto para gravar</span>
+              </div>
+            </div>
+
+            <!-- Sequence display -->
+            <div class="macro-sequence-box">
+              <div class="macro-sequence-bar">
+                <span class="macro-sequence-label">Sequência de Teclas e Atrasos</span>
+                <span class="macro-event-count" id="macro-event-count">0 eventos</span>
+              </div>
+              <div class="macro-sequence" id="macro-sequence">
+                <div class="macro-empty" id="macro-empty-hint">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01"/><path d="M8 16h8"/></svg>
+                  <span>Pressione <strong>Gravar</strong> e execute a sequência desejada no teclado.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="macro-controls-row">
+              <button type="button" class="btn btn-record" id="btn-macro-record">
+                <span class="rec-dot"></span>
+                <span id="btn-macro-record-text">Gravar Macro</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-macro-clear">Limpar</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-macro-save">Salvar na Biblioteca</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btn-macro-assign-key" title="Atribuir esta macro à tecla selecionada no Pad">Atribuir à Tecla</button>
+            </div>
+          </div>
+
+          <!-- Right: Saved Macros Library -->
+          <div class="macro-card macro-library-card">
+            <div class="macro-library-header">
+              <div class="macro-library-title">
+                <h3>Biblioteca de Macros</h3>
+                <span class="macro-library-badge" id="macro-library-count">0</span>
+              </div>
+              <small class="macro-library-desc">Macros salvas prontas para uso em qualquer camada do Pad</small>
+            </div>
+            <div class="macro-library-list" id="macro-library-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: ENCODER (Per-Layer Support)                            -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-encoder">
+        <div class="encoder-page-header">
+          <div class="encoder-header-text">
+            <h1 class="page-title" data-i18n="encoder.title">Botão Giratório (Knob)</h1>
+            <p class="encoder-header-subtitle">Defina o que o botão giratório (Knob) faz em cada camada do PAD Pro.</p>
+          </div>
+          
+          <!-- Layer Switcher Tabs -->
+          <div class="encoder-layer-tabs-wrapper">
+            <span class="encoder-layer-tabs-label">Camada:</span>
+            <div class="encoder-layer-tabs" id="encoder-layer-tabs">
+              <!-- Dynamically generated layer tabs -->
+            </div>
+          </div>
+        </div>
+
+        <div class="encoder-layout-container">
+          <!-- Left Column: Visual Encoder preview & current action summary -->
+          <div class="encoder-preview-card">
+            <div class="encoder-visual-showcase">
+              <div class="encoder-knob-visual">
+                <div class="encoder-knob-ring" id="encoder-knob-interactive" title="Gire com a roda do mouse ou use os botões abaixo">
+                  <div class="encoder-knob-core" id="encoder-knob-core">
+                    <div class="encoder-knob-marker"></div>
+                  </div>
+                </div>
+                <div class="knob-direction-bar">
+                  <button type="button" class="btn-knob-test" id="btn-test-ccw" title="Girar Anti-horário (Esquerda)">⟲ Girar Esq.</button>
+                  <button type="button" class="btn-knob-test btn-knob-press" id="btn-test-click" title="Pressionar Botão (Clique)">🔘 Clique</button>
+                  <button type="button" class="btn-knob-test" id="btn-test-cw" title="Girar Horário (Direita)">Girar Dir. ⟳</button>
+                </div>
+              </div>
+              <div class="encoder-preview-info">
+                <span class="encoder-badge-layer" id="encoder-badge-layer">Camada 0</span>
+                <h3 class="encoder-current-title" id="encoder-current-title">Volume do Sistema</h3>
+              </div>
+            </div>
+
+            <div class="encoder-action-breakdown" id="encoder-action-breakdown">
+              <div class="breakdown-item">
+                <div class="breakdown-direction">
+                  <span class="direction-badge cw">⟳ Girar Horário</span>
+                </div>
+                <span class="breakdown-action" id="encoder-action-cw">Aumentar Volume</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-direction">
+                  <span class="direction-badge ccw">⟲ Girar Anti-horário</span>
+                </div>
+                <span class="breakdown-action" id="encoder-action-ccw">Diminuir Volume</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-direction">
+                  <span class="direction-badge click">🔘 Pressionar Botão</span>
+                </div>
+                <span class="breakdown-action" id="encoder-action-click">Mudo (Mute)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Grid of Selectable Function Cards -->
+          <div class="encoder-functions-container">
+            <h4 class="encoder-section-heading">Selecione a Função desta Camada</h4>
+            
+            <!-- Notice & Undo Banner when Layer Navigation is applied across all layers -->
+            <div class="encoder-layer-nav-notice hidden" id="encoder-layer-nav-notice">
+              <div class="notice-info">
+                <div class="notice-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                    <polyline points="2 17 12 22 22 17"/>
+                    <polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                </div>
+                <div class="notice-text-content">
+                  <span class="notice-title">Navegação de Camadas Ativa em Todas as Camadas</span>
+                  <span class="notice-sub">O knob alternará entre as camadas continuamente em qualquer tela do PAD Pro.</span>
+                </div>
+              </div>
+              <button type="button" class="btn-undo-layer-nav" id="btn-undo-layer-nav" title="Restaurar as funções do knob configuradas anteriormente em cada camada">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                <span>Desfazer (Restaurar Funções)</span>
+              </button>
+            </div>
+
+            <div class="encoder-cards-grid">
+              
+              <!-- Volume Card -->
+              <div class="encoder-card active" data-value="volume">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-header-actions">
+                    <button type="button" class="btn-encoder-step-config" data-fn="volume" title="Configurar sensibilidade / passos do volume">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                    <div class="encoder-card-check">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Volume do Sistema</h4>
+                  <p class="encoder-card-desc">Controle o volume geral do Windows e silencie áudio com um clique.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Vol +</span>
+                  <span class="pill-ccw">⟲ Vol -</span>
+                  <span class="pill-click">● Mute</span>
+                </div>
+              </div>
+
+              <!-- Brilho Card -->
+              <div class="encoder-card" data-value="brightness">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <circle cx="12" cy="12" r="5"/>
+                      <line x1="12" y1="1" x2="12" y2="3"/>
+                      <line x1="12" y1="21" x2="12" y2="23"/>
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                      <line x1="1" y1="12" x2="3" y2="12"/>
+                      <line x1="21" y1="12" x2="23" y2="12"/>
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-header-actions">
+                    <button type="button" class="btn-encoder-step-config" data-fn="brightness" title="Configurar sensibilidade / passos do brilho">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                    <div class="encoder-card-check">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Brilho da Tela</h4>
+                  <p class="encoder-card-desc">Ajuste o nível de iluminação do display em tempo real.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Brilho +</span>
+                  <span class="pill-ccw">⟲ Brilho -</span>
+                  <span class="pill-click">● Padrão</span>
+                </div>
+              </div>
+
+              <!-- Scroll Card -->
+              <div class="encoder-card" data-value="scroll">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-emerald">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <rect x="6" y="2" width="12" height="20" rx="6"/>
+                      <circle cx="12" cy="7" r="1.5"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-header-actions">
+                    <button type="button" class="btn-encoder-step-config" data-fn="scroll" title="Configurar sensibilidade / passos da rolagem">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                    <div class="encoder-card-check">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Rolagem (Scroll)</h4>
+                  <p class="encoder-card-desc">Rola páginas da web, documentos e timelines com extrema fluidez.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Descer</span>
+                  <span class="pill-ccw">⟲ Subir</span>
+                  <span class="pill-click">● Clique Meio</span>
+                </div>
+              </div>
+
+              <!-- Navegação de Música Card -->
+              <div class="encoder-card" data-value="media">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <polygon points="19 20 9 12 19 4 19 20"/>
+                      <line x1="5" y1="19" x2="5" y2="5"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Navegação de Música</h4>
+                  <p class="encoder-card-desc">Avance faixas no Spotify/YouTube e pause sua reprodução.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Próxima</span>
+                  <span class="pill-ccw">⟲ Anterior</span>
+                  <span class="pill-click">● Play/Pause</span>
+                </div>
+              </div>
+
+              <!-- Zoom Card -->
+              <div class="encoder-card" data-value="zoom">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-cyan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <circle cx="11" cy="11" r="8"/>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      <line x1="11" y1="8" x2="11" y2="14"/>
+                      <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-header-actions">
+                    <button type="button" class="btn-encoder-step-config" data-fn="zoom" title="Configurar sensibilidade / passos do zoom">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                    <div class="encoder-card-check">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Zoom / Escala</h4>
+                  <p class="encoder-card-desc">Aproxime e afaste imagens ou código (Photoshop, Figma, VS Code).</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Zoom +</span>
+                  <span class="pill-ccw">⟲ Zoom -</span>
+                  <span class="pill-click">● Reset 100%</span>
+                </div>
+              </div>
+
+              <!-- Video Card -->
+              <div class="encoder-card" data-value="video">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-red">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <polygon points="23 7 16 12 23 17 23 7"/>
+                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Navegação de Vídeo</h4>
+                  <p class="encoder-card-desc">Avance e volte vídeos segundos a segundos (YouTube, VLC) e pause.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Avançar (→)</span>
+                  <span class="pill-ccw">⟲ Voltar (←)</span>
+                  <span class="pill-click">● Play/Pause</span>
+                </div>
+              </div>
+
+              <!-- Navegação de Camadas Card -->
+              <div class="encoder-card" data-value="layer_nav">
+                <div class="encoder-card-header">
+                  <div class="encoder-card-icon-wrap icon-indigo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+                      <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                      <polyline points="2 17 12 22 22 17"/>
+                      <polyline points="2 12 12 17 22 12"/>
+                    </svg>
+                  </div>
+                  <div class="encoder-card-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">Navegação de Camadas</h4>
+                  <p class="encoder-card-desc">Alterne entre as camadas do Pad girando o knob e volte para a primeira camada com um clique.</p>
+                </div>
+                <div class="encoder-card-footer">
+                  <span class="pill-cw">⟳ Próxima (+1)</span>
+                  <span class="pill-ccw">⟲ Anterior (-1)</span>
+                  <span class="pill-click">● Camada 0</span>
+                </div>
+              </div>
+
+              <!-- + Adicionar Nova Função Card -->
+              <div class="encoder-card encoder-card-add" id="btn-add-encoder-function" title="Criar nova função personalizada para o Knob">
+                <div class="encoder-card-add-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </div>
+                <div class="encoder-card-body">
+                  <h4 class="encoder-card-title">+ Nova Função</h4>
+                  <p class="encoder-card-desc">Crie um perfil próprio para o Knob com ações e sensibilidade personalizadas.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Custom Knob Configuration Box (shown when 'custom' card is active) -->
+            <div class="encoder-custom-config-box hidden" id="encoder-custom-config-box">
+              <div class="custom-config-header">
+                <div class="custom-config-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <span>Personalizar Ações do Botão Giratório</span>
+                </div>
+                <span class="custom-config-subtitle">Defina o que acontece ao girar para a direita, esquerda e ao pressionar o botão. Suporta atalhos, mídia, mouse e macros.</span>
+              </div>
+              <div class="custom-config-grid">
+                <!-- Girar Direita (CW) -->
+                <div class="custom-config-card">
+                  <div class="custom-config-card-top">
+                    <span class="direction-badge cw">⟳ Girar Direita (Horário)</span>
+                    <button type="button" class="btn btn-secondary btn-xs btn-choose-encoder-action" data-target="cw" title="Escolher entre Mídia, Mouse, Funções do Pad, Macros...">
+                      <span>Escolher Ação</span>
+                    </button>
+                  </div>
+                  <div class="custom-input-row">
+                    <input type="text" class="input-field custom-action-input" id="encoder-cw-input" placeholder="Ex: Ctrl + Right, Play/Pause ou Mouse Left" spellcheck="false">
+                    <button type="button" class="btn btn-record btn-sm" id="btn-record-cw" title="Gravar tecla física">
+                      <span class="rec-dot"></span><span>Gravar</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Girar Esquerda (CCW) -->
+                <div class="custom-config-card">
+                  <div class="custom-config-card-top">
+                    <span class="direction-badge ccw">⟲ Girar Esquerda (Anti-horário)</span>
+                    <button type="button" class="btn btn-secondary btn-xs btn-choose-encoder-action" data-target="ccw" title="Escolher entre Mídia, Mouse, Funções do Pad, Macros...">
+                      <span>Escolher Ação</span>
+                    </button>
+                  </div>
+                  <div class="custom-input-row">
+                    <input type="text" class="input-field custom-action-input" id="encoder-ccw-input" placeholder="Ex: Ctrl + Left, Vol - ou Mouse Wheel" spellcheck="false">
+                    <button type="button" class="btn btn-record btn-sm" id="btn-record-ccw" title="Gravar tecla física">
+                      <span class="rec-dot"></span><span>Gravar</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Pressionar Botão (Click) -->
+                <div class="custom-config-card">
+                  <div class="custom-config-card-top">
+                    <span class="direction-badge click">🔘 Pressionar Botão (Clique)</span>
+                    <button type="button" class="btn btn-secondary btn-xs btn-choose-encoder-action" data-target="click" title="Escolher entre Mídia, Mouse, Funções do Pad, Macros...">
+                      <span>Escolher Ação</span>
+                    </button>
+                  </div>
+                  <div class="custom-input-row">
+                    <input type="text" class="input-field custom-action-input" id="encoder-click-input" placeholder="Ex: Play/Pause, Enter, Mute ou Macro" spellcheck="false">
+                    <button type="button" class="btn btn-record btn-sm" id="btn-record-click" title="Gravar tecla física">
+                      <span class="rec-dot"></span><span>Gravar</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: SOUNDPAD                                               -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-soundpad">
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="soundpad.title">Integração Soundpad</h1>
+        </div>
+        <div class="settings-section">
+          <!-- Master toggle -->
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="soundpad.title">Soundpad</span>
+              <small>Habilitar integração e detecção de sons</small>
+            </div>
+            <div class="toggle-switch" id="toggle-soundpad">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+
+          <!-- Dependent group (locks when disabled) -->
+          <div id="soundpad-options-group" class="settings-subgroup">
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span data-i18n="soundpad.status">Status da Conexão</span>
+                <small id="soundpad-status-text">Verificando Named Pipe...</small>
+              </div>
+              <div class="status-dot" id="soundpad-status-dot"></div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span data-i18n="soundpad.previewOnHold">Preview ao Segurar Tecla</span>
+                <small>Mostra o nome do som na tela antes de disparar o áudio</small>
+              </div>
+              <div class="toggle-switch" id="toggle-preview">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Soundpad Sync Section -->
+        <div class="settings-section">
+          <div class="settings-section-title">Sincronização de Áudios</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Sincronizar com o Soundpad</span>
+              <small id="soundpad-last-sync-text">Detecta novos áudios e nomes alterados instantaneamente</small>
+            </div>
+            <button class="btn btn-primary btn-sm btn-soundpad-sync" id="btn-sync-soundpad-page" type="button">
+              <svg class="sync-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Sincronizar Sons Agora</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Detected Sounds List -->
+        <div class="settings-section">
+          <div class="soundpad-library-header">
+            <div class="settings-section-title" style="margin-bottom: 0;">Áudios Detectados do Soundpad</div>
+            <span class="soundpad-library-badge" id="soundpad-sounds-count">0 sons</span>
+          </div>
+          <p class="soundpad-library-desc">Lista em tempo real dos sons com teclas de atalho configuradas no Soundpad.</p>
+          <div class="soundpad-sounds-list" id="soundpad-sounds-list">
+            <div class="soundpad-empty-hint">Nenhum som detectado. Abra o Soundpad e clique em "Sincronizar Sons Agora".</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: SETTINGS (HUD, Startup, Tray, System)                  -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="settings.title">Configurações</h1>
+        </div>
+
+        <!-- HUD Flutuante -->
+        <div class="settings-section">
+          <div class="settings-section-title">HUD Flutuante (Notificações)</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Ativar HUD Flutuante</span>
+              <small>Exibe a pílula translúcida no canto da tela com as teclas e camadas ativas</small>
+            </div>
+            <div class="toggle-switch active" id="toggle-hud">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+          <div id="hud-options-group" class="settings-subgroup">
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Comportamento de Exibição</span>
+                <small>Fixar a HUD o tempo todo na tela ou exibir apenas ao acionar botões</small>
+              </div>
+              <div class="segmented-control" id="hud-mode-selector">
+                <button type="button" class="segment-btn active" data-mode="always" id="hud-mode-always">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="4"/>
+                  </svg>
+                  <span>Sempre Visível</span>
+                </button>
+                <button type="button" class="segment-btn" data-mode="auto_hide" id="hud-mode-autohide">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                  <span>Apenas ao Acionar Tecla</span>
+                </button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Posição do HUD na Tela</span>
+                <small>O HUD pode ser arrastado para onde você quiser. Use esta opção para restaurar ao canto padrão.</small>
+              </div>
+              <button class="btn btn-sm" id="btn-reset-hud-pos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                <span>Redefinir Posição</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sistema e Segundo Plano -->
+        <div class="settings-section">
+          <div class="settings-section-title">Sistema & Segundo Plano</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Iniciar com o Windows</span>
+              <small>Abre o configurador automaticamente ao ligar o computador</small>
+            </div>
+            <div class="toggle-switch" id="toggle-start-boot">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Iniciar Minimizado na Bandeja</span>
+              <small>Inicia em segundo plano sem abrir a janela principal</small>
+            </div>
+            <div class="toggle-switch" id="toggle-start-minimized">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Manter em Segundo Plano ao Fechar</span>
+              <small>Ao clicar em "X", o app minimiza para a bandeja em vez de encerrar</small>
+            </div>
+            <div class="toggle-switch active" id="toggle-close-tray">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Idioma -->
+        <div class="settings-section">
+          <div class="settings-section-title" data-i18n="settings.language">Idioma</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Idioma / Language</span>
+            </div>
+            <select class="select-field" id="language-select">
+              <option value="pt-BR">Português (Brasil)</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conexão Hardware -->
+        <div class="settings-section">
+          <div class="settings-section-title" data-i18n="settings.connection">Hardware (PAD Pro)</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="settings.serialPort">Porta Serial</span>
+              <small id="serial-port-info">Nenhum dispositivo</small>
+            </div>
+            <button class="btn btn-sm" id="btn-refresh-ports">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span data-i18n="settings.refresh">Atualizar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modo Desenvolvedor -->
+        <div class="settings-section">
+          <div class="settings-section-title">Avançado & Diagnóstico</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Modo Desenvolvedor</span>
+              <small>Habilita o console de Serial Log no cabeçalho para depuração em tempo real</small>
+            </div>
+            <div class="toggle-switch" id="toggle-developer-mode">
+              <div class="toggle-track"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backup & Sincronização -->
+        <div class="settings-section">
+          <div class="settings-section-title">Backup & Sincronização</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Exportar Configurações</span>
+              <small>Gera um arquivo de backup (.json) com todas as camadas, teclas, funções do knob e macros</small>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-export-config">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Exportar Backup</span>
+            </button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span>Importar Configurações</span>
+              <small>Restaura todo o perfil do Pad a partir de um arquivo .json salvo anteriormente</small>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary btn-sm" id="btn-import-config">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Importar Backup</span>
+              </button>
+              <input type="file" id="input-import-config" accept=".json" style="display: none;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Atualizações do Sistema -->
+        <div class="settings-section">
+          <div class="settings-section-title">Atualizações e Versão</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-weight: 600;">PAD Pro Desktop</span>
+                <span class="badge-app-version" id="settings-app-version">v1.0.4</span>
+              </div>
+              <small id="settings-updater-status">Verifique se há novas melhorias ou correções disponíveis para seu aplicativo.</small>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="btn btn-outline btn-sm" id="btn-check-updates">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Verificar Atualizações</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Geral / Reset -->
+        <div class="settings-section">
+          <div class="settings-section-title" data-i18n="settings.general">Geral</div>
+          <div class="settings-row">
+            <div class="settings-row-label">
+              <span data-i18n="settings.resetAll">Restaurar Padrões de Fábrica</span>
+              <small>Apaga todas as camadas e atalhos customizados</small>
+            </div>
+            <button class="btn btn-danger btn-sm" id="btn-reset-all" data-i18n="settings.resetAll">Restaurar Padrões</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: CUSTOMIZATION                                         -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-customization">
+        <div class="page-header">
+          <h1 class="page-title">Personalização Visual</h1>
+          <p class="page-header-subtitle">Ajuste o visual do display OLED da Raspberry Pi Pico e os efeitos visuais do aplicativo.</p>
+        </div>
+
+        <div class="customization-container">
+          <!-- OLED Preview & Options -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <span>Display OLED da Placa (128×32)</span>
+            </div>
+
+            <!-- Realistic OLED Simulator -->
+            <div class="oled-simulator-box">
+              <div class="oled-simulator-header">
+                <span class="oled-sim-badge">SSD1306 0.96" Live Preview</span>
+                <span class="oled-sim-hint">Simulação fiel da tela da placa</span>
+              </div>
+              <div class="oled-screen-frame">
+                <div class="oled-screen-inner" id="oled-sim-screen">
+                  <div class="oled-sim-top">
+                    <span class="oled-sim-layer-name" id="oled-sim-layer-name">CAMADA 0</span>
+                    <span class="oled-sim-dots" id="oled-sim-dots">● ○ ○ ○</span>
+                  </div>
+                  <div class="oled-sim-divider" id="oled-sim-divider"></div>
+                  <div class="oled-sim-bottom">
+                    <div class="oled-sim-icon-box" id="oled-sim-icon-box">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </div>
+                    <span class="oled-sim-action-text" id="oled-sim-action-text">VOL &amp; MUTE</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Toggles for OLED -->
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Linha Divisória no OLED</span>
+                <small>Exibe uma linha sutil horizontal dividindo a barra superior da camada e a ação inferior</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-oled-divider">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Ícones Gráficos em Pixel-Art</span>
+                <small>Exibe o ícone de cada função (volume, brilho, zoom, multimídia, etc.) na tela</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-oled-icons">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Indicadores de Camada (Pontos de Status)</span>
+                <small>Exibe os pontos visuais (● ○ ○ ○) na barra superior mostrando qual camada está selecionada</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-oled-dots">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Animações na Telinha OLED</span>
+                <small>Habilita animações dinâmicas na tela da placa (ícone animado de alto-falante ao tocar áudio, transição suave entre camadas e engrenagem ao sincronizar)</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-oled-animations">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Duração dos Avisos no Display OLED</span>
+                <small>Tempo em segundos que alertas de tecla, nome de faixas do Soundpad e ajustes de volume permanecem na telinha física antes de retornar à tela da camada.</small>
+              </div>
+              <select class="select-field" id="select-oled-timeout" style="width: 140px;">
+                <option value="1.0">1.0 segundo</option>
+                <option value="1.2" selected>1.2 segundos</option>
+                <option value="1.8">1.8 segundos</option>
+                <option value="2.5">2.5 segundos</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- App & Virtual Pad Options -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+              <span>Efeitos Visuais do Aplicativo &amp; Pad Virtual</span>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Efeito Neon &amp; Brilho Glow</span>
+                <small>Adiciona iluminação suave e moderna ao redor das teclas com a cor da camada ativa</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-app-glow">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Texto Rolante Suave (Marquee)</span>
+                <small>Rola automaticamente textos ou nomes longos de som que ultrapassam o tamanho da tecla</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-app-marquee">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Feedback de Clique Físico em Tempo Real</span>
+                <small>Anima e ilumina a tecla no configurador instantaneamente ao pressioná-la no Sharkropad</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-app-feedback">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">
+                <span>Animações Fluidas de Transição</span>
+                <small>Habilita efeitos suaves de fade e abertura entre abas e menus</small>
+              </div>
+              <div class="toggle-switch active" id="toggle-app-animations">
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================== -->
+      <!-- PAGE: ABOUT                                                  -->
+      <!-- =========================================================== -->
+      <div class="page" id="page-about">
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="about.title">Sobre</h1>
+        </div>
+
+        <div class="about-card">
+          <div class="about-logo">
+            <img src="../build/icon.png" alt="PAD Pro Logo" width="68" height="68" style="border-radius: 18px; box-shadow: 0 0 28px rgba(59, 108, 251, 0.5);">
+          </div>
+          <h2>PAD Pro Configurator</h2>
+          <div class="version">v2.0.0 PRO</div>
+          <p data-i18n="about.description">Configurador visual avançado com HUD flutuante nativo e integração Soundpad</p>
+
+          <div class="about-specs">
+            <div class="about-spec">
+              <div class="about-spec-label" data-i18n="about.hardware">Hardware</div>
+              <div class="about-spec-value" data-i18n="about.picoRP2040">PAD Pro (RP2040)</div>
+            </div>
+            <div class="about-spec">
+              <div class="about-spec-label" data-i18n="about.firmware">Firmware</div>
+              <div class="about-spec-value">CircuitPython 10.2.1</div>
+            </div>
+            <div class="about-spec">
+              <div class="about-spec-label" data-i18n="about.display">Display</div>
+              <div class="about-spec-value">OLED I2C 0.96" SSD1306</div>
+            </div>
+            <div class="about-spec">
+              <div class="about-spec-label">Matriz</div>
+              <div class="about-spec-value">3 Linhas × 4 Colunas (12 Teclas) + Encoder EC11</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- RECORDING OVERLAY                                                 -->
+  <!-- ================================================================= -->
+  <div class="recording-overlay" id="recording-overlay">
+    <div class="recording-card">
+      <div class="recording-pulse"></div>
+      <h3 data-i18n="recording.title">Pressione as Teclas</h3>
+      <p data-i18n="recording.instruction">Pressione o atalho desejado no teclado físico...</p>
+      <div class="recording-keys" id="recording-keys-display">
+        <span style="color: var(--text-muted); font-size: 13px;">Aguardando teclas...</span>
+      </div>
+      <div class="recording-actions">
+        <button class="btn btn-sm" id="btn-recording-cancel" data-i18n="recording.cancel">Cancelar</button>
+        <button class="btn btn-danger btn-sm" id="btn-recording-reset" data-i18n="recording.reset" title="Limpar teclas gravadas">Resetar</button>
+        <button class="btn btn-primary btn-sm" id="btn-recording-confirm" data-i18n="recording.apply">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- CUSTOM CONFIRM / ALERT MODAL (App Visual Identity)                -->
+  <!-- ================================================================= -->
+  <div class="custom-modal-overlay hidden" id="custom-confirm-overlay">
+    <div class="custom-modal-card" id="custom-confirm-card">
+      <div class="custom-modal-header">
+        <div class="custom-modal-title-wrap">
+          <div class="custom-modal-icon-badge" id="custom-modal-icon-badge">
+            <svg id="custom-modal-icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h3 class="custom-modal-title" id="custom-modal-title">Confirmar Ação</h3>
+        </div>
+        <button class="custom-modal-close" id="custom-modal-close-btn" title="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="custom-modal-body">
+        <p class="custom-modal-message" id="custom-modal-message">Tem certeza que deseja prosseguir?</p>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="custom-modal-cancel-btn">Cancelar</button>
+        <button class="btn btn-danger custom-modal-btn-confirm" id="custom-modal-confirm-btn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- CUSTOM RENAME LAYER MODAL (App Visual Identity)                   -->
+  <!-- ================================================================= -->
+  <div class="custom-modal-overlay hidden" id="custom-rename-overlay">
+    <div class="custom-modal-card" id="custom-rename-card">
+      <div class="custom-modal-header">
+        <div class="custom-modal-title-wrap">
+          <div class="custom-modal-icon-badge info" id="rename-modal-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </div>
+          <h3 class="custom-modal-title" id="rename-modal-title">Renomear Camada</h3>
+        </div>
+        <button class="custom-modal-close" id="rename-modal-close-btn" title="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="rename-modal-input-group">
+          <label class="rename-modal-label" for="rename-layer-input">Nome da Camada</label>
+          <div class="rename-modal-input-wrap">
+            <input
+              type="text"
+              id="rename-layer-input"
+              class="rename-modal-input"
+              maxlength="20"
+              placeholder="Ex: JOGOS, DISCORD, STREAM..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <span class="rename-modal-counter" id="rename-layer-counter">0/20</span>
+          </div>
+          <p class="rename-modal-hint">Este nome será exibido nas abas, no display OLED do pad e no HUD flutuante.</p>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="rename-modal-cancel-btn">Cancelar</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="rename-modal-save-btn">Salvar Nome</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- SERIAL DEBUG CONSOLE DRAWER                                       -->
+  <!-- ================================================================= -->
+  <div id="serial-log-drawer" class="serial-log-drawer hidden">
+    <div class="log-drawer-header">
+      <div class="log-drawer-title">
+        <span class="log-terminal-icon">📟</span>
+        <span>Terminal Serial — Comunicação em Tempo Real</span>
+        <span class="log-port-tag" id="log-port-tag">Buscando...</span>
+      </div>
+      <div class="log-drawer-actions">
+        <button id="btn-copy-logs" class="btn-drawer-action" title="Copiar logs para a área de transferência">📋 Copiar</button>
+        <button id="btn-export-logs" class="btn-drawer-action" title="Exportar logs para arquivo .txt">💾 Exportar TXT</button>
+        <button id="btn-clear-logs" class="btn-drawer-action" title="Limpar logs">Limpar</button>
+        <button id="btn-close-logs" class="btn-drawer-action" title="Fechar painel">✕</button>
+      </div>
+    </div>
+    <div id="serial-log-body" class="log-drawer-body">
+      <div class="log-line system">[Sistema] Monitor serial pronto. Eventos serão listados abaixo...</div>
+    </div>
+  </div>
+
+  <!-- Modal: Sensibilidade do Passo do Encoder -->
+  <div class="custom-modal-overlay hidden" id="modal-encoder-step">
+    <div class="custom-modal-card" style="max-width: 440px;">
+      <div class="custom-modal-header">
+        <div class="custom-modal-header-icon" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.3);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38BDF8" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div class="custom-modal-header-text">
+          <h3 class="custom-modal-title" id="modal-step-title">Sensibilidade do Passo</h3>
+          <p class="custom-modal-subtitle">Defina o quanto varia a cada estalo ao girar o Knob.</p>
+        </div>
+        <button class="custom-modal-close-btn" id="btn-close-step-modal">✕</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="step-config-row">
+          <div class="step-label-col">
+            <span class="step-title">⟳ Girar Direita (Aumentar)</span>
+            <small class="step-desc">Quantas unidades adiciona por estalo</small>
+          </div>
+          <div class="stepper-control">
+            <button type="button" class="btn-stepper-btn" id="btn-step-cw-minus">−</button>
+            <input type="number" id="input-step-cw" min="1" max="20" value="2" class="stepper-input">
+            <button type="button" class="btn-stepper-btn" id="btn-step-cw-plus">+</button>
+          </div>
+        </div>
+        <div class="step-config-row mt-12">
+          <div class="step-label-col">
+            <span class="step-title">⟲ Girar Esquerda (Diminuir)</span>
+            <small class="step-desc">Quantas unidades subtrai por estalo</small>
+          </div>
+          <div class="stepper-control">
+            <button type="button" class="btn-stepper-btn" id="btn-step-ccw-minus">−</button>
+            <input type="number" id="input-step-ccw" min="1" max="20" value="2" class="stepper-input">
+            <button type="button" class="btn-stepper-btn" id="btn-step-ccw-plus">+</button>
+          </div>
+        </div>
+        <div class="step-preview-box mt-16">
+          <div class="step-preview-pill">Direita: <strong id="step-preview-cw">+2</strong></div>
+          <div class="step-preview-pill">Esquerda: <strong id="step-preview-ccw">-2</strong></div>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="btn-cancel-step">Cancelar</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="btn-save-step">Salvar Passo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Seletor Completo de Ações do Encoder (Combinação, Funções, Mídia, Mouse, Macro) -->
+  <div class="custom-modal-overlay hidden" id="modal-encoder-action-picker">
+    <div class="custom-modal-card" style="max-width: 580px;">
+      <div class="custom-modal-header">
+        <div class="custom-modal-header-icon" style="background: rgba(167, 139, 250, 0.15); border-color: rgba(167, 139, 250, 0.3);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#A78BFA" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        </div>
+        <div class="custom-modal-header-text">
+          <h3 class="custom-modal-title" id="encoder-picker-title">Escolher Ação do Knob</h3>
+          <p class="custom-modal-subtitle" id="encoder-picker-subtitle">Selecione o tipo de comando a ser acionado.</p>
+        </div>
+        <button class="custom-modal-close-btn" id="btn-close-encoder-picker">✕</button>
+      </div>
+      <div class="custom-modal-body" style="padding-top: 6px;">
+        <!-- Tabs de Ação -->
+        <div class="config-tabs mb-16" id="encoder-picker-tabs">
+          <button type="button" class="config-tab active" data-tab="combination">Combinação</button>
+          <button type="button" class="config-tab" data-tab="functions">Sistema / Camadas</button>
+          <button type="button" class="config-tab" data-tab="media">Música & Volume</button>
+          <button type="button" class="config-tab" data-tab="mouse">Mouse</button>
+          <button type="button" class="config-tab" data-tab="macro">Macro</button>
+          <button type="button" class="config-tab" data-tab="url">Abrir URL</button>
+        </div>
+
+        <!-- Conteúdo: Combinação -->
+        <div class="encoder-tab-pane active" id="enc-pane-combination">
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <span class="form-label">Modificadores</span>
+              <div class="checkbox-group">
+                <label class="checkbox-item enc-cb-mod" data-mod="Ctrl">
+                  <input type="checkbox"><span class="checkbox-mark"></span>Ctrl
+                </label>
+                <label class="checkbox-item enc-cb-mod" data-mod="Alt">
+                  <input type="checkbox"><span class="checkbox-mark"></span>Alt
+                </label>
+                <label class="checkbox-item enc-cb-mod" data-mod="Shift">
+                  <input type="checkbox"><span class="checkbox-mark"></span>Shift
+                </label>
+                <label class="checkbox-item enc-cb-mod" data-mod="Win">
+                  <input type="checkbox"><span class="checkbox-mark"></span>Win
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Tecla Base</span>
+              <input type="text" class="input-field" id="enc-custom-key-input" placeholder="Ex: Right, Vol+, C..." style="width: 130px;">
+            </div>
+          </div>
+          <div class="mt-12 flex items-center justify-between">
+            <small style="color: #94A3B8;">Ou grave pressionando a tecla física no teclado:</small>
+            <button type="button" class="btn btn-record btn-sm" id="btn-record-picker">
+              <span class="rec-dot"></span><span>Gravar Tecla</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Conteúdo: Funções do Pad & Sistema -->
+        <div class="encoder-tab-pane hidden" id="enc-pane-functions">
+          <div class="action-list functions-action-list">
+            <div class="action-item enc-action-choice" data-action="layer_next">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/></svg>
+              <span class="action-item-label">Próxima Camada (+1)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="layer_prev">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span class="action-item-label">Camada Anterior (-1)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="layer_0">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span class="action-item-label">Primeira Camada (Camada 0)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="vol_up">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span class="action-item-label">Aumentar Volume (Vol +)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="vol_down">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span class="action-item-label">Diminuir Volume (Vol -)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mute">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              <span class="action-item-label">Silenciar (Mute)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="brightness_up">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/></svg>
+              <span class="action-item-label">Brilho (+)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="brightness_down">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <span class="action-item-label">Brilho (-)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="zoom_in">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              <span class="action-item-label">Zoom In (+)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="zoom_out">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              <span class="action-item-label">Zoom Out (-)</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="zoom_reset">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><text x="7" y="14" font-size="7" font-weight="bold" fill="currentColor">1:1</text></svg>
+              <span class="action-item-label">Resetar Zoom (100%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo: Mídia -->
+        <div class="encoder-tab-pane hidden" id="enc-pane-media">
+          <div class="action-list functions-action-list">
+            <div class="action-item enc-action-choice" data-action="play_pause">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span class="action-item-label">Play/Pause</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="stop">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+              <span class="action-item-label">Stop</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="prev_track">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+              <span class="action-item-label">Faixa Anterior</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="next_track">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+              <span class="action-item-label">Próxima Faixa</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="vol_up">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span class="action-item-label">Volume +</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="vol_down">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span class="action-item-label">Volume -</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mute">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              <span class="action-item-label">Mute (Mudo)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo: Mouse -->
+        <div class="encoder-tab-pane hidden" id="enc-pane-mouse">
+          <div class="action-list functions-action-list">
+            <div class="action-item enc-action-choice" data-action="mouse_left">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="10"/></svg>
+              <span class="action-item-label">Clique Esquerdo</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mouse_right">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><line x1="12" y1="2" x2="12" y2="10"/></svg>
+              <span class="action-item-label">Clique Direito</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mouse_middle">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="6"/><circle cx="12" cy="7" r="1.5"/></svg>
+              <span class="action-item-label">Clique do Meio</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mouse_wheel_up">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+              <span class="action-item-label">Scroll para Cima</span>
+            </div>
+            <div class="action-item enc-action-choice" data-action="mouse_wheel_down">
+              <svg class="action-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="action-item-label">Scroll para Baixo</span>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Conteúdo: Macro -->
+        <div class="encoder-tab-pane hidden" id="enc-pane-macro">
+          <div class="macro-picker-list" id="enc-macro-list">
+            <!-- Gerado dinamicamente com as macros cadastradas -->
+          </div>
+        </div>
+
+        <!-- Conteúdo: URL -->
+        <div class="encoder-tab-pane hidden" id="enc-pane-url">
+          <div class="form-group mb-16">
+            <span class="form-label">Endereço Web / Link (URL)</span>
+            <div class="url-input-row">
+              <input type="text" class="input-field flex-1" id="enc-picker-url-input" placeholder="https://exemplo.com ou youtube.com" autocomplete="off" spellcheck="false">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-test-enc-url">Testar Link</button>
+            </div>
+            <small class="form-hint" style="color: #94A3B8; font-size: 11.5px; margin-top: 6px; display: block;">
+              Ao acionar o encoder, o link será aberto instantaneamente no navegador padrão.
+            </small>
+          </div>
+          <div class="url-suggestions-box">
+            <span class="url-suggestions-title" style="font-size: 11.5px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">Atalhos Populares:</span>
+            <div class="url-chips-grid">
+              <button type="button" class="url-chip enc-url-chip" data-url="https://youtube.com">YouTube</button>
+              <button type="button" class="url-chip enc-url-chip" data-url="https://twitch.tv">Twitch</button>
+              <button type="button" class="url-chip enc-url-chip" data-url="https://discord.com/app">Discord</button>
+              <button type="button" class="url-chip enc-url-chip" data-url="https://open.spotify.com">Spotify</button>
+              <button type="button" class="url-chip enc-url-chip" data-url="https://github.com">GitHub</button>
+              <button type="button" class="url-chip enc-url-chip" data-url="https://chatgpt.com">ChatGPT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="btn-cancel-encoder-picker">Cancelar</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="btn-apply-encoder-picker">Aplicar Ação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Criar Nova Função de Encoder -->
+  <div class="custom-modal-overlay hidden" id="modal-create-encoder-fn">
+    <div class="custom-modal-card" style="max-width: 520px;">
+      <div class="custom-modal-header">
+        <div class="custom-modal-header-icon" style="background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22C55E" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="custom-modal-header-text">
+          <h3 class="custom-modal-title">Criar Função para o Knob</h3>
+          <p class="custom-modal-subtitle">Configure um novo modo de operação com tema e ações próprias.</p>
+        </div>
+        <button class="custom-modal-close-btn" id="btn-close-create-fn">✕</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="form-group mb-12">
+          <label class="form-label">Nome da Função</label>
+          <input type="text" class="input-field" id="new-fn-name" placeholder="Ex: Timeline Premiere, Brush Photoshop, Discord..." maxlength="24">
+        </div>
+        <div class="form-group mb-12">
+          <label class="form-label">Descrição Breve</label>
+          <input type="text" class="input-field" id="new-fn-desc" placeholder="Ex: Avança frames e corta áudio no clique..." maxlength="60">
+        </div>
+        <div class="form-group mb-16">
+          <label class="form-label">Cor / Tema</label>
+          <div class="color-palette-picker" id="new-fn-color-picker">
+            <div class="color-swatch active" data-color="#38BDF8" style="background: #38BDF8;"></div>
+            <div class="color-swatch" data-color="#22D3EE" style="background: #22D3EE;"></div>
+            <div class="color-swatch" data-color="#10B981" style="background: #10B981;"></div>
+            <div class="color-swatch" data-color="#F59E0B" style="background: #F59E0B;"></div>
+            <div class="color-swatch" data-color="#A78BFA" style="background: #A78BFA;"></div>
+            <div class="color-swatch" data-color="#EF4444" style="background: #EF4444;"></div>
+            <div class="color-swatch" data-color="#EC4899" style="background: #EC4899;"></div>
+          </div>
+        </div>
+
+        <div class="custom-fn-actions-list">
+          <!-- Girar Horário (CW) -->
+          <div class="custom-fn-action-block">
+            <div class="custom-fn-action-head">
+              <span class="direction-badge cw">⟳ Girar Horário (CW)</span>
+              <span class="custom-fn-preview-tag" id="tag-new-fn-cw">Nenhum</span>
+            </div>
+            <div class="custom-fn-action-input-row">
+              <input type="text" class="input-field flex-1 custom-fn-input" id="new-fn-cw" placeholder="Digite, escolha ou grave uma ação..." spellcheck="false">
+              <button type="button" class="btn btn-secondary btn-sm btn-open-enc-picker" data-target="new-fn-cw" title="Abrir catálogo completo de ações (Volume, Mídia, Mouse, Brilho, Camadas...)">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Escolher</span>
+              </button>
+              <button type="button" class="btn btn-record btn-sm btn-record-enc-action" data-target="new-fn-cw" title="Gravar atalho de teclado">
+                <span class="rec-dot"></span><span>Gravar</span>
+              </button>
+            </div>
+            <div class="custom-fn-quick-chips">
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Volume +">🔊 Vol +</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Brilho +">☀️ Brilho +</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Faixa">⏭️ Próx. Mús.</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Scroll Baixo">📜 Scroll ↓</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Zoom +">🔍 Zoom +</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Camada">📑 Próx. Camada</button>
+            </div>
+          </div>
+
+          <!-- Girar Anti-horário (CCW) -->
+          <div class="custom-fn-action-block">
+            <div class="custom-fn-action-head">
+              <span class="direction-badge ccw">⟲ Girar Anti-horário (CCW)</span>
+              <span class="custom-fn-preview-tag" id="tag-new-fn-ccw">Nenhum</span>
+            </div>
+            <div class="custom-fn-action-input-row">
+              <input type="text" class="input-field flex-1 custom-fn-input" id="new-fn-ccw" placeholder="Digite, escolha ou grave uma ação..." spellcheck="false">
+              <button type="button" class="btn btn-secondary btn-sm btn-open-enc-picker" data-target="new-fn-ccw" title="Abrir catálogo completo de ações (Volume, Mídia, Mouse, Brilho, Camadas...)">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Escolher</span>
+              </button>
+              <button type="button" class="btn btn-record btn-sm btn-record-enc-action" data-target="new-fn-ccw" title="Gravar atalho de teclado">
+                <span class="rec-dot"></span><span>Gravar</span>
+              </button>
+            </div>
+            <div class="custom-fn-quick-chips">
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Volume -">🔉 Vol -</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Brilho -">🌙 Brilho -</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Faixa Anterior">⏮️ Mús. Anterior</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Scroll Cima">📜 Scroll ↑</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Zoom -">🔍 Zoom -</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Camada Anterior">📑 Camada Ant.</button>
+            </div>
+          </div>
+
+          <!-- Pressionar Botão (Clique) -->
+          <div class="custom-fn-action-block">
+            <div class="custom-fn-action-head">
+              <span class="direction-badge click">🔘 Pressionar Botão (Clique)</span>
+              <span class="custom-fn-preview-tag" id="tag-new-fn-click">Nenhum</span>
+            </div>
+            <div class="custom-fn-action-input-row">
+              <input type="text" class="input-field flex-1 custom-fn-input" id="new-fn-click" placeholder="Digite, escolha ou grave uma ação..." spellcheck="false">
+              <button type="button" class="btn btn-secondary btn-sm btn-open-enc-picker" data-target="new-fn-click" title="Abrir catálogo completo de ações (Volume, Mídia, Mouse, Brilho, Camadas...)">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Escolher</span>
+              </button>
+              <button type="button" class="btn btn-record btn-sm btn-record-enc-action" data-target="new-fn-click" title="Gravar atalho de teclado">
+                <span class="rec-dot"></span><span>Gravar</span>
+              </button>
+            </div>
+            <div class="custom-fn-quick-chips">
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Mute">🔇 Mute</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Play/Pause">⏯️ Play/Pause</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Clique Meio">🖱️ Clique Meio</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Reset Zoom">🔍 Reset 100%</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Camada 0">🏠 Camada 0</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="btn-cancel-create-fn">Cancelar</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="btn-confirm-create-fn">Salvar e Adicionar Função</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Atualização do Aplicativo -->
+  <div class="custom-modal-overlay hidden" id="modal-app-update">
+    <div class="custom-modal-card" style="max-width: 500px;">
+      <div class="custom-modal-header">
+        <div class="custom-modal-header-icon" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.3);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38BDF8" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="custom-modal-header-text">
+          <h3 class="custom-modal-title" id="update-modal-title">Nova Atualização Disponível!</h3>
+          <p class="custom-modal-subtitle" id="update-modal-subtitle">Uma nova versão do PAD Pro está pronta para você.</p>
+        </div>
+        <button class="custom-modal-close-btn" id="btn-close-update-modal">✕</button>
+      </div>
+      <div class="custom-modal-body">
+        <div class="update-version-card">
+          <div class="update-version-meta">
+            <div class="update-badge-container">
+              <span class="update-badge-version" id="update-target-version">v1.0.5</span>
+              <span class="update-badge-tag">Nova Versão</span>
+            </div>
+            <span class="update-date-text" id="update-release-date"></span>
+          </div>
+          <div class="update-notes-box" id="update-notes-container">
+            <p class="update-notes-title">O que há de novo:</p>
+            <div class="update-notes-content" id="update-release-notes">Melhorias gerais de desempenho, novas funcionalidades e correções de estabilidade.</div>
+          </div>
+        </div>
+
+        <!-- Progresso do Download -->
+        <div class="update-progress-wrapper hidden" id="update-progress-wrapper">
+          <div class="update-progress-header">
+            <span id="update-progress-status-label">Baixando atualização...</span>
+            <span id="update-progress-pct-label">0%</span>
+          </div>
+          <div class="update-progress-track">
+            <div class="update-progress-fill" id="update-progress-bar" style="width: 0%;"></div>
+          </div>
+          <div class="update-progress-details">
+            <span id="update-progress-transferred">0 MB / 0 MB</span>
+            <span id="update-progress-speed">0 KB/s</span>
+          </div>
+        </div>
+      </div>
+      <div class="custom-modal-actions">
+        <button class="btn btn-secondary custom-modal-btn-cancel" id="btn-cancel-update">Lembrar Mais Tarde</button>
+        <button class="btn btn-primary custom-modal-btn-confirm" id="btn-confirm-update">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btn-confirm-update-text">Baixar e Atualizar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="services/i18n.js"></script>
+  <script src="services/config-store.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

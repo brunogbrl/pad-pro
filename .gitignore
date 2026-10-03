@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build and dist outputs
+dist/
+build/*.png
+!build/icon.ico
+!build/icon.png
+dist/
+
+# Logs
+*.log
+crash.log
+run.log
+out.txt
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Backups & local scratch
+backup_pre_redesign/
+firmware_backup/
+.gemini/
+
+# System files
+desktop.ini
+Desktop.ini
+Thumbs.db
+.DS_Store

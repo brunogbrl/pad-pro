@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Esquema de Ligação - Sharkropad Pro RP2040</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 12mm 12mm 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0F172A;
+      background: #FFFFFF;
+      line-height: 1.4;
+      font-size: 11.5px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284C7;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #0284C7, #4F46E5);
+      color: white;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 2px;
+    }
+
+    .header-titles p {
+      font-size: 10.5px;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: #F0FDF4;
+      border: 1px solid #86EFAC;
+      color: #166534;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-bottom: 3px;
+    }
+
+    .header-date {
+      font-size: 9.5px;
+      color: #94A3B8;
+    }
+
+    /* Grid Layout */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0369A1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .section-title svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 10.5px;
+    }
+
+    th {
+      background: #F1F5F9;
+      color: #334155;
+      text-align: left;
+      padding: 6px 10px;
+      font-weight: 700;
+      border: 1px solid #CBD5E1;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    td {
+      padding: 5px 10px;
+      border: 1px solid #E2E8F0;
+      color: #1E293B;
+    }
+
+    tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    .pin-badge {
+      display: inline-block;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-weight: 700;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .pin-gpio {
+      background: #E0F2FE;
+      color: #0369A1;
+      border: 1px solid #BAE6FD;
+    }
+
+    .pin-physical {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+      font-weight: 800;
+    }
+
+    .pin-pwr {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FECACA;
+    }
+
+    .pin-gnd {
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Matrix Visual Card */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: #FAFAFA;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .card h3 {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    .matrix-key {
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 6px 4px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .matrix-key.fixed-key {
+      border-color: #0284C7;
+      background: #F0F9FF;
+    }
+
+    .matrix-key-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+
+    .matrix-key-sub {
+      font-size: 8.5px;
+      color: #64748B;
+      font-family: monospace;
+      margin-top: 2px;
+    }
+
+    /* Diagram visual boxes */
+    .diagram-box {
+      background: #0B1120;
+      color: #E2E8F0;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 9.5px;
+      line-height: 1.35;
+      white-space: pre;
+      overflow: hidden;
+    }
+
+    .diagram-hl {
+      color: #38BDF8;
+      font-weight: bold;
+    }
+
+    .diagram-warn {
+      color: #F59E0B;
+      font-weight: bold;
+    }
+
+    .diagram-ok {
+      color: #4ADE80;
+    }
+
+    /* Callout Alert */
+    .callout {
+      background: #EFF6FF;
+      border-left: 4px solid #0284C7;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 8px;
+      font-size: 10px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #1E40AF;
+      margin-bottom: 2px;
+    }
+
+    .callout ul {
+      margin-left: 14px;
+      color: #334155;
+    }
+
+    .callout li {
+      margin-bottom: 2px;
+    }
+
+    .footer {
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      color: #94A3B8;
+      font-size: 9px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-badge">SHARKROPAD PRO</div>
+      <div class="header-titles">
+        <h1>Guia Técnico de Pinagem e Conexões</h1>
+        <p>Raspberry Pi Pico (RP2040) · CircuitPython Firmware Oficial</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-badge">✔ Firmware Validado</span>
+      <div class="header-date">Revisão Hardware v2.0 · 2026</div>
+    </div>
+  </div>
+
+  <!-- Tabela Geral de Pinagem -->
+  <div class="section-title">
+    <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+    <span>1. Tabela Geral de Pinos da Raspberry Pi Pico</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 22%;">Módulo / Periférico</th>
+        <th style="width: 20%;">Pino do Componente</th>
+        <th style="width: 18%;">Pino GPIO Pico</th>
+        <th style="width: 16%;">Pino Físico Pico</th>
+        <th style="width: 24%;">Configuração Elétrica / Firmware</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- OLED -->
+      <tr>
+        <td rowspan="4"><strong>Display OLED SSD1306</strong><br><span style="color:#64748B; font-size:9.5px;">I2C1 · 128×32 pixels</span></td>
+        <td><strong>VCC</strong></td>
+        <td><span class="pin-badge pin-pwr">3V3 (OUT)</span></td>
+        <td><span class="pin-badge pin-physical">Pino 36</span></td>
+        <td>Alimentação 3.3V (Não ligar em 5V!)</td>
+      </tr>
+      <tr>
+        <td><strong>GND</strong></td>
+        <td><span class="pin-badge pin-gnd">GND</span></td>
+        <td><span class="pin-badge pin-physical">Pino 38</span></td>
+        <td>Terra comum do circuito</td>
+      </tr>
+      <tr>
+        <td><strong>SDA</strong> (Dados)</td>
+        <td><span class="pin-badge pin-gpio">GP14</span></td>
+        <td><span class="pin-badge pin-physical">Pino 19</span></td>
+        <td>Linha I2C SDA (Barramento I2C1)</td>
+      </tr>
+      <tr>
+        <td><strong>SCL</strong> (Clock)</td>
+        <td><span class="pin-badge pin-gpio">GP15</span></td>
+        <td><span class="pin-badge pin-physical">Pino 20</span></td>
+        <td>Linha I2C SCL (Clock 400kHz)</td>
+      </tr>
+
+      <!-- Encoder -->
+      <tr>
+        <td rowspan="4"><strong>Rotary Encoder EC11</strong><br><span style="color:#64748B; font-size:9.5px;">Giro Digital + Botão Push</span></td>
+        <td><strong>Pino A</strong> (DT / Fase A)</td>
+        <td><span class="pin-badge pin-gpio">GP13</span></td>
+        <td><span class="pin-badge pin-physical">Pino 17</span></td>
+        <td>Input com Pull-Up interno ativado</td>
+      </tr>
+      <tr>
+        <td><strong>Pino B</strong> (CLK / Fase B)</td>
+        <td><span class="pin-badge pin-gpio">GP11</span></td>
+        <td><span class="pin-badge pin-physical">Pino 15</span></td>
+        <td>Input com Pull-Up interno ativado</td>
+      </tr>
+      <tr>
+        <td><strong>Pino SW</strong> (Clique Push)</td>
+        <td><span class="pin-badge pin-gpio">GP12</span></td>
+        <td><span class="pin-badge pin-physical">Pino 16</span></td>
+        <td>Input com Pull-Up interno ativado</td>
+      </tr>
+      <tr>
+        <td><strong>Comum (C) + GND SW</strong></td>
+        <td><span class="pin-badge pin-gnd">GND</span></td>
+        <td><span class="pin-badge pin-physical">Pino 18</span></td>
+        <td>Ligados juntos ao GND da Pico</td>
+      </tr>
+
+      <!-- Matriz Linhas -->
+      <tr>
+        <td rowspan="3"><strong>Matriz - Linhas (Rows)</strong><br><span style="color:#64748B; font-size:9.5px;">3 Linhas Horizontais</span></td>
+        <td><strong>Linha 0 (R0)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP2</span></td>
+        <td><span class="pin-badge pin-physical">Pino 4</span></td>
+        <td>Digital Output (Varredura ativa em LOW)</td>
+      </tr>
+      <tr>
+        <td><strong>Linha 1 (R1)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP3</span></td>
+        <td><span class="pin-badge pin-physical">Pino 5</span></td>
+        <td>Digital Output (Varredura ativa em LOW)</td>
+      </tr>
+      <tr>
+        <td><strong>Linha 2 (R2)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP4</span></td>
+        <td><span class="pin-badge pin-physical">Pino 6</span></td>
+        <td>Digital Output (Varredura ativa em LOW)</td>
+      </tr>
+
+      <!-- Matriz Colunas -->
+      <tr>
+        <td rowspan="4"><strong>Matriz - Colunas (Cols)</strong><br><span style="color:#64748B; font-size:9.5px;">4 Colunas Verticais</span></td>
+        <td><strong>Coluna 0 (C0)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP5</span></td>
+        <td><span class="pin-badge pin-physical">Pino 7</span></td>
+        <td>Digital Input com Pull-Up interno</td>
+      </tr>
+      <tr>
+        <td><strong>Coluna 1 (C1)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP6</span></td>
+        <td><span class="pin-badge pin-physical">Pino 9</span></td>
+        <td>Digital Input com Pull-Up interno</td>
+      </tr>
+      <tr>
+        <td><strong>Coluna 2 (C2)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP7</span></td>
+        <td><span class="pin-badge pin-physical">Pino 10</span></td>
+        <td>Digital Input com Pull-Up interno</td>
+      </tr>
+      <tr>
+        <td><strong>Coluna 3 (C3)</strong></td>
+        <td><span class="pin-badge pin-gpio">GP8</span></td>
+        <td><span class="pin-badge pin-physical">Pino 11</span></td>
+        <td>Digital Input com Pull-Up interno</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Detalhe da Matriz e Diagramas -->
+  <div class="cards-row">
+    <!-- Card Matriz -->
+    <div class="card">
+      <h3>
+        <span>2. Mapeamento da Matriz 3×4 (12 Teclas)</span>
+        <span style="font-size: 9px; font-weight: normal; color: #64748B;">Linha × Coluna</span>
+      </h3>
+      <div class="matrix-grid">
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 0</div>
+          <div class="matrix-key-sub">GP2 × GP5</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 1</div>
+          <div class="matrix-key-sub">GP2 × GP6</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 2</div>
+          <div class="matrix-key-sub">GP2 × GP7</div>
+        </div>
+        <div class="matrix-key fixed-key">
+          <div class="matrix-key-title" style="color:#0369A1;">Botão 3 ★</div>
+          <div class="matrix-key-sub">GP2 × GP8</div>
+        </div>
+
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 4</div>
+          <div class="matrix-key-sub">GP3 × GP5</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 5</div>
+          <div class="matrix-key-sub">GP3 × GP6</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 6</div>
+          <div class="matrix-key-sub">GP3 × GP7</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 7</div>
+          <div class="matrix-key-sub">GP3 × GP8</div>
+        </div>
+
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 8</div>
+          <div class="matrix-key-sub">GP4 × GP5</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 9</div>
+          <div class="matrix-key-sub">GP4 × GP6</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 10</div>
+          <div class="matrix-key-sub">GP4 × GP7</div>
+        </div>
+        <div class="matrix-key">
+          <div class="matrix-key-title">Botão 11</div>
+          <div class="matrix-key-sub">GP4 × GP8</div>
+        </div>
+      </div>
+      <div style="font-size: 8.5px; color: #64748B; margin-top: 6px; text-align: right;">
+        ★ <em>Botão 3 configurado de fábrica para Troca de Camada</em>
+      </div>
+    </div>
+
+    <!-- Card Esquemático Encoder e OLED -->
+    <div class="card">
+      <h3>
+        <span>3. Diagrama Esquemático dos Módulos</span>
+        <span style="font-size: 9px; font-weight: normal; color: #64748B;">Pinout Direto</span>
+      </h3>
+      <div class="diagram-box">
+<span class="diagram-hl">[ ROTARY ENCODER EC11 ]</span>
+  Lado do Giro (3 Pinos):
+    ├── Pino A (DT)  ────────> <span class="diagram-ok">GP13 (Pino 17)</span>
+    ├── Pino C (GND) ────────> <span class="diagram-warn">GND  (Pino 18)</span>
+    └── Pino B (CLK) ────────> <span class="diagram-ok">GP11 (Pino 15)</span>
+  Lado do Botão Push (2 Pinos):
+    ├── Pino SW ─────────────> <span class="diagram-ok">GP12 (Pino 16)</span>
+    └── Pino GND ────────────> <span class="diagram-warn">GND  (Pino 18)</span>
+
+<span class="diagram-hl">[ DISPLAY OLED SSD1306 (I2C) ]</span>
+    ├── VCC  ────────────────> <span class="diagram-warn">3V3 (OUT) (Pino 36)</span>
+    ├── GND  ────────────────> <span class="diagram-warn">GND       (Pino 38)</span>
+    ├── SCL  ────────────────> <span class="diagram-ok">GP15      (Pino 20)</span>
+    └── SDA  ────────────────> <span class="diagram-ok">GP14      (Pino 19)</span></div>
+    </div>
+  </div>
+
+  <!-- Recomendações e Dicas de Montagem -->
+  <div class="callout">
+    <div class="callout-title">⚡ Recomendações Técnicas Importantes para a Montagem:</div>
+    <ul>
+      <li><strong>Alimentação 3.3V Obrigatória para o OLED:</strong> Ligue o display estritamente no pino <strong>36 (3V3 OUT)</strong> da Raspberry Pi Pico. Não conecte no pino 40 (VBUS 5V), pois os pinos de dados I2C (GP14/GP15) são sensíveis e trabalham exclusivamente em 3.3V.</li>
+      <li><strong>Resistores de Pull-Up:</strong> Não é necessário soldar resistores externos de pull-up nas teclas nem no encoder. O firmware CircuitPython ativa internamente os resistores de <code>Pull.UP</code> de 50kΩ do microcontrolador RP2040 para GP5, GP6, GP7, GP8, GP11, GP12 e GP13.</li>
+      <li><strong>Diodos Anti-Ghosting (Opcional com 1N4148):</strong> Se optar por instalar diodos anti-ghosting em cada switch mecânico, solde o ânodo (lado liso) no pino do switch conectado à Linha (GP2, GP3 ou GP4) e o cátodo (lado com a faixa preta) direcionado para a Coluna (GP5, GP6, GP7 ou GP8).</li>
+      <li><strong>Rotary Encoder Invertido?</strong> Se ao girar no sentido horário o volume diminuir em vez de aumentar, basta inverter os fios do Pino A (GP13) e Pino B (GP11) ou alternar a opção no firmware.</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>Sharkropad Configurator Pro · Documentação Gerada Automaticamente</div>
+    <div>Hardware: Raspberry Pi Pico (RP2040) · Firmware: CircuitPython</div>
+  </div>
+
+</body>
+</html>

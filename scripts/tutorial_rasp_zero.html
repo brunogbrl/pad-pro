@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutorial Passo a Passo - Raspberry Pi Pico do Zero</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 12mm 12mm 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0F172A;
+      background: #FFFFFF;
+      line-height: 1.45;
+      font-size: 11px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284C7;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #0284C7, #4F46E5);
+      color: white;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 2px;
+    }
+
+    .header-titles p {
+      font-size: 10px;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      color: #1D4ED8;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-bottom: 3px;
+    }
+
+    /* Steps Layout */
+    .step-box {
+      margin-bottom: 10px;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      background: #FFFFFF;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #F8FAFC;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 6px 12px;
+    }
+
+    .step-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #0284C7;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    .step-content {
+      padding: 10px 14px;
+      color: #334155;
+      font-size: 10.5px;
+    }
+
+    .step-content p {
+      margin-bottom: 6px;
+    }
+
+    .step-content ul {
+      margin-left: 18px;
+      margin-bottom: 6px;
+    }
+
+    .step-content li {
+      margin-bottom: 3px;
+    }
+
+    /* Code & Tree Box */
+    .code-box {
+      background: #0B1120;
+      color: #E2E8F0;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 9.5px;
+      line-height: 1.4;
+      margin: 6px 0;
+      border: 1px solid #1E293B;
+      white-space: pre;
+    }
+
+    .hl-cyan { color: #38BDF8; font-weight: bold; }
+    .hl-green { color: #4ADE80; font-weight: bold; }
+    .hl-yellow { color: #FBBF24; font-weight: bold; }
+    .hl-muted { color: #64748B; }
+
+    /* Callout & Tips */
+    .callout {
+      background: #EFF6FF;
+      border-left: 4px solid #0284C7;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin: 8px 0;
+      font-size: 10px;
+    }
+
+    .callout-warn {
+      background: #FFFBEB;
+      border-left-color: #F59E0B;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #1E40AF;
+      margin-bottom: 2px;
+    }
+
+    .callout-warn .callout-title {
+      color: #92400E;
+    }
+
+    /* Two-col layout for quick steps */
+    .two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      color: #94A3B8;
+      font-size: 9px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-badge">SHARKROPAD PRO</div>
+      <div class="header-titles">
+        <h1>Instalação do Firmware do Zero</h1>
+        <p>Guia Completo: Da Raspberry Pi Pico Virgem ao Funcionamento Total</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-badge">Raspberry Pi Pico (RP2040)</span>
+      <div style="font-size: 9px; color: #64748B; margin-top: 2px;">CircuitPython 10.x / 9.x</div>
+    </div>
+  </div>
+
+  <!-- Requisitos Iniciais -->
+  <div class="callout" style="margin-top: 0; margin-bottom: 10px;">
+    <div class="callout-title">📦 Pré-requisitos Necessários:</div>
+    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #334155; margin-top: 3px;">
+      <span>• 1× Placa Raspberry Pi Pico (RP2040 convencional ou Pico H)</span>
+      <span>• 1× Cabo Micro-USB com linhas de dados</span>
+      <span>• Computador com porta USB</span>
+    </div>
+  </div>
+
+  <!-- Passo 1 -->
+  <div class="step-box">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div class="step-title">Colocar a Pico em Modo Bootloader (Unidade RPI-RP2)</div>
+    </div>
+    <div class="step-content">
+      <p>A Raspberry Pi Pico possui um botão branco soldado na placa com a escrita <strong>BOOTSEL</strong>:</p>
+      <ul>
+        <li>Com a placa <strong>desconectada</strong> do computador, aperte e <strong>mantenha pressionado</strong> o botão <strong>BOOTSEL</strong>.</li>
+        <li>Enquanto segura o botão, conecte o cabo USB na Pico e na porta USB do computador.</li>
+        <li>Após 2 segundos conectado, solte o botão <strong>BOOTSEL</strong>.</li>
+      </ul>
+      <p>✔ <strong>Resultado:</strong> O computador emitirá o som de conexão USB e abrirá uma unidade de disco chamada <strong><code>RPI-RP2</code></strong> (geralmente com arquivos <em>INDEX.HTM</em> e <em>INFO_UF2.TXT</em>).</p>
+    </div>
+  </div>
+
+  <!-- Passo 2 -->
+  <div class="step-box">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div class="step-title">Instalar o CircuitPython na Placa (.uf2)</div>
+    </div>
+    <div class="step-content">
+      <p>O firmware Sharkropad roda sobre o sistema <strong>CircuitPython</strong> da Adafruit:</p>
+      <ul>
+        <li>Baixe o arquivo oficial <strong>CircuitPython (.uf2)</strong> para Raspberry Pi Pico em: <span style="color:#0284C7; font-weight:600;">circuitpython.org/board/raspberry_pi_pico/</span> (Recomendado: versão <strong>10.x</strong> ou <strong>9.x</strong>).</li>
+        <li>Arraste e solte o arquivo baixado (ex: <code>adafruit-circuitpython-raspberry_pi_pico-pt_BR-10.x.x.uf2</code>) diretamente para dentro da unidade <strong><code>RPI-RP2</code></strong>.</li>
+      </ul>
+      <p>✔ <strong>Resultado:</strong> A placa reiniciará automaticamente em menos de 5 segundos. A unidade <code>RPI-RP2</code> desaparecerá e surgirá uma nova unidade de disco chamada <strong><code>CIRCUITPY</code></strong>.</p>
+    </div>
+  </div>
+
+  <!-- Passo 3 & 4 (Lado a Lado) -->
+  <div class="two-cols">
+    <!-- Passo 3 -->
+    <div class="step-box" style="margin-bottom: 0;">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">Copiar as Bibliotecas (Pasta lib/)</div>
+      </div>
+      <div class="step-content">
+        <p>Acesse a unidade <strong><code>CIRCUITPY</code></strong> e entre na pasta <strong><code>lib</code></strong> (se não existir, crie-a).</p>
+        <p>Copie os seguintes arquivos/pastas para dentro de <strong><code>CIRCUITPY/lib/</code></strong>:</p>
+        <div class="code-box"><span class="hl-cyan">CIRCUITPY/</span>
+└── <span class="hl-cyan">lib/</span>
+    ├── <span class="hl-green">adafruit_hid/</span> <span class="hl-muted">(Teclado/Mouse/Mídia)</span>
+    ├── <span class="hl-green">adafruit_display_text/</span> <span class="hl-muted">(Texto OLED)</span>
+    └── <span class="hl-green">adafruit_displayio_ssd1306.mpy</span></div>
+        <p style="font-size: 9.5px; color: #64748B;"><em>Dica: Todos esses arquivos já se encontram prontos na pasta <code>firmware_backup/lib/</code> do projeto Sharkropad.</em></p>
+      </div>
+    </div>
+
+    <!-- Passo 4 -->
+    <div class="step-box" style="margin-bottom: 0;">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">Copiar o Código e Configuração</div>
+      </div>
+      <div class="step-content">
+        <p>Copie os arquivos principais do projeto para a <strong>raiz</strong> da unidade <strong><code>CIRCUITPY</code></strong>:</p>
+        <ul>
+          <li>Copie <strong><code>scripts/code.py</code></strong> ➜ cole como <strong><code>CIRCUITPY/code.py</code></strong>.</li>
+          <li>Copie <strong><code>config.json</code></strong> ➜ cole como <strong><code>CIRCUITPY/config.json</code></strong>.</li>
+        </ul>
+        <div class="code-box"><span class="hl-cyan">CIRCUITPY/</span>
+├── <span class="hl-yellow">code.py</span>       <span class="hl-muted">(Firmware executado)</span>
+├── <span class="hl-yellow">config.json</span>   <span class="hl-muted">(Mapa de atalhos e cores)</span>
+└── <span class="hl-cyan">lib/</span>          <span class="hl-muted">(Bibliotecas instaladas)</span></div>
+        <p>Assim que o <code>code.py</code> é colado, a Pico reinicia e o código começa a rodar imediatamente!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Passo 5 -->
+  <div class="step-box">
+    <div class="step-header">
+      <div class="step-number">5</div>
+      <div class="step-title">Testar e Conectar no Aplicativo PAD Pro Configurator</div>
+    </div>
+    <div class="step-content">
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="flex: 1;">
+          <p>Com a placa conectada via USB, abra o executável <strong><code>PAD Pro.exe</code></strong>:</p>
+          <ul>
+            <li>O aplicativo detectará automaticamente a <strong>Porta Serial (COM)</strong> e a unidade <strong><code>CIRCUITPY</code></strong>.</li>
+            <li>No topo do configurador, a pílula de status ficará verde: <strong><code>Pad Conectado (COMx)</code></strong>.</li>
+            <li>A telinha OLED da placa acenderá mostrando a <strong>CAMADA 0</strong> e as bolinhas de status.</li>
+            <li>Gire o encoder e pressione as teclas para verificar as animações no aplicativo em tempo real!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="callout callout-warn" style="margin-top: 4px;">
+    <div class="callout-title">⚠️ Dicas Importantes e Resolução de Problemas:</div>
+    <ul style="margin-left: 14px; font-size: 9.5px; color: #78350F;">
+      <li><strong>A unidade RPI-RP2 ou CIRCUITPY não aparece?</strong> Mais de 80% dos problemas ocorrem pelo uso de cabos USB que são apenas para carregamento de celular (sem linhas de dados D+ e D-). Utilize sempre um cabo micro-USB de dados comprovado.</li>
+      <li><strong>O OLED não acende?</strong> Verifique se o pino VCC do display está ligado no pino 36 (3V3) da Pico, SDA no GP14 (Pino 19) e SCL no GP15 (Pino 20).</li>
+      <li><strong>Reset Total de Fábrica (Pico travada):</strong> Se a placa estiver com memória corrompida, baixe o arquivo <code>flash_nuke.uf2</code> no site da Raspberry Pi, coloque em modo BOOTSEL e arraste o <code>flash_nuke.uf2</code>. Ela apagará toda a memória flash para você recomeçar limpo do Passo 1.</li>
+      <li><strong>Como ver mensagens de erro:</strong> Se o código parar, abra o arquivo <code>CIRCUITPY/boot_out.txt</code> ou abra o Monitor Serial no configurador (Modo Desenvolvedor) para visualizar o log em tempo real.</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>Sharkropad Configurator Pro · Tutorial de Instalação do Firmware</div>
+    <div>Plataforma: Raspberry Pi Pico (RP2040) · CircuitPython</div>
+  </div>
+
+</body>
+</html>

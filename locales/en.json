@@ -1,0 +1,143 @@
+{
+  "app": {
+    "title": "PAD Pro Configurator",
+    "version": "v1.0"
+  },
+  "sidebar": {
+    "keys": "Keys",
+    "macro": "Macro",
+    "encoder": "Rotary Knob",
+    "soundpad": "Soundpad",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "layers": {
+    "title": "Layer",
+    "layer": "Layer",
+    "addLayer": "Add Layer",
+    "removeLayer": "Remove Layer",
+    "rename": "Rename",
+    "profile": "Profile"
+  },
+  "keys": {
+    "title": "Key Definition",
+    "noSelection": "No Key Selected",
+    "selected": "Key Selected",
+    "combination": "Combination",
+    "functions": "Pad Functions",
+    "macro": "Macro",
+    "media": "Media",
+    "mouse": "Mouse",
+    "soundpad": "Soundpad",
+    "confirm": "Confirm",
+    "reset": "Reset",
+    "notSet": "Not Set",
+    "fixed": "Pin Key",
+    "fixedDesc": "Keep same function across all layers",
+    "dualFunction": "Dual Function",
+    "dualFunctionDesc": "Different action when held",
+    "clickAction": "Quick Click",
+    "holdAction": "Long Press",
+    "record": "Record Shortcut",
+    "recording": "Press the desired keys...",
+    "recordStop": "Stop Recording",
+    "recordCancel": "Cancel"
+  },
+  "modifiers": {
+    "ctrl": "Ctrl",
+    "alt": "Alt",
+    "shift": "Shift",
+    "win": "Win"
+  },
+  "media": {
+    "player": "Player",
+    "playPause": "Play/Pause",
+    "stop": "Stop",
+    "prev": "Previous",
+    "next": "Next",
+    "volumeUp": "Volume +",
+    "volumeDown": "Volume -",
+    "mute": "Mute"
+  },
+  "mouse": {
+    "leftClick": "Left Click",
+    "rightClick": "Right Click",
+    "middleClick": "Middle Click",
+    "scrollUp": "Scroll Up",
+    "scrollDown": "Scroll Down",
+    "forward": "Forward",
+    "back": "Back"
+  },
+  "encoder": {
+    "title": "Encoder Configuration",
+    "function": "Function",
+    "volume": "System Volume",
+    "brightness": "Screen Brightness",
+    "scroll": "Scroll",
+    "mediaNav": "Music Navigation",
+    "layerNav": "Layer Navigation",
+    "custom": "Custom",
+    "clockwise": "Clockwise (CW)",
+    "counterClockwise": "Counter-clockwise (CCW)",
+    "press": "Press",
+    "sensitivity": "Sensitivity"
+  },
+  "recording": {
+    "title": "Press Keys",
+    "instruction": "Press the desired shortcut on your physical keyboard...",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "apply": "Apply"
+  },
+  "soundpad": {
+    "title": "Soundpad Integration",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "status": "Status",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "previewOnHold": "Preview on key hold",
+    "soundList": "Sound List",
+    "noSounds": "No sounds found",
+    "assignSound": "Assign sound to key"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "connection": "Connection",
+    "serialPort": "Serial Port",
+    "autoDetect": "Auto Detect",
+    "refresh": "Refresh",
+    "noDevice": "No device found",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "general": "General",
+    "startMinimized": "Start minimized",
+    "startWithWindows": "Start with Windows",
+    "resetAll": "Reset to Defaults",
+    "resetConfirm": "Are you sure? All settings will be lost.",
+    "exportConfig": "Export Configuration",
+    "importConfig": "Import Configuration"
+  },
+  "about": {
+    "title": "About",
+    "description": "Visual configurator for the PAD Pro macro pad",
+    "firmware": "Firmware",
+    "hardware": "Hardware",
+    "picoRP2040": "PAD Pro (RP2040)",
+    "display": "OLED Display 128×32",
+    "matrix": "Key Matrix 3×4",
+    "encoderHw": "Rotary Encoder"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No",
+    "on": "On",
+    "off": "Off",
+    "loading": "Loading..."
+  }
+}
