@@ -1863,22 +1863,28 @@
     const val = slotAction.value || '';
 
     if ((type === 'fixed' && val === 'layer-switch') || type === 'function') {
+      populateModifiersAndKey(null);
       switchConfigTab('functions');
       const item = document.querySelector(`#tab-functions .action-item[data-value="${val}"]`);
       if (item) item.classList.add('selected');
     } else if (type === 'media') {
+      populateModifiersAndKey(null);
       switchConfigTab('media');
       const item = document.querySelector(`#tab-media .action-item[data-value="${val}"]`);
       if (item) item.classList.add('selected');
     } else if (type === 'mouse') {
+      populateModifiersAndKey(null);
       switchConfigTab('mouse');
       const item = document.querySelector(`#tab-mouse .action-item[data-value="${val}"]`);
       if (item) item.classList.add('selected');
     } else if (type === 'macro') {
+      populateModifiersAndKey(null);
       switchConfigTab('macro');
+      renderMacroKeyPicker();
       const item = document.querySelector(`#macro-key-picker-list .action-item[data-macro-id="${val}"]`);
       if (item) item.classList.add('selected');
     } else if (type === 'url') {
+      populateModifiersAndKey(null);
       switchConfigTab('url');
       const urls = (slotAction.urls && slotAction.urls.length > 0) ? slotAction.urls : (val ? [val] : ['']);
       renderUrlInputs(urls);
@@ -1922,6 +1928,9 @@
     });
     const baseKey = document.getElementById('key-select')?.value || '';
 
+    // Ao escolher combinação ou tecla base, limpa seleções das outras abas
+    document.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
+
     let assignment = null;
     if (baseKey === 'layer-switch') {
       assignment = { type: 'fixed', value: 'layer-switch' };
@@ -1935,6 +1944,8 @@
       assignment = { type: 'key', value: baseKey };
     } else if (mods.length > 0) {
       assignment = { type: 'combo', value: mods };
+    } else {
+      assignment = { type: 'key', value: '' };
     }
 
     editingKeySlots[activeDualTarget] = assignment;
@@ -1950,6 +1961,10 @@
   // Action items selection across all tabs (Functions, Media, Mouse)
   document.querySelectorAll('.action-item[data-value]').forEach(item => {
     item.addEventListener('click', () => {
+      // Limpa os campos da aba Combinação para garantir exclusividade mútua
+      populateModifiersAndKey(null);
+      document.querySelectorAll('#macro-key-picker-list .action-item').forEach(i => i.classList.remove('selected'));
+
       const parent = item.closest('.action-list');
       parent?.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
       item.classList.add('selected');
@@ -2031,6 +2046,8 @@
     if (urls.length === 0) {
       assignment = { type: 'key', value: '' };
     } else {
+      populateModifiersAndKey(null);
+      document.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
       assignment = {
         type: 'url',
         value: urls[0],
@@ -4082,6 +4099,11 @@
       item.addEventListener('click', () => {
         picker.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
         item.classList.add('selected');
+
+        // Limpa aba de combinação e desmarca outros itens para exclusividade total
+        populateModifiersAndKey(null);
+        document.querySelectorAll('#tab-functions .action-item, #tab-media .action-item, #tab-mouse .action-item').forEach(i => i.classList.remove('selected'));
+
         const macroId = item.dataset.macroId;
         const macroName = item.dataset.macroName;
         const assignment = { type: 'macro', value: macroId, name: macroName };
@@ -4091,6 +4113,7 @@
           if (dualHoldVal) dualHoldVal.textContent = formatActionDisplay(assignment);
         } else {
           if (dualClickVal) dualClickVal.textContent = formatActionDisplay(assignment);
+          updateSoundpadKeyHint(assignment);
         }
       });
     });

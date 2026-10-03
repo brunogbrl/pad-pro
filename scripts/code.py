@@ -1040,10 +1040,34 @@ def formatar_tecla(tecla, key_number):
         if k_data and isinstance(k_data, dict):
             if k_data.get("label"):
                 return k_data["label"]
-            if k_data.get("type") == "url":
-                val = k_data.get("value", "")
-                clean_url = val.replace("https://", "").replace("http://", "").replace("www.", "")
+            tipo = k_data.get("type")
+            val = k_data.get("value")
+            if tipo == "macro":
+                return k_data.get("name") or "Macro"
+            if tipo == "url":
+                val_s = str(val or "")
+                clean_url = val_s.replace("https://", "").replace("http://", "").replace("www.", "")
                 return f"URL: {clean_url[:12]}"
+            if tipo == "fixed" and str(val) == "layer-switch":
+                return "Mudar Camada"
+            if tipo == "media":
+                media_nomes = {
+                    'play_pause': 'Play/Pause', 'stop': 'Stop', 'prev': 'Anterior',
+                    'next': 'Proxima', 'volume_up': 'Vol +', 'volume_down': 'Vol -', 'mute': 'Mute'
+                }
+                return media_nomes.get(str(val), str(val))
+            if tipo == "mouse":
+                mouse_nomes = {
+                    'click_left': 'Clique Esq', 'click_right': 'Clique Dir', 'click_middle': 'Clique Meio',
+                    'scroll_up': 'Scroll Cima', 'scroll_down': 'Scroll Baixo'
+                }
+                return mouse_nomes.get(str(val), str(val))
+            if tipo == "combo" and isinstance(val, list):
+                return " + ".join(str(v) for v in val)
+            if tipo == "key" and val:
+                return str(val)
+            if val:
+                return str(val)
 
     nomes = {
         Keycode.F13: "F13", Keycode.F14: "F14", Keycode.F15: "F15",
@@ -1073,6 +1097,8 @@ def obter_nome_acao(item_acao, default=""):
             return item_acao["label"]
         tipo = item_acao.get("type", "key")
         val = item_acao.get("value")
+        if tipo == "macro":
+            return item_acao.get("name") or "Macro"
         if isinstance(val, list):
             return " + ".join(str(v) for v in val)
         return str(val) if val else str(tipo or default)
@@ -1104,8 +1130,82 @@ def abrir_url_hid(url_val):
         except Exception as e:
             print(f"[URL HID ERRO] {e}")
 
+def executar_macro(macro_id):
+    """Executa nativamente os eventos gravados da macro via USB HID Keyboard."""
+    if not config_ativa:
+        return
+    macros = config_ativa.get("macros", [])
+    macro_encontrada = None
+    for m in macros:
+        if m.get("id") == macro_id:
+            macro_encontrada = m
+            break
+    if not macro_encontrada:
+        print(f"[MACRO AVISO] Macro {macro_id} nao encontrada no config.json")
+        return
+
+    nome = macro_encontrada.get("name", "Macro")
+    eventos = macro_encontrada.get("events", [])
+    mostrar_acao_oled("MACRO", nome[:18], duracao=1.5, icone='custom')
+    print(f"[SERIAL] MACRO: {nome} ({len(eventos)} eventos)")
+
+    mapa_macro_kc = {
+        'CTRL': Keycode.CONTROL, 'CONTROL': Keycode.CONTROL,
+        'ALT': Keycode.ALT, 'SHIFT': Keycode.SHIFT,
+        'WIN': Keycode.GUI, 'GUI': Keycode.GUI,
+        'ENTER': Keycode.ENTER, 'TAB': Keycode.TAB, 'ESC': Keycode.ESCAPE,
+        'ESCAPE': Keycode.ESCAPE, 'SPACE': Keycode.SPACE, 'ESPACO': Keycode.SPACE,
+        'BACKSPACE': Keycode.BACKSPACE, 'DELETE': Keycode.DELETE, 'DEL': Keycode.DELETE,
+        'UP': Keycode.UP_ARROW, 'DOWN': Keycode.DOWN_ARROW,
+        'LEFT': Keycode.LEFT_ARROW, 'RIGHT': Keycode.RIGHT_ARROW,
+        'PAGE_UP': Keycode.PAGE_UP, 'PAGE_DOWN': Keycode.PAGE_DOWN,
+        'HOME': Keycode.HOME, 'END': Keycode.END, 'INSERT': Keycode.INSERT,
+        'CAPS_LOCK': Keycode.CAPS_LOCK, 'PRINT_SCREEN': Keycode.PRINT_SCREEN,
+        'F1': Keycode.F1, 'F2': Keycode.F2, 'F3': Keycode.F3, 'F4': Keycode.F4,
+        'F5': Keycode.F5, 'F6': Keycode.F6, 'F7': Keycode.F7, 'F8': Keycode.F8,
+        'F9': Keycode.F9, 'F10': Keycode.F10, 'F11': Keycode.F11, 'F12': Keycode.F12,
+        'F13': Keycode.F13, 'F14': Keycode.F14, 'F15': Keycode.F15,
+        'F16': Keycode.F16, 'F17': Keycode.F17, 'F18': Keycode.F18,
+        'F19': Keycode.F19, 'F20': Keycode.F20, 'F21': Keycode.F21,
+        'F22': Keycode.F22, 'F23': Keycode.F23, 'F24': Keycode.F24,
+    }
+    for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        mapa_macro_kc[c] = getattr(Keycode, c)
+    for num_str, kc_attr in [("0", "ZERO"), ("1", "ONE"), ("2", "TWO"), ("3", "THREE"),
+                             ("4", "FOUR"), ("5", "FIVE"), ("6", "SIX"), ("7", "SEVEN"),
+                             ("8", "EIGHT"), ("9", "NINE")]:
+        mapa_macro_kc[num_str] = getattr(Keycode, kc_attr)
+
+    for ev in eventos:
+        k_str = str(ev.get("key", "")).strip().upper()
+        ev_type = ev.get("type", "down")
+        delay_ms = ev.get("delay", 0)
+        if delay_ms and delay_ms > 0:
+            time.sleep(min(delay_ms / 1000.0, 1.0))
+
+        kc = mapa_macro_kc.get(k_str)
+        if kc is not None:
+            try:
+                if ev_type == "down":
+                    teclado.press(kc)
+                elif ev_type == "up":
+                    teclado.release(kc)
+            except Exception:
+                pass
+        else:
+            if len(k_str) == 1 and ev_type == "down":
+                if teclado_layout:
+                    try:
+                        teclado_layout.write(ev.get("key"))
+                    except:
+                        pass
+    try:
+        teclado.release_all()
+    except:
+        pass
+
 def executar_acao_generica(acao):
-    """Executa atalhos de teclado, midia, mouse, URLs ou comandos de camada."""
+    """Executa atalhos de teclado, macros, midia, mouse, URLs ou comandos de camada."""
     if not acao:
         return
     
@@ -1117,6 +1217,9 @@ def executar_acao_generica(acao):
                 executar_atalho_string("+".join(str(v) for v in val))
             elif val:
                 executar_atalho_string(str(val))
+            return
+        elif tipo == "macro":
+            executar_macro(val)
             return
         elif tipo == "media":
             executar_acao_generica(str(val))
