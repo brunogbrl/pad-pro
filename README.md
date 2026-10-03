@@ -150,7 +150,7 @@ Os arquivos compilados estarão localizados dentro da pasta `dist/`.
 
 O firmware que roda na **Raspberry Pi Pico** utiliza **CircuitPython** e está disponível na pasta `scripts/code.py`. 
 Para conferir esquemas elétricos e tutoriais passo a passo:
-- 📄 [Esquema de Ligação do Hardware (PDF)](Esquema_Ligacao_Sharkropad_Pro.pdf)
+- 📄 [Esquema de Ligação do Hardware (PDF)](Esquema_Ligacao_PadPRO.pdf)
 - 📄 [Tutorial Raspberry Pi Pico do Zero (PDF)](Tutorial_Raspberry_Pi_Pico_Do_Zero.pdf)
 
 ---

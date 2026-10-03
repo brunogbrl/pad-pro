@@ -1347,24 +1347,33 @@ while True:
                             k_data = keys_dict.get(str(key_number)) or keys_dict.get(key_number)
                             if k_data and isinstance(k_data, dict) and k_data.get("type") == "url":
                                 is_url = True
-                                url_val = (k_data.get("value") or "").strip()
-                                if url_val and teclado_layout:
-                                    if not url_val.startswith("http://") and not url_val.startswith("https://"):
-                                        url_val = "https://" + url_val
+                                # Quando o app PadPRO do PC está conectado, ele abre todas as abas nativamente via shell
+                                # O envio de Win+R pelo teclado HID só ocorre como fallback se o app do PC estiver fechado
+                                app_conectado = False
+                                if TEM_SUPERVISOR:
                                     try:
-                                        # Abertura nativa no Windows mesmo com o app fechado (Win+R -> URL -> Enter)
-                                        teclado.press(Keycode.GUI, Keycode.R)
-                                        time.sleep(0.08)
-                                        teclado.release_all()
-                                        time.sleep(0.18)
-                                        teclado_layout.write(url_val)
-                                        time.sleep(0.05)
-                                        teclado.press(Keycode.ENTER)
-                                        time.sleep(0.05)
-                                        teclado.release_all()
-                                        print(f"[URL HID] Aberto nativamente: {url_val}")
-                                    except Exception as e_url:
-                                        print(f"[URL HID ERRO] {e_url}")
+                                        app_conectado = bool(supervisor.runtime.serial_connected)
+                                    except:
+                                        pass
+                                if not app_conectado:
+                                    url_val = (k_data.get("value") or "").strip()
+                                    if url_val and teclado_layout:
+                                        if not url_val.startswith("http://") and not url_val.startswith("https://"):
+                                            url_val = "https://" + url_val
+                                        try:
+                                            # Abertura nativa no Windows mesmo com o app fechado (Win+R -> URL -> Enter)
+                                            teclado.press(Keycode.GUI, Keycode.R)
+                                            time.sleep(0.08)
+                                            teclado.release_all()
+                                            time.sleep(0.18)
+                                            teclado_layout.write(url_val)
+                                            time.sleep(0.05)
+                                            teclado.press(Keycode.ENTER)
+                                            time.sleep(0.05)
+                                            teclado.release_all()
+                                            print(f"[URL HID] Aberto nativamente: {url_val}")
+                                        except Exception as e_url:
+                                            print(f"[URL HID ERRO] {e_url}")
 
                         if not is_url:
                             if isinstance(tecla_pressionada, (tuple, list)):

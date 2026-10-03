@@ -1318,12 +1318,13 @@ function handleSerialLine(line) {
     const layerObj = currentConfig?.layers?.[layer];
     const keyData = layerObj?.keys?.[keyIndex];
     if (keyData && (keyData.type === 'url' || (keyData.value && typeof keyData.value === 'string' && (keyData.value.startsWith('http://') || keyData.value.startsWith('https://'))))) {
-      // Coordinate with hardware: If hardware already opened URL via HID Win+R within 1.5s, don't open twice
-      if (typeof global._lastUrlTriggerTime === 'number' && Date.now() - global._lastUrlTriggerTime < 1500 && global._lastUrlTriggerKey === keyIndex) {
-        logDebug(`[URL HARDWARE] B${keyIndex} já disparada nativamente pelo teclado HID`);
+      const now = Date.now();
+      // Debounce de 1.2s por tecla para evitar disparo duplo em repetição de contato
+      if (global._lastUrlTriggerKey === keyIndex && (now - (global._lastUrlTriggerTime || 0)) < 1200) {
+        logDebug(`[URL DEBOUNCE] B${keyIndex} ignorado para evitar abertura duplicada`);
         return;
       }
-      global._lastUrlTriggerTime = Date.now();
+      global._lastUrlTriggerTime = now;
       global._lastUrlTriggerKey = keyIndex;
 
       let urlsToOpen = [];
@@ -1335,15 +1336,18 @@ function handleSerialLine(line) {
         urlsToOpen = [keyData.value.trim()];
       }
 
-      urlsToOpen.forEach((u) => {
-        let targetUrl = (u || '').trim();
-        if (targetUrl) {
-          if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-            targetUrl = 'https://' + targetUrl;
-          }
-          shell.openExternal(targetUrl).catch(e => logDebug(`[URL ERRO] ${e.message}`));
-          logDebug(`[URL ABERTA] B${keyIndex} abriu: ${targetUrl}`);
+      // Remover duplicatas e URLs vazias
+      const cleanUrls = [...new Set(urlsToOpen.map(u => (u || '').trim()).filter(Boolean))];
+      cleanUrls.forEach((u, idx) => {
+        let targetUrl = u;
+        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+          targetUrl = 'https://' + targetUrl;
         }
+        // Leve intervalo de 150ms entre abas para o navegador abrir ordenadamente
+        setTimeout(() => {
+          shell.openExternal(targetUrl).catch(e => logDebug(`[URL ERRO] ${e.message}`));
+          logDebug(`[URL ABERTA] B${keyIndex} [${idx + 1}/${cleanUrls.length}] abriu: ${targetUrl}`);
+        }, idx * 150);
       });
     }
     return;
