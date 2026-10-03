@@ -210,6 +210,17 @@
                         </div>
                       </div>
                     </div>
+                    <!-- Boot Screen (Logo Oficial PadPro) -->
+                    <div class="pad-oled-boot hidden" id="pad-oled-boot">
+                      <img src="assets/oled-logo.png" alt="PadPro Logo" class="oled-boot-img" />
+                    </div>
+                    <!-- Updating Screen (Engrenagem Animada + Texto Atualizando...) -->
+                    <div class="pad-oled-updating hidden" id="pad-oled-updating">
+                      <div class="oled-updating-content">
+                        <img src="assets/oled-gear.png" alt="Engrenagem" class="oled-gear-img spin-anim" />
+                        <img src="assets/oled-updating-text.png" alt="Atualizando..." class="oled-updating-text-img" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1448,6 +1459,17 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Boot Screen Simulator (Logo Oficial PadPro) -->
+                  <div class="oled-sim-boot hidden" id="oled-sim-boot">
+                    <img src="assets/oled-logo.png" alt="PadPro Logo" class="oled-boot-img" />
+                  </div>
+                  <!-- Updating Screen Simulator (Engrenagem Animada + Texto Atualizando...) -->
+                  <div class="oled-sim-updating hidden" id="oled-sim-updating">
+                    <div class="oled-updating-content">
+                      <img src="assets/oled-gear.png" alt="Engrenagem" class="oled-gear-img spin-anim" />
+                      <img src="assets/oled-updating-text.png" alt="Atualizando..." class="oled-updating-text-img" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1504,6 +1526,18 @@
                 <option value="1.8">1.8 segundos</option>
                 <option value="2.5">2.5 segundos</option>
               </select>
+            </div>
+
+            <!-- Botões de Teste das Telas Especiais OLED -->
+            <div class="settings-row" style="padding-top: 14px; border-top: 1px dashed rgba(255, 255, 255, 0.08); display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-preview-oled-boot" title="Testar exibição da logo limpa na inicialização">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Testar Boot (Logo PadPro)</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-preview-oled-updating" title="Testar tela unificada com engrenagem girando">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Testar Atualização (Engrenagem)</span>
+              </button>
             </div>
           </div>
 

@@ -45,6 +45,64 @@ paleta_oled = displayio.Palette(2)
 paleta_oled[0] = 0x000000
 paleta_oled[1] = 0xFFFFFF
 
+# Hexadecimal exato do Logo Oficial PadPro (128x32)
+BOOT_LOGO_HEX = {
+    12: '00000007ff0000077ff0000000000000',
+    13: '00000007ff8000077ff8000000000000',
+    14: '0000000707ff83f7707bfc7f80000000',
+    15: '0000000707ffc7ff707bfcffc0000000',
+    16: '00000007ff01e70f7ff381e1e0000000',
+    17: '00000007fe3fe7077fe381e1e0000000',
+    18: '000000070079e70f700381e1e0000000',
+    19: '00000007007be7ff700380ffc0000000',
+    20: '00000007003fe3f77003807f80000000'
+}
+
+# Hexadecimal exato do texto "Atualizando..." da imagem oficial (w=88, h=7)
+UPDATING_TEXT_HEX = {
+    0: '0000000000000000300000',
+    1: '07870000fc000000300000',
+    2: '0fcf73fcffffefe3f3f000',
+    3: '0ccf73fefffbffe7f7f800',
+    4: '1fe773fefce3fe7e371800',
+    5: '1fe777eefdc77e7e773800',
+    6: '3877bffefffffe77f3f7e0'
+}
+
+# 6 frames de rotação contínua da engrenagem 24x24
+GEAR_ANIM_HEX = [
+    ['000000', '003e00', '007e00', '007e00', '00ff00', '1ffffc', '3ffffc', '3ffffe', '7ffffe', '7fc3fe', '3f81fc', '1f80f8', '1f00f8', '1f00f8', '1f80fc', '3f81fe', '7fe3fe', '7ffffe', '3ffffe', '3ffffc', '19ff98', '007f00', '007e00', '007e00'],
+    ['000000', '00f800', '00f800', '01fe08', '00fff8', '01fffc', '1ffffc', '3ffffc', '7ffffc', '7fc3f8', '7f80f8', '7f80f8', '3f80fc', '1f00fe', '1f01ff', '1fc1ff', '0ff1ff', '1ffffe', '3ffffc', '3fffc8', '1fffc0', '065f80', '001f80', '001f00'],
+    ['000000', '006000', '03f020', '03f9f0', '03fff8', '03fff8', '03fff8', '0ffff8', '7ffff0', '7fc3f8', '7f80f8', '7f80ff', 'ff80ff', '7f007f', '1f80ff', '0fc1ff', '0fdbfe', '0ffff6', '0ffff0', '1fffe0', '1fffc0', '07bfe0', '0707c0', '000600'],
+    ['000000', '008080', '03c3e0', '07f7f0', '07fff0', '07fff0', '07fff0', '07fff0', '0ffff0', '3fc1fe', '7f80ff', '7f80ff', '7f807f', '7f80ff', '7f80ff', '7fa0ff', '0febf0', '07fff0', '07fff0', '07fff0', '07fff0', '07fff0', '05c1c0', '01c100'],
+    ['000000', '000340', '030fc0', '079fe0', '0fffe0', '0fffc0', '1fffe0', '0ffffa', '0ffffe', '0fc1ff', '1f80ff', '3f807f', '7f80ff', '7f80ff', '7f8078', '3fc0f8', '7ff7f8', '07fff8', '03fff8', '01fffc', '01fff8', '01fee0', '03f040', '017000'],
+    ['000400', '000f80', '001f80', '063f80', '0fff80', '1fffc0', '3ffffe', '1fffff', '1fffff', '0fc1ff', '0f80ff', '1f80ff', '3f807c', '3f807c', '7fc0fc', '7fc2fc', '3ffffc', '3ffffe', '1bfffc', '01fff8', '00fff8', '00fc10', '00fc00', '007c00']
+]
+
+def criar_bmp_de_hex(hex_data, w, h):
+    bmp = displayio.Bitmap(w, h, 2)
+    if isinstance(hex_data, dict):
+        for y, hstr in hex_data.items():
+            for byte_idx in range(len(hstr) // 2):
+                b = int(hstr[byte_idx*2 : byte_idx*2+2], 16)
+                if b != 0:
+                    for bit in range(8):
+                        if b & (1 << (7 - bit)):
+                            px = byte_idx * 8 + bit
+                            if px < w and y < h:
+                                bmp[px, y] = 1
+    else:
+        for y, hstr in enumerate(hex_data):
+            for byte_idx in range(len(hstr) // 2):
+                b = int(hstr[byte_idx*2 : byte_idx*2+2], 16)
+                if b != 0:
+                    for bit in range(8):
+                        if b & (1 << (7 - bit)):
+                            px = byte_idx * 8 + bit
+                            if px < w and y < h:
+                                bmp[px, y] = 1
+    return bmp
+
 def criar_bmp_icone(linhas_str, w=10, h=10):
     bmp = displayio.Bitmap(w, h, 2)
     linhas = [l.strip().replace(" ", "") for l in linhas_str.strip().split("\n")]
@@ -157,6 +215,10 @@ icone_grid = None
 grupo_oled = None
 bmp_barra_progresso = None
 tile_barra_progresso = None
+tile_boot_logo = None
+tile_gear = None
+tile_updating_text = None
+BMP_GEAR_ANIM = []
 nivel_volume = 50
 nivel_brilho = 70
 nivel_zoom = 100
@@ -191,6 +253,23 @@ try:
     tile_barra_progresso.hidden = True
     grupo_oled.append(tile_barra_progresso)
 
+    # Boot Logo Oficial PadPro 128x32 (exibicao limpa e exclusiva na inicializacao)
+    bmp_boot_logo = criar_bmp_de_hex(BOOT_LOGO_HEX, 128, 32)
+    tile_boot_logo = displayio.TileGrid(bmp_boot_logo, pixel_shader=paleta_oled, x=0, y=0)
+    tile_boot_logo.hidden = True
+    grupo_oled.append(tile_boot_logo)
+
+    # Tela de Atualizacao Unificada Oficial: Engrenagem 24x24 + Texto "Atualizando..."
+    BMP_GEAR_ANIM = [criar_bmp_de_hex(f, 24, 24) for f in GEAR_ANIM_HEX]
+    tile_gear = displayio.TileGrid(BMP_GEAR_ANIM[0], pixel_shader=paleta_oled, x=7, y=4)
+    tile_gear.hidden = True
+    grupo_oled.append(tile_gear)
+
+    bmp_updating_text = criar_bmp_de_hex(UPDATING_TEXT_HEX, 88, 7)
+    tile_updating_text = displayio.TileGrid(bmp_updating_text, pixel_shader=paleta_oled, x=36, y=12)
+    tile_updating_text.hidden = True
+    grupo_oled.append(tile_updating_text)
+
     # Bitmaps para os Dots de Camada no topo direito (4x4 pixels nítidos)
     bmp_dot_on = displayio.Bitmap(4, 4, 2)
     for bx in range(4):
@@ -213,16 +292,16 @@ try:
         dot_grids.append(dg)
 
     # Texto Superior (Linha 1 - Camada & Perfil)
-    txt_linha1 = label.Label(terminalio.FONT, text="PADPRO", color=0xFFFFFF, x=2, y=6)
+    txt_linha1 = label.Label(terminalio.FONT, text="", color=0xFFFFFF, x=2, y=6)
     grupo_oled.append(txt_linha1)
 
     # Texto Inferior (Linha 2 - Funcao/Acao sem a palavra Rotary)
-    txt_linha2 = label.Label(terminalio.FONT, text="INICIANDO...", color=0xFFFFFF, x=16, y=24)
+    txt_linha2 = label.Label(terminalio.FONT, text="", color=0xFFFFFF, x=16, y=24)
     grupo_oled.append(txt_linha2)
 
     display.root_group = grupo_oled
     TEM_OLED = True
-    print("[OLED] Display SSD1306 128x32 ativo com layout moderno, icones e barra de progresso!")
+    print("[OLED] Display SSD1306 128x32 ativo com layout moderno, icones, logo e barra!")
 except Exception as e:
     print(f"[OLED ERRO] {e}")
 
@@ -265,9 +344,15 @@ def atualizar_oled_padrao(camada_idx):
         nome, perfil, fn, _, _, _ = obter_info_camada(camada_idx)
         fn_label = obter_nome_funcao_amigavel(fn)
         
-        # Oculta barra de progresso no modo normal de camada
+        # Oculta barra de progresso e telas especiais no modo normal de camada
         if tile_barra_progresso:
             tile_barra_progresso.hidden = True
+        if tile_boot_logo:
+            tile_boot_logo.hidden = True
+        if tile_gear:
+            tile_gear.hidden = True
+        if tile_updating_text:
+            tile_updating_text.hidden = True
 
         # Opcoes de personalizacao
         cust = config_ativa.get("customization", {}) if config_ativa else {}
@@ -642,79 +727,82 @@ def animar_troca_camada(nova_camada, direcao=1):
         camada_atual = nova_camada
         atualizar_oled_padrao(camada_atual)
 
-def animar_engrenagem_atualizando(passos=10):
+def animar_engrenagem_atualizando(passos=14):
+    """Tela unificada de atualizacao: engrenagem animada girando na esquerda e 'Atualizando...' na direita."""
     global anim_som_ativa
     anim_som_ativa = False
-    if not TEM_OLED:
+    if not TEM_OLED or not tile_gear or not tile_updating_text:
         return
     try:
         if not verificar_animacoes_habilitadas():
             atualizar_oled_padrao(camada_atual)
             return
 
+        # Oculta todos os outros elementos para uma tela unica, limpa e moderna
         if dot_grids:
             for dg in dot_grids:
                 dg.hidden = True
         if linha_div:
             linha_div.hidden = True
-        txt_linha1.x = 16
-        txt_linha1.text = "ATUALIZANDO..."
-        txt_linha2.x = 16
-        txt_linha2.text = "AGUARDE..."
-        
-        for i in range(passos):
-            if icone_grid:
-                icone_grid.bitmap = BMP_ANIM_GEAR[i % len(BMP_ANIM_GEAR)]
-            time.sleep(0.065)
-            
         if icone_grid:
-            icone_grid.bitmap = BMP_CHECK
-        txt_linha1.text = "SUCESSO!"
-        txt_linha2.text = "CONFIG SALVA ✓"
-        time.sleep(0.4)
+            icone_grid.hidden = True
+        if tile_barra_progresso:
+            tile_barra_progresso.hidden = True
+        if tile_boot_logo:
+            tile_boot_logo.hidden = True
+
+        txt_linha1.text = ""
+        txt_linha2.text = ""
+
+        # Exibe a tela unificada com a engrenagem e o texto oficial
+        tile_updating_text.hidden = False
+        tile_gear.hidden = False
+
+        # Rotação animada contínua e suave da engrenagem
+        for i in range(passos):
+            if BMP_GEAR_ANIM:
+                tile_gear.bitmap = BMP_GEAR_ANIM[i % len(BMP_GEAR_ANIM)]
+            time.sleep(0.075)
+
+        # Oculta elementos de atualizacao
+        tile_updating_text.hidden = True
+        tile_gear.hidden = True
+        if icone_grid:
+            icone_grid.hidden = False
     except Exception as e:
         print(f"[ENGRENAGEM ERRO] {e}")
 
 def executar_animacao_boot():
-    if not TEM_OLED:
+    """Tela de inicializacao: apenas a logo oficial PadPro centralizada, sem nenhum outro elemento."""
+    if not TEM_OLED or not tile_boot_logo:
         return
     try:
+        # Garante tela 100% limpa antes da logo
         if dot_grids:
             for dg in dot_grids:
                 dg.hidden = True
         if linha_div:
             linha_div.hidden = True
         if icone_grid:
-            icone_grid.bitmap = bmp_vazio
-            
-        # 1. Logo futurista centralizado
-        txt_linha1.x = 42
-        txt_linha1.y = 8
-        txt_linha1.text = "PADPRO"
+            icone_grid.hidden = True
+        if tile_barra_progresso:
+            tile_barra_progresso.hidden = True
+        if tile_gear:
+            tile_gear.hidden = True
+        if tile_updating_text:
+            tile_updating_text.hidden = True
+
+        txt_linha1.text = ""
         txt_linha2.text = ""
-        time.sleep(0.25)
-        
-        # 2. Barra de carregamento estilo cyber/BIOS
-        txt_linha2.x = 8
-        txt_linha2.y = 22
-        barras = [
-            "BOOT [    ]",
-            "BOOT [==  ]",
-            "BOOT [====]",
-            "SISTEMA PRONTO ✓"
-        ]
-        for b in barras:
-            txt_linha2.text = b
-            time.sleep(0.12)
-            
-        time.sleep(0.2)
-        
-        # 3. Restaura posicoes e divisoria padrao
-        txt_linha1.x = 2
-        txt_linha1.y = 6
-        txt_linha2.y = 24
-        if linha_div:
-            linha_div.hidden = False
+
+        # Exibe exclusivamente o logo oficial PadPro
+        tile_boot_logo.hidden = False
+        time.sleep(1.8)
+
+        # Oculta a logo para entrar na interface normal
+        tile_boot_logo.hidden = True
+        if icone_grid:
+            icone_grid.hidden = False
     except Exception as e:
         print(f"[BOOT ERRO] {e}")
 

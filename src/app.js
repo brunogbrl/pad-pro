@@ -75,6 +75,9 @@
       console.error('Initial render failed:', e);
     }
 
+    // Exibe splash limpa de inicialização com logo oficial PadPro no display
+    showOledBoot(1600);
+
     // Hardware Physical Event Listener
     if (window.api?.onPadEvent) {
       window.api.onPadEvent((event) => handlePhysicalPadEvent(event));
@@ -954,6 +957,70 @@
   let simZoom = 100;
   let simScroll = 50;
   let oledFlyoutTimer = null;
+  let oledBootTimer = null;
+  let oledUpdatingTimer = null;
+
+  function showOledBoot(duration = 2000) {
+    const padDefault = document.getElementById('pad-oled-default-content');
+    const padFlyout = document.getElementById('pad-oled-flyout');
+    const padBoot = document.getElementById('pad-oled-boot');
+    const padUpdating = document.getElementById('pad-oled-updating');
+
+    const simDefault = document.getElementById('oled-sim-default-content');
+    const simFlyout = document.getElementById('oled-sim-flyout');
+    const simBoot = document.getElementById('oled-sim-boot');
+    const simUpdating = document.getElementById('oled-sim-updating');
+
+    if (padDefault) padDefault.classList.add('hidden');
+    if (padFlyout) padFlyout.classList.add('hidden');
+    if (padUpdating) padUpdating.classList.add('hidden');
+    if (padBoot) padBoot.classList.remove('hidden');
+
+    if (simDefault) simDefault.classList.add('hidden');
+    if (simFlyout) simFlyout.classList.add('hidden');
+    if (simUpdating) simUpdating.classList.add('hidden');
+    if (simBoot) simBoot.classList.remove('hidden');
+
+    if (oledBootTimer) clearTimeout(oledBootTimer);
+    oledBootTimer = setTimeout(() => {
+      if (padBoot) padBoot.classList.add('hidden');
+      if (padDefault) padDefault.classList.remove('hidden');
+      if (simBoot) simBoot.classList.add('hidden');
+      if (simDefault) simDefault.classList.remove('hidden');
+      oledBootTimer = null;
+    }, duration);
+  }
+
+  function showOledUpdating(duration = 1800) {
+    const padDefault = document.getElementById('pad-oled-default-content');
+    const padFlyout = document.getElementById('pad-oled-flyout');
+    const padBoot = document.getElementById('pad-oled-boot');
+    const padUpdating = document.getElementById('pad-oled-updating');
+
+    const simDefault = document.getElementById('oled-sim-default-content');
+    const simFlyout = document.getElementById('oled-sim-flyout');
+    const simBoot = document.getElementById('oled-sim-boot');
+    const simUpdating = document.getElementById('oled-sim-updating');
+
+    if (padDefault) padDefault.classList.add('hidden');
+    if (padFlyout) padFlyout.classList.add('hidden');
+    if (padBoot) padBoot.classList.add('hidden');
+    if (padUpdating) padUpdating.classList.remove('hidden');
+
+    if (simDefault) simDefault.classList.add('hidden');
+    if (simFlyout) simFlyout.classList.add('hidden');
+    if (simBoot) simBoot.classList.add('hidden');
+    if (simUpdating) simUpdating.classList.remove('hidden');
+
+    if (oledUpdatingTimer) clearTimeout(oledUpdatingTimer);
+    oledUpdatingTimer = setTimeout(() => {
+      if (padUpdating) padUpdating.classList.add('hidden');
+      if (padDefault) padDefault.classList.remove('hidden');
+      if (simUpdating) simUpdating.classList.add('hidden');
+      if (simDefault) simDefault.classList.remove('hidden');
+      oledUpdatingTimer = null;
+    }, duration);
+  }
 
   function showOledFlyout({ title, value, pct, icon = 'volume', duration = 1200 }) {
     const padDefault = document.getElementById('pad-oled-default-content');
@@ -962,6 +1029,8 @@
     const padIcon = document.getElementById('pad-oled-flyout-icon');
     const padVal = document.getElementById('pad-oled-flyout-val');
     const padFill = document.getElementById('pad-oled-flyout-fill');
+    const padBoot = document.getElementById('pad-oled-boot');
+    const padUpdating = document.getElementById('pad-oled-updating');
 
     const simDefault = document.getElementById('oled-sim-default-content');
     const simFlyout = document.getElementById('oled-sim-flyout');
@@ -969,6 +1038,13 @@
     const simIcon = document.getElementById('oled-sim-flyout-icon');
     const simVal = document.getElementById('oled-sim-flyout-val');
     const simFill = document.getElementById('oled-sim-flyout-fill');
+    const simBoot = document.getElementById('oled-sim-boot');
+    const simUpdating = document.getElementById('oled-sim-updating');
+
+    if (padBoot) padBoot.classList.add('hidden');
+    if (padUpdating) padUpdating.classList.add('hidden');
+    if (simBoot) simBoot.classList.add('hidden');
+    if (simUpdating) simUpdating.classList.add('hidden');
 
     const safePct = Math.max(0, Math.min(100, Math.round(pct)));
     const svgCode = ICONS_FLYOUT_SVG[icon] || ICONS_FLYOUT_SVG.volume;
@@ -4113,12 +4189,24 @@
       await saveAppSetting('transitionAnimations', active);
       applyAppCustomizations({ transitionAnimations: active });
     });
+
+    // Botões de teste das animações na telinha OLED
+    document.getElementById('btn-preview-oled-boot')?.addEventListener('click', () => {
+      showOledBoot(2200);
+      showToast('Exibindo inicialização limpa com logo PadPro', 'info');
+    });
+
+    document.getElementById('btn-preview-oled-updating')?.addEventListener('click', () => {
+      showOledUpdating(2500);
+      showToast('Exibindo tela unificada com engrenagem girando e Atualizando...', 'info');
+    });
   }
 
   async function saveOledSetting(key, val) {
     const cust = window.configStore.getCustomization();
     cust.oled[key] = val;
     window.configStore.setCustomization(cust);
+    showOledUpdating(1600);
     await window.configStore.save();
     if (window.api?.syncCustomization) {
       window.api.syncCustomization(cust);
