@@ -2251,7 +2251,7 @@
           <label class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">
             1. Nome da Camada
           </label>
-          <input type="text" id="new-layer-name-input" class="form-input" placeholder="Ex: CAMADA 4, EDIÇÃO, DISCORD..." maxlength="16" style="width: 100%; font-size: 14px; font-weight: 600;">
+          <input type="text" id="new-layer-name-input" class="input-field new-layer-input" placeholder="Ex: CAMADA 4, EDIÇÃO, DISCORD..." maxlength="16" style="width: 100%; font-size: 14px; font-weight: 600;">
           <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Identificação da camada (exibida no display OLED do PAD Pro).</span>
         </div>
 
@@ -2302,36 +2302,21 @@
           <label class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); display: block; margin-bottom: 6px;">
             4. Função do Botão Giratório (Knob)
           </label>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="new-layer-encoder-grid">
-            <div class="encoder-choice-card active" data-encoder="layer_nav">
-              <div class="encoder-choice-title">
-                <span>🔄 Navegar Camadas</span>
-                <span class="encoder-choice-tag">Recomendado</span>
-              </div>
-              <div class="encoder-choice-desc">Girar alterna entre as camadas, clique volta à Camada 0.</div>
-            </div>
-
-            <div class="encoder-choice-card" data-encoder="volume">
-              <div class="encoder-choice-title">
-                <span>🔊 Volume do Sistema</span>
-              </div>
-              <div class="encoder-choice-desc">Girar ajusta o volume do PC, clique ativa o mudo.</div>
-            </div>
-
-            <div class="encoder-choice-card" data-encoder="media">
-              <div class="encoder-choice-title">
-                <span>🎵 Controle de Mídia</span>
-              </div>
-              <div class="encoder-choice-desc">Avança e volta faixas no Spotify/YouTube, clique pausa.</div>
-            </div>
-
-            <div class="encoder-choice-card" data-encoder="scroll">
-              <div class="encoder-choice-title">
-                <span>📜 Rolagem (Scroll)</span>
-              </div>
-              <div class="encoder-choice-desc">Rola páginas da web e documentos, clique do meio.</div>
-            </div>
+          <div class="custom-select-wrapper" style="width: 100%;">
+            <select class="input-field select-field new-layer-encoder-select" id="new-layer-encoder-select" style="width: 100%; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 8px;">
+              <option value="layer_nav" selected>🔄 Alternar Camadas (Navegação - Padrão)</option>
+              <option value="volume">🔊 Volume & Mute (Padrão Windows)</option>
+              <option value="media">🎵 Player de Mídia (Play / Pause / Faixas)</option>
+              <option value="brightness">☀️ Brilho da Tela</option>
+              <option value="zoom">🔍 Zoom & Escala</option>
+              <option value="scroll">📜 Rolagem do Mouse (Scroll Vertical)</option>
+              <option value="video">🎬 Navegação de Vídeo (YouTube / VLC)</option>
+              <option value="custom">⚡ Atalhos Customizados</option>
+            </select>
           </div>
+          <span style="font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; line-height: 1.4;">
+            Para configurar passos, rotações invertidas ou teclas de atalho avançadas, acesse a aba <strong>Botão Giratório</strong> após criar a camada.
+          </span>
         </div>
 
       </div>

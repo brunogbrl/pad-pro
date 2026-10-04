@@ -796,13 +796,26 @@
     const oledSub = document.getElementById('pad-oled-sub');
     const layer = window.configStore.getLayer(currentLayer);
     const layerName = layer?.name || `CAMADA ${currentLayer}`;
-    const profile = layer?.profile || 'PERSONALIZADO';
+    const encoder = window.configStore.getLayerEncoder(currentLayer);
+    const fn = encoder?.function || 'volume';
+
+    const titles = {
+      volume: 'VOL & MUTE',
+      brightness: 'BRILHO TELA',
+      zoom: 'ZOOM ESCALA',
+      media: 'PLAYER MIDIA',
+      scroll: 'ROLAGEM MOUSE',
+      video: 'NAVEGACAO VIDEO',
+      layer_nav: 'MUDAR CAMADA',
+      custom: 'CUSTOM ATALHOS'
+    };
+    const fnLabel = titles[fn] || fn.toUpperCase();
 
     if (oledLayer) oledLayer.textContent = layerName;
-    if (oledSub) oledSub.textContent = profile;
+    if (oledSub) oledSub.textContent = fnLabel;
     oledResetTimer = null;
 
-    updateOledSimulator(layerName, profile);
+    updateOledSimulator();
   }
 
   function setOLEDContent(line1, line2, duration = 1200) {
@@ -1475,11 +1488,10 @@
   const newLayerColorHex = document.getElementById('new-layer-color-hex');
   const newLayerTypePreset = document.getElementById('new-layer-type-preset');
   const newLayerTypeBlank = document.getElementById('new-layer-type-blank');
-  const newLayerEncoderGrid = document.getElementById('new-layer-encoder-grid');
+  const newLayerEncoderSelect = document.getElementById('new-layer-encoder-select');
 
   let selectedNewLayerColor = '#38BDF8';
   let selectedNewLayerType = 'preset'; // 'preset' | 'blank'
-  let selectedNewLayerEncoder = 'layer_nav';
 
   const NEW_LAYER_COLORS = [
     '#38BDF8', // Cyan
@@ -1534,15 +1546,8 @@
     newLayerTypeBlank?.classList.remove('active');
 
     // Default encoder: 'layer_nav' (Navegação por Camadas como padrão do Knob)
-    selectedNewLayerEncoder = 'layer_nav';
-    if (newLayerEncoderGrid) {
-      newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(card => {
-        if (card.dataset.encoder === selectedNewLayerEncoder) {
-          card.classList.add('active');
-        } else {
-          card.classList.remove('active');
-        }
-      });
+    if (newLayerEncoderSelect) {
+      newLayerEncoderSelect.value = 'layer_nav';
     }
 
     modalNewLayer?.classList.remove('hidden');
@@ -1581,17 +1586,6 @@
     }
   });
 
-  // Encoder cards selection
-  if (newLayerEncoderGrid) {
-    newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(card => {
-      card.addEventListener('click', () => {
-        newLayerEncoderGrid.querySelectorAll('.encoder-choice-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedNewLayerEncoder = card.dataset.encoder || 'layer_nav';
-      });
-    });
-  }
-
   // Confirm New Layer
   btnConfirmNewLayer?.addEventListener('click', () => {
     const config = window.configStore.getConfig();
@@ -1599,12 +1593,13 @@
     const name = (newLayerNameInput?.value || '').trim() || `CAMADA ${newIndex}`;
     const isBlank = selectedNewLayerType === 'blank';
     const keys = window.configStore.getDefaultKeysForLayer(newIndex, isBlank);
+    const encoderFn = newLayerEncoderSelect?.value || 'layer_nav';
 
     const layerData = {
       name: name,
       profile: 'CUSTOM',
       color: selectedNewLayerColor,
-      encoder: { function: selectedNewLayerEncoder },
+      encoder: { function: encoderFn },
       keys: keys
     };
 
@@ -2376,7 +2371,11 @@
     window.configStore.save();
     renderPadGrid();
     refreshSoundpadSoundMap();
-    showToast('Tecla salva com sucesso!', 'success');
+    if (keyData.fixed) {
+      showToast(`Tecla B${selectedKeyIndex + 1} fixada em todas as camadas!`, 'success');
+    } else {
+      showToast('Tecla salva com sucesso!', 'success');
+    }
   });
 
   // Reset Key to Factory Default

@@ -215,6 +215,7 @@ function saveConfig(config) {
               if (localCode !== currentPicoCode) {
                 fs.writeFileSync(targetCodePath, localCode, 'utf8');
                 logDebug(`[FIRMWARE SYNC] scripts/code.py sincronizado para ${targetCodePath}`);
+                sendSerialCommand('RELOAD_FIRMWARE');
               }
             } catch (errCodeSync) {
               logDebug(`[FIRMWARE SYNC AVISO] ${errCodeSync.message}`);
@@ -1612,6 +1613,7 @@ ipcMain.handle('pad:force-sync', async () => {
               if (localCode !== currentPicoCode) {
                 fs.writeFileSync(targetCodePath, localCode, 'utf8');
                 logDebug(`[FIRMWARE FORCED SYNC] scripts/code.py atualizado para ${targetCodePath}`);
+                sendSerialCommand('RELOAD_FIRMWARE');
               }
             } catch (errCode) {
               logDebug(`[FIRMWARE FORCED SYNC ERRO] ${errCode.message}`);

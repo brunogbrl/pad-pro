@@ -24,6 +24,12 @@ except (ImportError, AttributeError):
 try:
     import supervisor
     TEM_SUPERVISOR = True
+    # Desativa o autoreload automatico para evitar que escritas de config.json via USB
+    # resetem a placa e exibam mensagens do terminal/REPL ("Feito | 10.2.1 / carregando em breve") no OLED
+    try:
+        supervisor.runtime.autoreload = False
+    except Exception:
+        pass
 except ImportError:
     TEM_SUPERVISOR = False
 
@@ -1643,6 +1649,11 @@ while True:
                         print("[SERIAL] Comando CONFIG_UPDATED recebido")
                         carregar_config()
                         atualizar_oled_padrao(camada_atual)
+
+                    elif cmd_upper in ("RELOAD_FIRMWARE", "REBOOT"):
+                        print("[SERIAL] Comando RELOAD_FIRMWARE recebido, reiniciando...")
+                        if TEM_SUPERVISOR:
+                            supervisor.reload()
 
                     elif cmd_upper == "OLED:RESET":
                         tempo_reset_oled = 0.0

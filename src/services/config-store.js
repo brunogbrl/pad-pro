@@ -108,7 +108,25 @@ class ConfigStore {
       if (!this.config.layers[layerIndex].keys) {
         this.config.layers[layerIndex].keys = {};
       }
-      this.config.layers[layerIndex].keys[keyIndex] = keyData;
+
+      // Se a tecla está configurada como fixada (fixed === true), propaga para TODAS as camadas
+      if (keyData && keyData.fixed === true) {
+        this.config.layers.forEach(l => {
+          if (!l.keys) l.keys = {};
+          l.keys[keyIndex] = JSON.parse(JSON.stringify(keyData));
+        });
+      } else {
+        // Se a tecla foi desfixada, desfixa em todas as camadas para permitir edição independente
+        const wasFixed = this.config.layers.some(l => l.keys?.[keyIndex]?.fixed === true);
+        if (wasFixed) {
+          this.config.layers.forEach(l => {
+            if (l.keys?.[keyIndex]) {
+              l.keys[keyIndex].fixed = false;
+            }
+          });
+        }
+        this.config.layers[layerIndex].keys[keyIndex] = keyData;
+      }
       this._notify();
     }
   }
@@ -126,6 +144,18 @@ class ConfigStore {
       encoder: { function: 'layer_nav' },
       keys: this.getDefaultKeysForLayer(newIndex, false)
     };
+
+    if (!newLayer.keys) newLayer.keys = {};
+
+    // Herda e garante todas as teclas fixas de camadas existentes na nova camada
+    for (let k = 0; k < 12; k++) {
+      for (const l of this.config.layers) {
+        if (l.keys?.[k]?.fixed === true) {
+          newLayer.keys[k] = JSON.parse(JSON.stringify(l.keys[k]));
+          break;
+        }
+      }
+    }
 
     this.config.layers.push(newLayer);
     this._notify();

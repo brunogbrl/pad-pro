@@ -82,7 +82,7 @@ async function main() {
       tag_name: tag,
       target_commitish: 'main',
       name: `PAD Pro ${tag}`,
-      body: `## 🚀 PAD Pro ${tag}\n\nVersão atualizada com melhorias no firmware do hardware e na experiência do usuário:\n\n- ✨ **OLED com Grupos Dedicados**: Exibição confiável da logo oficial **PadPro** na inicialização e da **engrenagem animada** durante a atualização do pad.\n- 🔄 **Transições Suaves de Camada**: Alternância limpa e instantânea entre camadas sem mexida estranha ou oscilação de pixels.\n- 🏷️ **Identidade Visual PadPro**: Padronização completa da nomenclatura para PadPro no firmware, pendrive USB, app e instalador.\n\n### 📦 Download:\nBaixe o arquivo **PAD-Pro-Setup-${version}.exe** abaixo para instalar ou atualizar diretamente no Windows.`,
+      body: `## 🚀 PAD Pro ${tag}\n\nVersão com melhorias completas de usabilidade, sincronização e interface:\n\n- 📌 **Fixar Tecla Unificado**: Teclas marcadas como fixas agora sincronizam automaticamente em todas as camadas existentes e são herdadas na criação de novas camadas, com indicador visual dedicado.\n- 🎨 **Modal Criar Camada Reformulado**: Caixa de nome estilizada no padrão dark crystal e seleção do encoder simplificada via menu suspenso (dropdown).\n- 📺 **Simulador OLED Fiel ao Hardware**: Linha 2 do simulador OLED e do pad na tela inicial agora exibem a função e ícone do encoder exatamente como no hardware físico.\n- ⚡ **Atualização Limpa no OLED**: Eliminação de mensagens internas do CircuitPython ("Feito / carregando em breve") ao sincronizar, exibindo exclusivamente a engrenagem animada.\n\n### 📦 Download:\nBaixe o arquivo **PAD-Pro-Setup-${version}.exe** abaixo para instalar ou atualizar diretamente no Windows.`,
       draft: false,
       prerelease: false
     });
