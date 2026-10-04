@@ -1193,14 +1193,16 @@ let lastKnobTurnTime = 0;
 
 function getAudioHelperPath() {
   const candidates = [
-    path.join(__dirname, 'scripts', 'pad-audio.exe'),
-    path.join(process.resourcesPath || '', 'scripts', 'pad-audio.exe'),
     path.join(process.resourcesPath || '', 'app.asar.unpacked', 'scripts', 'pad-audio.exe'),
     path.join((app.getAppPath() || '').replace('app.asar', 'app.asar.unpacked'), 'scripts', 'pad-audio.exe'),
-    path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'scripts', 'pad-audio.exe')
+    path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'scripts', 'pad-audio.exe'),
+    path.join(process.resourcesPath || '', 'scripts', 'pad-audio.exe'),
+    path.join(__dirname, 'scripts', 'pad-audio.exe')
   ];
   for (const c of candidates) {
-    if (c && fs.existsSync(c)) return c;
+    if (c && !c.includes('app.asar\\') && !c.includes('app.asar/') && fs.existsSync(c)) {
+      return c;
+    }
   }
   return null;
 }
@@ -2137,27 +2139,6 @@ ipcMain.handle('system:set-start-minimized', (_, enabled) => {
   return true;
 });
 
-ipcMain.handle('system:open-url', async (_, urlOrUrls) => {
-  if (!urlOrUrls) return false;
-  const list = Array.isArray(urlOrUrls) ? urlOrUrls : [urlOrUrls];
-  let success = true;
-  for (const item of list) {
-    if (typeof item === 'string' && item.trim()) {
-      let target = item.trim();
-      if (!target.startsWith('http://') && !target.startsWith('https://')) {
-        target = 'https://' + target;
-      }
-      try {
-        await shell.openExternal(target);
-        logDebug(`[URL ABERTA VIA APP] ${target}`);
-      } catch (err) {
-        logDebug(`[URL ERRO] ${err.message}`);
-        success = false;
-      }
-    }
-  }
-  return success;
-});
 
 // Serial port listing
 ipcMain.handle('serial:list', async () => {
