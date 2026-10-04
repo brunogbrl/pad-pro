@@ -1,6 +1,6 @@
 {
   "name": "pad-pro",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Configurador visual para o macro pad PAD Pro",
   "main": "main.js",
   "scripts": {
@@ -52,6 +52,9 @@
       "installerHeaderIcon": "build/icon.ico",
       "uninstallDisplayName": "PAD Pro"
     },
+    "asarUnpack": [
+      "scripts/pad-audio.exe"
+    ],
     "files": [
       "main.js",
       "preload.js",
@@ -61,7 +64,9 @@
       "locales/**/*",
       "scripts/code.py",
       "scripts/boot.py",
-      "scripts/autorun.inf"
+      "scripts/autorun.inf",
+      "scripts/pad-audio.exe",
+      "scripts/pad-audio.cs"
     ]
   }
 }

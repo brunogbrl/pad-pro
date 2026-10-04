@@ -1744,6 +1744,35 @@ while True:
                         nome_som = parts[1] if len(parts) > 1 else "SOUNDPAD"
                         iniciar_animacao_som(nome_som, duracao=2.5)
 
+                    elif cmd_upper.startswith("SET_VOL:"):
+                        try:
+                            # Formato: SET_VOL:<pct>[:<mute 0/1>[:<show_hud 0/1>]]
+                            p_vol = cmd.split(":")
+                            pct_val = max(0, min(100, int(p_vol[1].strip())))
+                            nivel_volume = pct_val
+                            if len(p_vol) > 2 and p_vol[2].strip():
+                                vol_mudo = (p_vol[2].strip() == '1')
+                            show_hud = (p_vol[3].strip() == '1') if len(p_vol) > 3 else False
+                            if show_hud:
+                                if vol_mudo:
+                                    mostrar_barra_oled("VOLUME", "MUDO", 0, icone='mute')
+                                else:
+                                    mostrar_barra_oled("VOLUME", f"{nivel_volume}%", nivel_volume, icone='volume')
+                            print(f"[SERIAL] Volume sincronizado: {nivel_volume}% (Mudo: {vol_mudo})")
+                        except Exception as e:
+                            print(f"[SERIAL ERRO] SET_VOL: {e}")
+
+                    elif cmd_upper.startswith("SET_BRIGHTNESS:"):
+                        try:
+                            p_b = cmd.split(":")
+                            nivel_brilho = max(0, min(100, int(p_b[1].strip())))
+                            show_hud = (p_b[2].strip() == '1') if len(p_b) > 2 else False
+                            if show_hud:
+                                mostrar_barra_oled("BRILHO", f"{nivel_brilho}%", nivel_brilho, icone='brightness')
+                            print(f"[SERIAL] Brilho sincronizado: {nivel_brilho}%")
+                        except Exception as e:
+                            print(f"[SERIAL ERRO] SET_BRIGHTNESS: {e}")
+
                     elif cmd_upper.startswith("OLED:BAR"):
                         parts = cmd[8:].lstrip("|").split("|")
                         titulo_bar = parts[0] if len(parts) > 0 and parts[0] else "VALOR"
@@ -1756,6 +1785,11 @@ while True:
                             dur_bar = float(parts[3]) if len(parts) > 3 and parts[3] else 1.2
                         except Exception:
                             dur_bar = 1.2
+                        if icone_bar == 'volume' or titulo_bar.upper() == 'VOLUME':
+                            nivel_volume = pct_bar
+                            vol_mudo = False
+                        elif icone_bar == 'brightness' or titulo_bar.upper() == 'BRILHO':
+                            nivel_brilho = pct_bar
                         mostrar_barra_oled(titulo_bar, f"{pct_bar}%", pct_bar, icone=icone_bar, duracao=dur_bar)
 
                     elif cmd_upper.startswith("OLED:"):
@@ -1767,7 +1801,7 @@ while True:
 
                     elif cmd_upper in ("PING", "STATUS", "?"):
                         print(f"[HUD] Camada {camada_atual}")
-                        print(f"[SERIAL] STATUS Camada: {camada_atual}")
+                        print(f"[SERIAL] STATUS Camada: {camada_atual} | Volume: {nivel_volume}% | Brilho: {nivel_brilho}%")
                 else:
                     serial_buffer += ch
                     if len(serial_buffer) > 128:

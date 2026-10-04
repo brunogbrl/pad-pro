@@ -1183,6 +1183,119 @@ function sendSerialCommand(cmd) {
   }
 }
 
+// =====================================================================
+// WINDOWS AUDIO & HARDWARE SYNCHRONIZATION
+// =====================================================================
+let audioListenerProc = null;
+let lastKnownVolume = 50;
+let lastKnownMute = 0;
+let lastKnobTurnTime = 0;
+
+function getAudioHelperPath() {
+  const candidates = [
+    path.join(__dirname, 'scripts', 'pad-audio.exe'),
+    path.join(process.resourcesPath || '', 'scripts', 'pad-audio.exe'),
+    path.join(process.resourcesPath || '', 'app.asar.unpacked', 'scripts', 'pad-audio.exe'),
+    path.join((app.getAppPath() || '').replace('app.asar', 'app.asar.unpacked'), 'scripts', 'pad-audio.exe'),
+    path.join(__dirname.replace('app.asar', 'app.asar.unpacked'), 'scripts', 'pad-audio.exe')
+  ];
+  for (const c of candidates) {
+    if (c && fs.existsSync(c)) return c;
+  }
+  return null;
+}
+
+function queryWindowsBrightness() {
+  try {
+    const { exec } = require('child_process');
+    exec('powershell -NoProfile -Command "(Get-CimInstance -Namespace root/wmi -ClassName WmiMonitorBrightness -ErrorAction SilentlyContinue).CurrentBrightness"', (err, stdout) => {
+      if (!err && stdout && stdout.trim()) {
+        const b = parseInt(stdout.trim(), 10);
+        if (!isNaN(b) && b >= 0 && b <= 100) {
+          sendSerialCommand(`SET_BRIGHTNESS:${b}`);
+        }
+      }
+    });
+  } catch {}
+}
+
+function startWindowsAudioListener() {
+  const exePath = getAudioHelperPath();
+  if (!exePath) {
+    logDebug('[AUDIO] pad-audio.exe não encontrado.');
+    return;
+  }
+
+  if (audioListenerProc) {
+    try { audioListenerProc.kill(); } catch {}
+    audioListenerProc = null;
+  }
+
+  try {
+    const { spawn } = require('child_process');
+    audioListenerProc = spawn(exePath, ['listen'], {
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+
+    logDebug(`[AUDIO] Monitor de volume iniciado via ${exePath}`);
+
+    let audioBuffer = '';
+    audioListenerProc.stdout.on('data', (data) => {
+      audioBuffer += data.toString('utf8');
+      const lines = audioBuffer.split('\n');
+      audioBuffer = lines.pop();
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+
+        const m = trimmed.match(/(?:READY\|)?VOL:(\d+)\|MUTE:(\d+)/);
+        if (m) {
+          const vol = parseInt(m[1], 10);
+          const mute = parseInt(m[2], 10);
+          const changed = (vol !== lastKnownVolume || mute !== lastKnownMute);
+          lastKnownVolume = vol;
+          lastKnownMute = mute;
+
+          // Se o encoder foi girado recentemente (< 1.5s), exibe a barra no display
+          const recentlyTurned = (Date.now() - lastKnobTurnTime < 1500);
+          const showBar = recentlyTurned ? '1' : '0';
+
+          if (serialPortInstance && serialPortInstance.isOpen) {
+            sendSerialCommand(`SET_VOL:${vol}:${mute}:${showBar}`);
+          }
+
+          if (changed) {
+            safeSend(mainWindow, 'system:volume-changed', { volume: vol, muted: mute === 1 });
+            if (hudWindow && !hudWindow.isDestroyed() && currentConfig?.hud?.enabled !== false && recentlyTurned) {
+              safeSend(hudWindow, 'hud:update', {
+                action: mute === 1 ? 'Mudo' : `Volume: ${vol}%`,
+                progress: vol,
+                icon: mute === 1 ? 'mute' : 'volume'
+              });
+            }
+          }
+        }
+      }
+    });
+
+    audioListenerProc.on('error', (err) => {
+      logDebug(`[AUDIO ERRO] ${err.message}`);
+    });
+
+    audioListenerProc.on('close', (code) => {
+      logDebug(`[AUDIO] Monitor finalizado (código ${code})`);
+      audioListenerProc = null;
+      if (!app.isQuitting) {
+        setTimeout(startWindowsAudioListener, 3000);
+      }
+    });
+  } catch (e) {
+    logDebug(`[AUDIO SPAWN ERRO] ${e.message}`);
+  }
+}
+
 async function setupSerialListener() {
   try {
     const { SerialPort } = require('serialport');
@@ -1247,6 +1360,10 @@ async function setupSerialListener() {
 
         setTimeout(() => {
           sendSerialCommand('PING');
+          if (lastKnownVolume !== null) {
+            sendSerialCommand(`SET_VOL:${lastKnownVolume}:${lastKnownMute}:0`);
+          }
+          queryWindowsBrightness();
         }, 500);
 
         safeSend(mainWindow, 'pad:serial-status', { connected: true, port: targetPort });
@@ -1533,8 +1650,12 @@ function handleSerialLine(line) {
   }
 
   // 6. Rotary Encoder / Knob rotation or click from physical pad:
+  if (line.includes('OSD_BAR|volume')) {
+    lastKnobTurnTime = Date.now();
+  }
   const encMatch = line.match(/(?:ENCODER|KNOB|ROTARY|GIRO)\s*(?:TURN\s*)?(CW|CCW|RIGHT|LEFT|UP|DOWN|CLICK|PRESS)/i);
   if (encMatch) {
+    lastKnobTurnTime = Date.now();
     const action = encMatch[1].toUpperCase();
     const isCW = action === 'CW' || action === 'RIGHT' || action === 'UP';
     const isCCW = action === 'CCW' || action === 'LEFT' || action === 'DOWN';
@@ -2316,6 +2437,7 @@ app.whenReady().then(() => {
   createHUDWindow();
   createTray();
   setupSerialListener();
+  startWindowsAudioListener();
   setupSoundpadWatcher();
   connectDiscordRPC();
   setupAutoUpdater();
@@ -2331,6 +2453,10 @@ app.on('window-all-closed', () => {
 
 app.on('before-quit', () => {
   app.isQuitting = true;
+  if (audioListenerProc) {
+    try { audioListenerProc.kill(); } catch {}
+    audioListenerProc = null;
+  }
   if (serialPortInstance && serialPortInstance.isOpen) {
     try { serialPortInstance.close(); } catch {}
   }
