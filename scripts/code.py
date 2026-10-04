@@ -1024,8 +1024,16 @@ def formatar_tecla(tecla, key_number):
         if k_data and isinstance(k_data, dict):
             if k_data.get("label"):
                 return k_data["label"]
+            if k_data.get("name"):
+                return k_data["name"]
             tipo = k_data.get("type")
             val = k_data.get("value")
+            if tipo == "app":
+                val_s = str(val or k_data.get("path") or "App")
+                app_nm = val_s.split("\\")[-1].replace(".exe", "")
+                return k_data.get("name") or f"APP: {app_nm[:10]}"
+            if tipo == "command":
+                return k_data.get("name") or "CMD EXEC"
             if tipo == "macro":
                 return k_data.get("name") or "Macro"
             if tipo == "url":
@@ -1079,8 +1087,16 @@ def obter_nome_acao(item_acao, default=""):
     if isinstance(item_acao, dict):
         if item_acao.get("label"):
             return item_acao["label"]
+        if item_acao.get("name"):
+            return item_acao["name"]
         tipo = item_acao.get("type", "key")
         val = item_acao.get("value")
+        if tipo == "app":
+            val_s = str(val or item_acao.get("path") or "App")
+            app_nm = val_s.split("\\")[-1].replace(".exe", "")
+            return item_acao.get("name") or f"APP: {app_nm[:10]}"
+        if tipo == "command":
+            return item_acao.get("name") or "CMD EXEC"
         if tipo == "macro":
             return item_acao.get("name") or "Macro"
         if isinstance(val, list):
@@ -1113,6 +1129,55 @@ def abrir_url_hid(url_val):
             print(f"[URL HID] Aberto nativamente: {url_val}")
         except Exception as e:
             print(f"[URL HID ERRO] {e}")
+
+def abrir_app_hid(app_val):
+    app_conectado = False
+    if TEM_SUPERVISOR:
+        try:
+            app_conectado = bool(supervisor.runtime.serial_connected)
+        except:
+            pass
+    if not app_conectado and app_val and teclado_layout:
+        try:
+            teclado.press(Keycode.GUI, Keycode.R)
+            time.sleep(0.08)
+            teclado.release_all()
+            time.sleep(0.18)
+            teclado_layout.write(app_val)
+            time.sleep(0.05)
+            teclado.press(Keycode.ENTER)
+            time.sleep(0.05)
+            teclado.release_all()
+            print(f"[APP HID] Aberto nativamente: {app_val}")
+        except Exception as e:
+            print(f"[APP HID ERRO] {e}")
+
+def executar_comando_hid(cmd_val, interp="powershell"):
+    app_conectado = False
+    if TEM_SUPERVISOR:
+        try:
+            app_conectado = bool(supervisor.runtime.serial_connected)
+        except:
+            pass
+    if not app_conectado and cmd_val and teclado_layout:
+        try:
+            teclado.press(Keycode.GUI, Keycode.R)
+            time.sleep(0.08)
+            teclado.release_all()
+            time.sleep(0.18)
+            if interp == "cmd":
+                teclado_layout.write(f"cmd /c {cmd_val}")
+            elif interp == "python":
+                teclado_layout.write(f"python -c \"{cmd_val}\"")
+            else:
+                teclado_layout.write(f"powershell -c \"{cmd_val}\"")
+            time.sleep(0.05)
+            teclado.press(Keycode.ENTER)
+            time.sleep(0.05)
+            teclado.release_all()
+            print(f"[CMD HID] Executado nativamente: {cmd_val}")
+        except Exception as e:
+            print(f"[CMD HID ERRO] {e}")
 
 def executar_macro(macro_id):
     """Executa nativamente os eventos gravados da macro via USB HID Keyboard."""
@@ -1219,6 +1284,15 @@ def executar_acao_generica(acao):
             return
         elif tipo == "url":
             abrir_url_hid((val or "").strip())
+            return
+        elif tipo == "app":
+            app_val = str(val or acao.get("path") or "").strip()
+            abrir_app_hid(app_val)
+            return
+        elif tipo == "command":
+            cmd_val = str(acao.get("command") or val or "").strip()
+            interp = acao.get("interpreter", "powershell")
+            executar_comando_hid(cmd_val, interp)
             return
         elif val:
             executar_acao_generica(val)

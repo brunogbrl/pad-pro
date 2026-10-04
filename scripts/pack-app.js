@@ -7,8 +7,11 @@ async function main() {
   const installedAsarPath = 'C:\\Users\\bruno\\AppData\\Local\\Programs\\PAD Pro\\resources\\app.asar';
   const tempExtract = path.join(__dirname, '..', 'dist', 'temp-asar');
 
-  if (!fs.existsSync(path.join(tempExtract, 'node_modules'))) {
-    console.log('Extracting asar from:', asarPath);
+  if (!fs.existsSync(path.join(tempExtract, 'node_modules', 'electron-updater'))) {
+    console.log('Extracting fresh asar from:', asarPath);
+    if (fs.existsSync(tempExtract)) {
+      try { fs.rmSync(tempExtract, { recursive: true, force: true }); } catch {}
+    }
     execSync(`npx --yes @electron/asar extract "${asarPath}" "${tempExtract}"`, { stdio: 'inherit' });
   } else {
     console.log('Reusing existing node_modules in tempExtract...');

@@ -588,6 +588,13 @@
         title = keyData.name || keyData.label || (u ? `🌐 ${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]}` : '🌐 URL');
       }
       isTitleCustom = true;
+    } else if (keyData.type === 'app') {
+      const fallback = (keyData.path || keyData.value || '').split('\\').pop().split('/').pop().replace(/\.[^/.]+$/, '') || 'App';
+      title = keyData.name || keyData.label || `💻 ${fallback}`;
+      isTitleCustom = true;
+    } else if (keyData.type === 'command') {
+      title = keyData.name || keyData.label || '⚡ Comando';
+      isTitleCustom = true;
     } else {
       title = baseDisplay;
     }
@@ -1730,6 +1737,13 @@
       const u = (Array.isArray(action.urls) && action.urls[0]) || action.value || '';
       return u ? `🌐 ${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}` : 'Abrir URL';
     }
+    if (action.type === 'app') {
+      const fallback = (action.path || action.value || '').split('\\').pop().split('/').pop().replace(/\.[^/.]+$/, '') || 'App';
+      return action.name ? `💻 ${action.name}` : `💻 ${fallback}`;
+    }
+    if (action.type === 'command') {
+      return action.name ? `⚡ ${action.name}` : `⚡ ${(action.command || action.value || 'Comando').substring(0, 16)}`;
+    }
     return action.value || '—';
   }
 
@@ -1764,8 +1778,25 @@
 
     // Initialize editing slots
     editingKeySlots = {
-      click: keyData ? { type: keyData.type || 'key', value: keyData.value || '', urls: keyData.urls || (keyData.value ? [keyData.value] : []), name: keyData.name } : { type: 'key', value: '' },
-      hold: (keyData?.holdAction && keyData.holdAction !== 'none') ? (typeof keyData.holdAction === 'object' ? { ...keyData.holdAction, urls: keyData.holdAction.urls || (keyData.holdAction.value ? [keyData.holdAction.value] : []) } : { type: 'key', value: keyData.holdAction }) : null
+      click: keyData ? {
+        type: keyData.type || 'key',
+        value: keyData.value || '',
+        urls: keyData.urls || (keyData.value ? [keyData.value] : []),
+        name: keyData.name || '',
+        path: keyData.path || keyData.value || '',
+        args: keyData.args || '',
+        command: keyData.command || keyData.value || '',
+        interpreter: keyData.interpreter || 'powershell'
+      } : { type: 'key', value: '' },
+      hold: (keyData?.holdAction && keyData.holdAction !== 'none') ? (typeof keyData.holdAction === 'object' ? {
+        ...keyData.holdAction,
+        urls: keyData.holdAction.urls || (keyData.holdAction.value ? [keyData.holdAction.value] : []),
+        name: keyData.holdAction.name || '',
+        path: keyData.holdAction.path || keyData.holdAction.value || '',
+        args: keyData.holdAction.args || '',
+        command: keyData.holdAction.command || keyData.holdAction.value || '',
+        interpreter: keyData.holdAction.interpreter || 'powershell'
+      } : { type: 'key', value: keyData.holdAction }) : null
     };
 
     // Populate Key Name / Label input
@@ -1897,6 +1928,24 @@
       switchConfigTab('url');
       const urls = (slotAction.urls && slotAction.urls.length > 0) ? slotAction.urls : (val ? [val] : ['']);
       renderUrlInputs(urls);
+    } else if (type === 'app') {
+      populateModifiersAndKey(null);
+      switchConfigTab('app');
+      const pathInput = document.getElementById('key-app-path');
+      const nameInput = document.getElementById('key-app-name');
+      const argsInput = document.getElementById('key-app-args');
+      if (pathInput) pathInput.value = slotAction.path || slotAction.value || '';
+      if (nameInput) nameInput.value = slotAction.name || '';
+      if (argsInput) argsInput.value = slotAction.args || '';
+    } else if (type === 'command') {
+      populateModifiersAndKey(null);
+      switchConfigTab('command');
+      const nameInput = document.getElementById('key-command-name');
+      const interpSelect = document.getElementById('key-command-interpreter');
+      const textInput = document.getElementById('key-command-text');
+      if (nameInput) nameInput.value = slotAction.name || '';
+      if (interpSelect) interpSelect.value = slotAction.interpreter || 'powershell';
+      if (textInput) textInput.value = slotAction.command || slotAction.value || '';
     } else {
       switchConfigTab('combination');
       populateModifiersAndKey(slotAction);
@@ -2111,6 +2160,148 @@
         currentUrls.push(url);
         renderUrlInputs(currentUrls);
       }
+    });
+  });
+
+  // APP TAB LOGIC
+  function syncAppAssignmentFromInputs() {
+    const path = document.getElementById('key-app-path')?.value.trim() || '';
+    const name = document.getElementById('key-app-name')?.value.trim() || '';
+    const args = document.getElementById('key-app-args')?.value.trim() || '';
+    let assignment = null;
+    if (!path) {
+      assignment = { type: 'key', value: '' };
+    } else {
+      populateModifiersAndKey(null);
+      document.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
+      assignment = {
+        type: 'app',
+        value: path,
+        path: path,
+        name: name,
+        args: args
+      };
+    }
+    editingKeySlots[activeDualTarget] = assignment;
+    if (activeDualTarget === 'hold') {
+      if (dualHoldVal) dualHoldVal.textContent = formatActionDisplay(assignment);
+    } else {
+      if (dualClickVal) dualClickVal.textContent = formatActionDisplay(assignment);
+      updateSoundpadKeyHint(assignment);
+    }
+  }
+
+  document.getElementById('key-app-path')?.addEventListener('input', syncAppAssignmentFromInputs);
+  document.getElementById('key-app-name')?.addEventListener('input', syncAppAssignmentFromInputs);
+  document.getElementById('key-app-args')?.addEventListener('input', syncAppAssignmentFromInputs);
+
+  document.getElementById('btn-browse-app')?.addEventListener('click', async () => {
+    if (!window.api?.browseExecutable) return;
+    try {
+      const selectedPath = await window.api.browseExecutable();
+      if (selectedPath) {
+        const pathInput = document.getElementById('key-app-path');
+        const nameInput = document.getElementById('key-app-name');
+        if (pathInput) pathInput.value = selectedPath;
+        if (nameInput && !nameInput.value) {
+          const fileName = selectedPath.split('\\').pop().split('/').pop().replace(/\.[^/.]+$/, '');
+          nameInput.value = fileName;
+        }
+        syncAppAssignmentFromInputs();
+      }
+    } catch (e) {
+      console.warn('Erro ao navegar por executável:', e);
+    }
+  });
+
+  document.getElementById('btn-test-app')?.addEventListener('click', async () => {
+    const path = document.getElementById('key-app-path')?.value.trim();
+    const args = document.getElementById('key-app-args')?.value.trim();
+    if (!path) {
+      showToast('Preencha o aplicativo antes de testar', 'warning');
+      return;
+    }
+    showToast(`Iniciando ${path}...`, 'info');
+    const res = await window.api?.testOpenApp?.({ path, args });
+    if (res?.success) {
+      showToast('Aplicativo iniciado com sucesso!', 'success');
+    } else if (res?.error) {
+      showToast(`Aviso: ${res.error}`, 'error');
+    }
+  });
+
+  document.querySelectorAll('#tab-app .app-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const app = chip.dataset.app;
+      const name = chip.dataset.name;
+      const pathInput = document.getElementById('key-app-path');
+      const nameInput = document.getElementById('key-app-name');
+      if (pathInput) pathInput.value = app;
+      if (nameInput) nameInput.value = name;
+      syncAppAssignmentFromInputs();
+    });
+  });
+
+  // COMMAND TAB LOGIC
+  function syncCommandAssignmentFromInputs() {
+    const text = document.getElementById('key-command-text')?.value.trim() || '';
+    const name = document.getElementById('key-command-name')?.value.trim() || '';
+    const interp = document.getElementById('key-command-interpreter')?.value || 'powershell';
+    let assignment = null;
+    if (!text) {
+      assignment = { type: 'key', value: '' };
+    } else {
+      populateModifiersAndKey(null);
+      document.querySelectorAll('.action-item').forEach(i => i.classList.remove('selected'));
+      assignment = {
+        type: 'command',
+        value: text,
+        command: text,
+        name: name,
+        interpreter: interp
+      };
+    }
+    editingKeySlots[activeDualTarget] = assignment;
+    if (activeDualTarget === 'hold') {
+      if (dualHoldVal) dualHoldVal.textContent = formatActionDisplay(assignment);
+    } else {
+      if (dualClickVal) dualClickVal.textContent = formatActionDisplay(assignment);
+      updateSoundpadKeyHint(assignment);
+    }
+  }
+
+  document.getElementById('key-command-text')?.addEventListener('input', syncCommandAssignmentFromInputs);
+  document.getElementById('key-command-name')?.addEventListener('input', syncCommandAssignmentFromInputs);
+  document.getElementById('key-command-interpreter')?.addEventListener('change', syncCommandAssignmentFromInputs);
+
+  document.getElementById('btn-test-command')?.addEventListener('click', async () => {
+    const command = document.getElementById('key-command-text')?.value.trim();
+    const interpreter = document.getElementById('key-command-interpreter')?.value || 'powershell';
+    if (!command) {
+      showToast('Digite um comando antes de testar', 'warning');
+      return;
+    }
+    showToast(`Executando no ${interpreter}...`, 'info');
+    const res = await window.api?.testRunCommand?.({ command, interpreter });
+    if (res?.success) {
+      showToast('Comando disparado com sucesso!', 'success');
+    } else if (res?.error) {
+      showToast(`Erro no comando: ${res.error}`, 'error');
+    }
+  });
+
+  document.querySelectorAll('#tab-command .command-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cmd = chip.dataset.cmd;
+      const name = chip.dataset.name;
+      const interp = chip.dataset.interp || 'powershell';
+      const textInput = document.getElementById('key-command-text');
+      const nameInput = document.getElementById('key-command-name');
+      const interpSelect = document.getElementById('key-command-interpreter');
+      if (textInput) textInput.value = cmd;
+      if (nameInput) nameInput.value = name;
+      if (interpSelect) interpSelect.value = interp;
+      syncCommandAssignmentFromInputs();
     });
   });
 
@@ -2349,6 +2540,30 @@
       keyData.name = clickAssignment.name;
     } else {
       delete keyData.name;
+    }
+    if (clickAssignment.path) {
+      keyData.path = clickAssignment.path;
+    } else {
+      delete keyData.path;
+    }
+    if (clickAssignment.args) {
+      keyData.args = clickAssignment.args;
+    } else {
+      delete keyData.args;
+    }
+    if (clickAssignment.command) {
+      keyData.command = clickAssignment.command;
+    } else {
+      delete keyData.command;
+    }
+    if (clickAssignment.interpreter) {
+      keyData.interpreter = clickAssignment.interpreter;
+    } else {
+      delete keyData.interpreter;
+    }
+
+    if (!customLabel && clickAssignment.name) {
+      keyData.label = clickAssignment.name;
     }
 
     // Default label for layer switch

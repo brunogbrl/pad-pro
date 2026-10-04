@@ -4945,6 +4945,25 @@ svg.titlebar-logo,
   transform: translateY(0);
 }
 
+.command-textarea {
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+  font-size: 12px !important;
+  padding: 10px 12px !important;
+  color: #E2E8F0 !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  outline: none !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+.command-textarea:focus {
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2) !important;
+}
+
 .macro-link-btn {
   display: inline-flex;
   align-items: center;

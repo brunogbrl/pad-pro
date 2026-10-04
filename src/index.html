@@ -369,6 +369,8 @@
               <button class="config-tab" data-tab="mouse" data-i18n="keys.mouse">Mouse</button>
               <button class="config-tab" data-tab="macro" data-i18n="keys.macro">Macro</button>
               <button class="config-tab" data-tab="url">Abrir URL</button>
+              <button class="config-tab" data-tab="app">Abrir App</button>
+              <button class="config-tab" data-tab="command">Executar Comando</button>
             </div>
 
             <!-- Tab Content: Combination -->
@@ -601,6 +603,125 @@
                     <button type="button" class="url-chip" data-url="https://open.spotify.com">Spotify</button>
                     <button type="button" class="url-chip" data-url="https://github.com">GitHub</button>
                     <button type="button" class="url-chip" data-url="https://chatgpt.com">ChatGPT</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Abrir Aplicativo -->
+            <div class="config-tab-content" id="tab-app">
+              <div class="url-config-box">
+                <div class="form-group mb-12">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                    <span class="form-label" style="margin-bottom: 0;">Aplicativo ou Executável</span>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <button type="button" class="btn btn-secondary btn-sm" id="btn-test-app" title="Testar abrir aplicativo agora no Windows" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        <span>Testar App</span>
+                      </button>
+                      <button type="button" class="btn btn-outline btn-sm" id="btn-browse-app" title="Procurar executável (.exe, .bat, atalho) no computador" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span>Procurar...</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Nome do Programa ou Caminho do Arquivo:</label>
+                      <input type="text" class="input-field" id="key-app-path" placeholder="Ex: calc, notepad, code ou C:\Program Files\App\app.exe" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                      <div>
+                        <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Nome de Exibição (no Pad e HUD):</label>
+                        <input type="text" class="input-field" id="key-app-name" placeholder="Ex: Calculadora, VS Code" maxlength="24" autocomplete="off" spellcheck="false">
+                      </div>
+                      <div>
+                        <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Argumentos Opcionais:</label>
+                        <input type="text" class="input-field" id="key-app-args" placeholder="Ex: --incognito, doc.txt" autocomplete="off" spellcheck="false">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="url-info-hint" style="margin-top: 10px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>Digite o nome do executável (ex: <code>calc</code>, <code>notepad</code>) ou use o botão <strong>Procurar...</strong> para escolher qualquer executável <code>.exe</code>, script <code>.bat</code> ou atalho <code>.lnk</code> do seu PC.</span>
+                  </div>
+                </div>
+
+                <div class="url-suggestions-box">
+                  <span class="url-suggestions-title">Aplicativos Frequentes (clique para preencher):</span>
+                  <div class="url-chips-grid">
+                    <button type="button" class="url-chip app-chip" data-app="calc" data-name="Calculadora">🧮 Calculadora</button>
+                    <button type="button" class="url-chip app-chip" data-app="notepad" data-name="Bloco de Notas">📝 Bloco de Notas</button>
+                    <button type="button" class="url-chip app-chip" data-app="explorer" data-name="Explorador">📁 Arquivos</button>
+                    <button type="button" class="url-chip app-chip" data-app="taskmgr" data-name="Gerenciador">📊 Gerenciador Tarefas</button>
+                    <button type="button" class="url-chip app-chip" data-app="code" data-name="VS Code">💻 VS Code</button>
+                    <button type="button" class="url-chip app-chip" data-app="spotify:" data-name="Spotify">🎵 Spotify</button>
+                    <button type="button" class="url-chip app-chip" data-app="discord:" data-name="Discord">💬 Discord</button>
+                    <button type="button" class="url-chip app-chip" data-app="mspaint" data-name="Paint">🎨 Paint</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content: Executar Comando (PowerShell / CMD / Python) -->
+            <div class="config-tab-content" id="tab-command">
+              <div class="url-config-box">
+                <div class="form-group mb-12">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                    <span class="form-label" style="margin-bottom: 0;">Comando ou Script</span>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <button type="button" class="btn btn-secondary btn-sm" id="btn-test-command" title="Testar executar comando agora em segundo plano" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        <span>Testar Comando</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: 1fr 180px; gap: 10px; margin-bottom: 10px;">
+                    <div>
+                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Nome do Comando (exibido no Pad, OLED e no Espiar):</label>
+                      <input type="text" class="input-field" id="key-command-name" placeholder="Ex: Bloquear Tela, Desligar PC, Meu Script" maxlength="24" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div>
+                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Ambiente / Shell:</label>
+                      <select class="select-field" id="key-command-interpreter">
+                        <option value="powershell">PowerShell (Recomendado)</option>
+                        <option value="cmd">Prompt de Comando (CMD)</option>
+                        <option value="python">Python (Script / Código)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Linha de Comando / Código:</label>
+                    <textarea class="input-field command-textarea" id="key-command-text" rows="3" placeholder="Ex: rundll32.exe user32.dll,LockWorkStation ou python script.py" spellcheck="false" style="font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; resize: vertical; min-height: 64px; line-height: 1.45;"></textarea>
+                  </div>
+
+                  <div class="url-info-hint" style="margin-top: 10px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>O comando é disparado discretamente em segundo plano. Compatível com automações do Windows (PowerShell/CMD) e scripts Python.</span>
+                  </div>
+                </div>
+
+                <div class="url-suggestions-box">
+                  <span class="url-suggestions-title">Predefinições de Utilidades do Dia a Dia (clique para preencher):</span>
+                  <div class="url-chips-grid">
+                    <button type="button" class="url-chip command-chip" data-name="Bloquear PC" data-interp="cmd" data-cmd="rundll32.exe user32.dll,LockWorkStation">🔒 Bloquear Tela</button>
+                    <button type="button" class="url-chip command-chip" data-name="Desligar PC" data-interp="cmd" data-cmd="shutdown /s /t 0">⚡ Desligar PC</button>
+                    <button type="button" class="url-chip command-chip" data-name="Reiniciar PC" data-interp="cmd" data-cmd="shutdown /r /t 0">🔄 Reiniciar PC</button>
+                    <button type="button" class="url-chip command-chip" data-name="Suspender PC" data-interp="cmd" data-cmd="rundll32.exe powrprof.dll,SetSuspendState 0,1,0">🌙 Suspender PC</button>
+                    <button type="button" class="url-chip command-chip" data-name="Esvaziar Lixeira" data-interp="powershell" data-cmd="Clear-RecycleBin -Force -ErrorAction SilentlyContinue">🗑️ Esvaziar Lixeira</button>
+                    <button type="button" class="url-chip command-chip" data-name="Recorte Tela" data-interp="cmd" data-cmd="explorer.exe ms-screenclip:">✂️ Recorte de Tela</button>
+                    <button type="button" class="url-chip command-chip" data-name="Configurações" data-interp="cmd" data-cmd="start ms-settings:">⚙️ Configurações</button>
+                    <button type="button" class="url-chip command-chip" data-name="Teste Python" data-interp="python" data-cmd="print('Python executado com sucesso!')">🐍 Teste Python</button>
                   </div>
                 </div>
               </div>

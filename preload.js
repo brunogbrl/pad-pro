@@ -61,6 +61,9 @@ contextBridge.exposeInMainWorld('api', {
 
   // System & Settings
   openURL: (url) => ipcRenderer.invoke('system:open-url', url),
+  browseExecutable: () => ipcRenderer.invoke('system:browse-executable'),
+  testOpenApp: (data) => ipcRenderer.invoke('system:test-open-app', data),
+  testRunCommand: (data) => ipcRenderer.invoke('system:test-run-command', data),
   setLoginItem: (enabled) => ipcRenderer.invoke('system:set-login-item', enabled),
   getLoginItem: () => ipcRenderer.invoke('system:get-login-item'),
   setCloseToTray: (enabled) => ipcRenderer.invoke('system:set-close-to-tray', enabled),

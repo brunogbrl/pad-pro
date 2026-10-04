@@ -1,9 +1,16 @@
 const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, dialog, shell } = require('electron');
-const { autoUpdater } = require('electron-updater');
+const { exec, spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const net = require('net');
+
+let autoUpdater = null;
+try {
+  autoUpdater = require('electron-updater').autoUpdater;
+} catch (e) {
+  console.warn('[AutoUpdater] Não foi possível carregar electron-updater:', e?.message);
+}
 
 // Disable hardware acceleration to prevent GPU crashes on Windows
 app.disableHardwareAcceleration();
@@ -1274,6 +1281,112 @@ async function setupSerialListener() {
   }
 }
 
+// =====================================================================
+// EXECUTORES DE APLICATIVO E COMANDO DO SISTEMA
+// =====================================================================
+function launchApp(appTarget, args = '') {
+  if (!appTarget || !appTarget.trim()) return;
+  const target = appTarget.trim();
+  logDebug(`[LAUNCH APP] Iniciando: ${target} ${args ? `(args: ${args})` : ''}`);
+
+  if (target.includes('://') || target.endsWith(':')) {
+    shell.openExternal(target).catch(e => logDebug(`[APP PROTOCOL ERRO] ${e.message}`));
+    return;
+  }
+
+  if (!args && fs.existsSync(target) && target.toLowerCase().endsWith('.lnk')) {
+    shell.openPath(target).catch(e => logDebug(`[APP LNK ERRO] ${e.message}`));
+    return;
+  }
+
+  let cmdLine = '';
+  if (target.includes(' ') && !target.startsWith('"')) {
+    cmdLine = `start "" "${target}" ${args || ''}`;
+  } else {
+    cmdLine = `start "" ${target} ${args || ''}`;
+  }
+
+  exec(cmdLine, { windowsHide: false }, (err) => {
+    if (err) {
+      logDebug(`[LAUNCH APP start ERRO] ${err.message}, tentando fallback...`);
+      if (fs.existsSync(target)) {
+        shell.openPath(target).catch(e => logDebug(`[LAUNCH APP openPath ERRO] ${e.message}`));
+      } else {
+        exec(`"${target}" ${args || ''}`, (err2) => {
+          if (err2) logDebug(`[LAUNCH APP exec direto ERRO] ${err2.message}`);
+        });
+      }
+    }
+  });
+}
+
+function executeSystemCommand(commandText, interpreter = 'powershell', customName = '') {
+  if (!commandText || !commandText.trim()) return;
+  const cleanCmd = commandText.trim();
+  const interp = (interpreter || 'powershell').toLowerCase();
+  logDebug(`[COMMAND EXEC] (${interp}) [${customName || 'cmd'}]: ${cleanCmd}`);
+
+  let fullCommand = '';
+  if (interp === 'cmd') {
+    fullCommand = `cmd.exe /c "${cleanCmd}"`;
+  } else if (interp === 'python') {
+    if (cleanCmd.endsWith('.py') || cleanCmd.includes('.py ')) {
+      fullCommand = `python "${cleanCmd}"`;
+    } else {
+      fullCommand = `python -c "${cleanCmd.replace(/"/g, '\\"')}"`;
+    }
+  } else {
+    fullCommand = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "${cleanCmd.replace(/"/g, '`"')}"`;
+  }
+
+  exec(fullCommand, { windowsHide: true }, (err, stdout, stderr) => {
+    if (err) {
+      logDebug(`[COMMAND ERRO] ${err.message}`);
+    } else {
+      logDebug(`[COMMAND SUCESSO] ${stdout ? stdout.trim() : 'OK'}`);
+    }
+  });
+}
+
+global._lastSystemActionTimes = global._lastSystemActionTimes || {};
+function handleKeySystemAction(actionObj, keyIndex) {
+  if (!actionObj) return;
+  const now = Date.now();
+  const lastTime = global._lastSystemActionTimes[keyIndex] || 0;
+  if (now - lastTime < 900) {
+    logDebug(`[ACTION DEBOUNCE] B${keyIndex} ignorado para evitar disparo duplo`);
+    return;
+  }
+  global._lastSystemActionTimes[keyIndex] = now;
+
+  const type = actionObj.type;
+  if (type === 'app') {
+    launchApp(actionObj.value || actionObj.path, actionObj.args);
+  } else if (type === 'command') {
+    executeSystemCommand(actionObj.command || actionObj.value, actionObj.interpreter, actionObj.name || actionObj.label);
+  } else if (type === 'url' || (actionObj.value && typeof actionObj.value === 'string' && (actionObj.value.startsWith('http://') || actionObj.value.startsWith('https://')))) {
+    let urlsToOpen = [];
+    if (Array.isArray(actionObj.urls) && actionObj.urls.length > 0) {
+      urlsToOpen = actionObj.urls;
+    } else if (Array.isArray(actionObj.value)) {
+      urlsToOpen = actionObj.value;
+    } else if (typeof actionObj.value === 'string' && actionObj.value.trim()) {
+      urlsToOpen = [actionObj.value.trim()];
+    }
+    const cleanUrls = [...new Set(urlsToOpen.map(u => (u || '').trim()).filter(Boolean))];
+    cleanUrls.forEach((u, idx) => {
+      let targetUrl = u;
+      if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        targetUrl = 'https://' + targetUrl;
+      }
+      setTimeout(() => {
+        shell.openExternal(targetUrl).catch(e => logDebug(`[URL ERRO] ${e.message}`));
+        logDebug(`[URL ABERTA] B${keyIndex} [${idx + 1}/${cleanUrls.length}] abriu: ${targetUrl}`);
+      }, idx * 150);
+    });
+  }
+}
+
 function handleSerialLine(line) {
   if (!line) return;
   if (line.includes('[URL HID]')) {
@@ -1317,6 +1430,12 @@ function handleSerialLine(line) {
       actionText: `⏳ ${holdName}`,
       isPreview: false
     });
+
+    const layerObj = currentConfig?.layers?.[layer];
+    const keyData = layerObj?.keys?.[keyIndex];
+    if (keyData?.holdAction && typeof keyData.holdAction === 'object') {
+      handleKeySystemAction(keyData.holdAction, keyIndex);
+    }
     return;
   }
 
@@ -1351,41 +1470,11 @@ function handleSerialLine(line) {
       startSoundpadPlaybackTracking(soundTitle);
     }
 
-    // Check if this key in config is set to open URL(s)
+    // Check if this key in config has a system action (URL, App, Command)
     const layerObj = currentConfig?.layers?.[layer];
     const keyData = layerObj?.keys?.[keyIndex];
-    if (keyData && (keyData.type === 'url' || (keyData.value && typeof keyData.value === 'string' && (keyData.value.startsWith('http://') || keyData.value.startsWith('https://'))))) {
-      const now = Date.now();
-      // Debounce de 1.2s por tecla para evitar disparo duplo em repetição de contato
-      if (global._lastUrlTriggerKey === keyIndex && (now - (global._lastUrlTriggerTime || 0)) < 1200) {
-        logDebug(`[URL DEBOUNCE] B${keyIndex} ignorado para evitar abertura duplicada`);
-        return;
-      }
-      global._lastUrlTriggerTime = now;
-      global._lastUrlTriggerKey = keyIndex;
-
-      let urlsToOpen = [];
-      if (Array.isArray(keyData.urls) && keyData.urls.length > 0) {
-        urlsToOpen = keyData.urls;
-      } else if (Array.isArray(keyData.value)) {
-        urlsToOpen = keyData.value;
-      } else if (typeof keyData.value === 'string' && keyData.value.trim()) {
-        urlsToOpen = [keyData.value.trim()];
-      }
-
-      // Remover duplicatas e URLs vazias
-      const cleanUrls = [...new Set(urlsToOpen.map(u => (u || '').trim()).filter(Boolean))];
-      cleanUrls.forEach((u, idx) => {
-        let targetUrl = u;
-        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-          targetUrl = 'https://' + targetUrl;
-        }
-        // Leve intervalo de 150ms entre abas para o navegador abrir ordenadamente
-        setTimeout(() => {
-          shell.openExternal(targetUrl).catch(e => logDebug(`[URL ERRO] ${e.message}`));
-          logDebug(`[URL ABERTA] B${keyIndex} [${idx + 1}/${cleanUrls.length}] abriu: ${targetUrl}`);
-        }, idx * 150);
-      });
+    if (keyData) {
+      handleKeySystemAction(keyData, keyIndex);
     }
     return;
   }
@@ -1775,6 +1864,60 @@ ipcMain.on('window:close', () => {
   }
 });
 
+// System handlers (URL, App, Command, File Browser)
+ipcMain.handle('system:open-url', async (_, urls) => {
+  const list = Array.isArray(urls) ? urls : [urls];
+  for (let u of list) {
+    if (u && typeof u === 'string') {
+      let target = u.trim();
+      if (!target.startsWith('http://') && !target.startsWith('https://')) {
+        target = 'https://' + target;
+      }
+      shell.openExternal(target).catch(e => logDebug(`[OPEN URL ERRO] ${e.message}`));
+    }
+  }
+  return true;
+});
+
+ipcMain.handle('system:browse-executable', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: 'Selecionar Aplicativo, Script ou Atalho',
+    properties: ['openFile'],
+    filters: [
+      { name: 'Executáveis e Scripts (*.exe, *.bat, *.cmd, *.ps1, *.py, *.lnk)', extensions: ['exe', 'bat', 'cmd', 'ps1', 'py', 'lnk'] },
+      { name: 'Todos os Arquivos (*.*)', extensions: ['*'] }
+    ]
+  });
+  if (result.canceled || !result.filePaths || result.filePaths.length === 0) {
+    return null;
+  }
+  return result.filePaths[0];
+});
+
+ipcMain.handle('system:test-open-app', async (_, data) => {
+  try {
+    const target = (typeof data === 'string' ? data : data?.path || data?.value || '').trim();
+    const args = typeof data === 'object' ? (data?.args || '') : '';
+    if (!target) return { success: false, error: 'Caminho ou nome do aplicativo não fornecido' };
+    launchApp(target, args);
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('system:test-run-command', async (_, data) => {
+  try {
+    const cmd = (typeof data === 'string' ? data : data?.command || data?.value || '').trim();
+    const interp = (typeof data === 'object' ? data?.interpreter : 'powershell') || 'powershell';
+    if (!cmd) return { success: false, error: 'Comando não fornecido' };
+    executeSystemCommand(cmd, interp, 'Teste');
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
 // HUD controls
 ipcMain.handle('hud:toggle', (_, enabled) => {
   toggleHUD(enabled);
@@ -2005,10 +2148,13 @@ ipcMain.handle('discord:set-mute', (event, muteState) => {
 // =====================================================================
 // AUTO-UPDATER
 // =====================================================================
-autoUpdater.autoDownload = false;
-autoUpdater.autoInstallOnAppQuit = true;
-
 function setupAutoUpdater() {
+  if (!autoUpdater) {
+    console.log('[AutoUpdater] electron-updater não carregado');
+    return;
+  }
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
   try {
     autoUpdater.setFeedURL({
       provider: 'github',
@@ -2141,6 +2287,7 @@ ipcMain.handle('updater:check', async () => {
 });
 
 ipcMain.handle('updater:download', async () => {
+  if (!autoUpdater) return { success: false, error: 'Auto-updater não carregado' };
   try {
     await autoUpdater.downloadUpdate();
     return { success: true };
@@ -2150,6 +2297,7 @@ ipcMain.handle('updater:download', async () => {
 });
 
 ipcMain.handle('updater:install', () => {
+  if (!autoUpdater) return { success: false, error: 'Auto-updater não carregado' };
   app.isQuitting = true;
   autoUpdater.quitAndInstall(false, true);
   return { success: true };
