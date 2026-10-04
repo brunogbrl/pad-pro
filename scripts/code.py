@@ -359,9 +359,11 @@ def obter_nome_funcao_amigavel(fn):
 
 def atualizar_oled_padrao(camada_idx):
     """Renderiza tela padrao da camada com personalizacoes e dots de status."""
+    global anim_som_ativa
     if not TEM_OLED or em_animacao_especial:
         return
     try:
+        anim_som_ativa = False
         if display.root_group != grupo_normal:
             display.root_group = grupo_normal
 
@@ -425,10 +427,11 @@ def atualizar_oled_padrao(camada_idx):
 
 def mostrar_acao_oled(linha1, linha2, duracao=1.1, icone=None):
     """Exibe feedback de acao rapida sem sobreposicao de icones ou texto."""
-    global tempo_reset_oled
+    global tempo_reset_oled, anim_som_ativa
     if not TEM_OLED or em_animacao_especial:
         return
     try:
+        anim_som_ativa = False
         if display.root_group != grupo_normal:
             display.root_group = grupo_normal
 
@@ -463,6 +466,7 @@ def mostrar_acao_oled(linha1, linha2, duracao=1.1, icone=None):
         else:
             if icone_grid:
                 icone_grid.bitmap = bmp_vazio
+                icone_grid.hidden = True
             txt_linha2.x = 2
 
         if duracao is not None and duracao <= 0:
@@ -508,10 +512,11 @@ def atualizar_bmp_barra(pct):
 
 def mostrar_barra_oled(titulo, valor_str, pct, icone=None, duracao=1.2):
     """Exibe barra de progresso gráfica com ícone, valor e barra horizontal animada (estilo Windows 11)."""
-    global tempo_reset_oled
+    global tempo_reset_oled, anim_som_ativa
     if not TEM_OLED or em_animacao_especial:
         return
     try:
+        anim_som_ativa = False
         if display.root_group != grupo_normal:
             display.root_group = grupo_normal
 
@@ -535,6 +540,7 @@ def mostrar_barra_oled(titulo, valor_str, pct, icone=None, duracao=1.2):
         else:
             if icone_grid:
                 icone_grid.bitmap = bmp_vazio
+                icone_grid.hidden = True
 
         atualizar_bmp_barra(pct)
         if tile_barra_progresso:
@@ -712,6 +718,7 @@ def iniciar_animacao_som(titulo, duracao=2.5):
     
     if icone_grid:
         icone_grid.bitmap = BMP_ANIM_SPEAKER[0]
+        icone_grid.hidden = False
         
     if dot_grids:
         for dg in dot_grids:

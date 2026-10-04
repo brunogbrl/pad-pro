@@ -932,10 +932,10 @@ function startSoundpadPlaybackTracking(soundTitle) {
   soundpadPlaybackInterval = setInterval(async () => {
     const status = await querySoundpadPlayStatus();
     // Soundpad returns 'PLAYING', 'PAUSED', 'STOPPED', or null if disconnected
-    if (status === 'STOPPED' || status === null) {
+    if (status !== 'PLAYING') {
       stopSoundpadPlaybackTracking();
     }
-  }, 400);
+  }, 250);
 }
 
 function stopSoundpadPlaybackTracking() {
@@ -1587,6 +1587,13 @@ function handleSerialLine(line) {
 
     if (soundTitle) {
       startSoundpadPlaybackTracking(soundTitle);
+    } else if (currentPlayingSoundTitle) {
+      // Se estava reproduzindo um som e o usuário apertou outra tecla (ex: Play/Pause ou Stop), checa e encerra imediatamente
+      querySoundpadPlayStatus().then((status) => {
+        if (status !== 'PLAYING') {
+          stopSoundpadPlaybackTracking();
+        }
+      });
     }
 
     // Check if this key in config has a system action (URL, App, Command)
