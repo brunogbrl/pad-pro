@@ -82,7 +82,7 @@ async function main() {
       tag_name: tag,
       target_commitish: 'main',
       name: `PAD Pro ${tag}`,
-      body: `## 🚀 PAD Pro ${tag}\n\nInstalador executável oficial do PAD Pro para Windows com suporte à nova Central de Atualizações, assistente guiado de instalação com escolha de diretório e atalhos, personalização visual e correções completas de nomenclatura para PadPRO.\n\n### 📦 Download:\nBaixe o arquivo **PAD-Pro-Setup-${version}.exe** abaixo e instale diretamente no seu Windows.`,
+      body: `## 🚀 PAD Pro ${tag}\n\nVersão atualizada com melhorias no firmware do hardware e na experiência do usuário:\n\n- ✨ **OLED com Grupos Dedicados**: Exibição confiável da logo oficial **PadPro** na inicialização e da **engrenagem animada** durante a atualização do pad.\n- 🔄 **Transições Suaves de Camada**: Alternância limpa e instantânea entre camadas sem mexida estranha ou oscilação de pixels.\n- 🏷️ **Identidade Visual PadPro**: Padronização completa da nomenclatura para PadPro no firmware, pendrive USB, app e instalador.\n\n### 📦 Download:\nBaixe o arquivo **PAD-Pro-Setup-${version}.exe** abaixo para instalar ou atualizar diretamente no Windows.`,
       draft: false,
       prerelease: false
     });
