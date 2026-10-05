@@ -363,14 +363,38 @@
 
             <!-- Tabs -->
             <div class="config-tabs">
-              <button class="config-tab active" data-tab="combination" data-i18n="keys.combination">Combinação</button>
-              <button class="config-tab" data-tab="functions" data-i18n="keys.functions">Funções do Pad</button>
-              <button class="config-tab" data-tab="media" data-i18n="keys.media">Mídia</button>
-              <button class="config-tab" data-tab="mouse" data-i18n="keys.mouse">Mouse</button>
-              <button class="config-tab" data-tab="macro" data-i18n="keys.macro">Macro</button>
-              <button class="config-tab" data-tab="url">Abrir URL</button>
-              <button class="config-tab" data-tab="app">Abrir App</button>
-              <button class="config-tab" data-tab="command">Executar Comando</button>
+              <button class="config-tab active" data-tab="combination">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+                <span data-i18n="keys.combination">Combinação</span>
+              </button>
+              <button class="config-tab" data-tab="functions">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                <span data-i18n="keys.functions">Funções do Pad</span>
+              </button>
+              <button class="config-tab" data-tab="media">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span data-i18n="keys.media">Mídia</span>
+              </button>
+              <button class="config-tab" data-tab="mouse">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="6"/><line x1="12" y1="7" x2="12" y2="11"/></svg>
+                <span data-i18n="keys.mouse">Mouse</span>
+              </button>
+              <button class="config-tab" data-tab="macro">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+                <span data-i18n="keys.macro">Macro</span>
+              </button>
+              <button class="config-tab" data-tab="url">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span>Abrir URL</span>
+              </button>
+              <button class="config-tab" data-tab="app">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <span>Abrir App</span>
+              </button>
+              <button class="config-tab" data-tab="command">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                <span>Executar Comando</span>
+              </button>
             </div>
 
             <!-- Tab Content: Combination -->
@@ -401,21 +425,21 @@
                   <select class="select-field" id="key-select">
                     <option value="">(Nenhuma Tecla Base)</option>
                     <optgroup label="Funções do PadPRO">
-                      <option value="layer-switch">🔄 Troca de Camada</option>
-                      <option value="zoom_in">🔍 Zoom In (+)</option>
-                      <option value="zoom_out">🔍 Zoom Out (-)</option>
-                      <option value="zoom_reset">🔍 Resetar Zoom (100%)</option>
-                      <option value="brightness_up">☀️ Brilho (+)</option>
-                      <option value="brightness_down">🌙 Brilho (-)</option>
+                      <option value="layer-switch">Troca de Camada</option>
+                      <option value="zoom_in">Zoom In (+)</option>
+                      <option value="zoom_out">Zoom Out (-)</option>
+                      <option value="zoom_reset">Resetar Zoom (100%)</option>
+                      <option value="brightness_up">Brilho (+)</option>
+                      <option value="brightness_down">Brilho (-)</option>
                     </optgroup>
                     <optgroup label="Controles de Mídia">
-                      <option value="play_pause">⏯ Play/Pause</option>
-                      <option value="volume_up">🔊 Volume (+)</option>
-                      <option value="volume_down">🔉 Volume (-)</option>
-                      <option value="mute">🔇 Mute / Desmute</option>
-                      <option value="next">⏭ Próxima</option>
-                      <option value="prev">⏮ Anterior</option>
-                      <option value="stop">⏹ Stop</option>
+                      <option value="play_pause">Play / Pause</option>
+                      <option value="volume_up">Volume (+)</option>
+                      <option value="volume_down">Volume (-)</option>
+                      <option value="mute">Mute / Desmute</option>
+                      <option value="next">Próxima Faixa</option>
+                      <option value="prev">Faixa Anterior</option>
+                      <option value="stop">Stop</option>
                     </optgroup>
                     <optgroup label="F-Keys Estendidas">
                       <option value="F13">F13</option><option value="F14">F14</option>
@@ -656,14 +680,38 @@
                 <div class="url-suggestions-box">
                   <span class="url-suggestions-title">Aplicativos Frequentes (clique para preencher):</span>
                   <div class="url-chips-grid">
-                    <button type="button" class="url-chip app-chip" data-app="calc" data-name="Calculadora">🧮 Calculadora</button>
-                    <button type="button" class="url-chip app-chip" data-app="notepad" data-name="Bloco de Notas">📝 Bloco de Notas</button>
-                    <button type="button" class="url-chip app-chip" data-app="explorer" data-name="Explorador">📁 Arquivos</button>
-                    <button type="button" class="url-chip app-chip" data-app="taskmgr" data-name="Gerenciador">📊 Gerenciador Tarefas</button>
-                    <button type="button" class="url-chip app-chip" data-app="code" data-name="VS Code">💻 VS Code</button>
-                    <button type="button" class="url-chip app-chip" data-app="spotify:" data-name="Spotify">🎵 Spotify</button>
-                    <button type="button" class="url-chip app-chip" data-app="discord:" data-name="Discord">💬 Discord</button>
-                    <button type="button" class="url-chip app-chip" data-app="mspaint" data-name="Paint">🎨 Paint</button>
+                    <button type="button" class="url-chip app-chip" data-app="calc" data-name="Calculadora">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+                      <span>Calculadora</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="notepad" data-name="Bloco de Notas">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                      <span>Bloco de Notas</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="explorer" data-name="Explorador">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      <span>Arquivos</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="taskmgr" data-name="Gerenciador">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                      <span>Gerenciador Tarefas</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="code" data-name="VS Code">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                      <span>VS Code</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="spotify:" data-name="Spotify">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 11.5c3-1 6-1 8 0"/><path d="M7 14.5c3.5-1.2 7-1.2 10 0"/><path d="M9 9c2.5-.8 5-.8 7 0"/></svg>
+                      <span>Spotify</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="discord:" data-name="Discord">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                      <span>Discord</span>
+                    </button>
+                    <button type="button" class="url-chip app-chip" data-app="mspaint" data-name="Paint">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg>
+                      <span>Paint</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -673,7 +721,7 @@
             <div class="config-tab-content" id="tab-command">
               <div class="url-config-box">
                 <div class="form-group mb-12">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                     <span class="form-label" style="margin-bottom: 0;">Comando ou Script</span>
                     <div style="display: flex; gap: 8px; align-items: center;">
                       <button type="button" class="btn btn-secondary btn-sm" id="btn-test-command" title="Testar executar comando agora em segundo plano" style="gap: 4px; padding: 4px 10px; font-size: 11px;">
@@ -685,14 +733,14 @@
                     </div>
                   </div>
 
-                  <div style="display: grid; grid-template-columns: 1fr 180px; gap: 10px; margin-bottom: 10px;">
-                    <div>
-                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Nome do Comando (exibido no Pad, OLED e no Espiar):</label>
-                      <input type="text" class="input-field" id="key-command-name" placeholder="Ex: Bloquear Tela, Desligar PC, Meu Script" maxlength="24" autocomplete="off" spellcheck="false">
+                  <div style="display: grid; grid-template-columns: 1fr 220px; gap: 14px; margin-bottom: 12px; align-items: end;">
+                    <div style="min-width: 0;">
+                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 6px; display: block;">Nome do Comando (exibido no Pad, OLED e no Espiar):</label>
+                      <input type="text" class="input-field" id="key-command-name" placeholder="Ex: Bloquear Tela, Desligar PC, Meu Script" maxlength="24" autocomplete="off" spellcheck="false" style="width: 100%; box-sizing: border-box;">
                     </div>
-                    <div>
-                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 4px; display: block;">Ambiente / Shell:</label>
-                      <select class="select-field" id="key-command-interpreter">
+                    <div style="min-width: 0;">
+                      <label class="form-sublabel" style="font-size: 11px; color: #94A3B8; margin-bottom: 6px; display: block;">Ambiente / Shell:</label>
+                      <select class="select-field" id="key-command-interpreter" style="width: 100%; box-sizing: border-box;">
                         <option value="powershell">PowerShell (Recomendado)</option>
                         <option value="cmd">Prompt de Comando (CMD)</option>
                         <option value="python">Python (Script / Código)</option>
@@ -714,14 +762,38 @@
                 <div class="url-suggestions-box">
                   <span class="url-suggestions-title">Predefinições de Utilidades do Dia a Dia (clique para preencher):</span>
                   <div class="url-chips-grid">
-                    <button type="button" class="url-chip command-chip" data-name="Bloquear PC" data-interp="cmd" data-cmd="rundll32.exe user32.dll,LockWorkStation">🔒 Bloquear Tela</button>
-                    <button type="button" class="url-chip command-chip" data-name="Desligar PC" data-interp="cmd" data-cmd="shutdown /s /t 0">⚡ Desligar PC</button>
-                    <button type="button" class="url-chip command-chip" data-name="Reiniciar PC" data-interp="cmd" data-cmd="shutdown /r /t 0">🔄 Reiniciar PC</button>
-                    <button type="button" class="url-chip command-chip" data-name="Suspender PC" data-interp="cmd" data-cmd="rundll32.exe powrprof.dll,SetSuspendState 0,1,0">🌙 Suspender PC</button>
-                    <button type="button" class="url-chip command-chip" data-name="Esvaziar Lixeira" data-interp="powershell" data-cmd="Clear-RecycleBin -Force -ErrorAction SilentlyContinue">🗑️ Esvaziar Lixeira</button>
-                    <button type="button" class="url-chip command-chip" data-name="Recorte Tela" data-interp="cmd" data-cmd="explorer.exe ms-screenclip:">✂️ Recorte de Tela</button>
-                    <button type="button" class="url-chip command-chip" data-name="Configurações" data-interp="cmd" data-cmd="start ms-settings:">⚙️ Configurações</button>
-                    <button type="button" class="url-chip command-chip" data-name="Teste Python" data-interp="python" data-cmd="print('Python executado com sucesso!')">🐍 Teste Python</button>
+                    <button type="button" class="url-chip command-chip" data-name="Bloquear PC" data-interp="cmd" data-cmd="rundll32.exe user32.dll,LockWorkStation">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      <span>Bloquear Tela</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Desligar PC" data-interp="cmd" data-cmd="shutdown /s /t 0">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                      <span>Desligar PC</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Reiniciar PC" data-interp="cmd" data-cmd="shutdown /r /t 0">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                      <span>Reiniciar PC</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Suspender PC" data-interp="cmd" data-cmd="rundll32.exe powrprof.dll,SetSuspendState 0,1,0">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                      <span>Suspender PC</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Esvaziar Lixeira" data-interp="powershell" data-cmd="Clear-RecycleBin -Force -ErrorAction SilentlyContinue">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      <span>Esvaziar Lixeira</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Recorte Tela" data-interp="cmd" data-cmd="explorer.exe ms-screenclip:">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                      <span>Recorte de Tela</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Configurações" data-interp="cmd" data-cmd="start ms-settings:">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                      <span>Configurações</span>
+                    </button>
+                    <button type="button" class="url-chip command-chip" data-name="Teste Python" data-interp="python" data-cmd="print('Python executado com sucesso!')">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                      <span>Teste Python</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -878,7 +950,7 @@
                 </div>
                 <div class="knob-direction-bar">
                   <button type="button" class="btn-knob-test" id="btn-test-ccw" title="Girar Anti-horário (Esquerda)">⟲ Girar Esq.</button>
-                  <button type="button" class="btn-knob-test btn-knob-press" id="btn-test-click" title="Pressionar Botão (Clique)">🔘 Clique</button>
+                  <button type="button" class="btn-knob-test btn-knob-press" id="btn-test-click" title="Pressionar Botão (Clique)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Clique</button>
                   <button type="button" class="btn-knob-test" id="btn-test-cw" title="Girar Horário (Direita)">Girar Dir. ⟳</button>
                 </div>
               </div>
@@ -903,7 +975,7 @@
               </div>
               <div class="breakdown-item">
                 <div class="breakdown-direction">
-                  <span class="direction-badge click">🔘 Pressionar Botão</span>
+                  <span class="direction-badge click"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Pressionar Botão</span>
                 </div>
                 <span class="breakdown-action" id="encoder-action-click">Mudo (Mute)</span>
               </div>
@@ -1195,7 +1267,7 @@
                 <!-- Pressionar Botão (Click) -->
                 <div class="custom-config-card">
                   <div class="custom-config-card-top">
-                    <span class="direction-badge click">🔘 Pressionar Botão (Clique)</span>
+                    <span class="direction-badge click"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Pressionar Botão (Clique)</span>
                     <button type="button" class="btn btn-secondary btn-xs btn-choose-encoder-action" data-target="click" title="Escolher entre Mídia, Mouse, Funções do Pad, Macros...">
                       <span>Escolher Ação</span>
                     </button>
@@ -1898,13 +1970,13 @@
   <div id="serial-log-drawer" class="serial-log-drawer hidden">
     <div class="log-drawer-header">
       <div class="log-drawer-title">
-        <span class="log-terminal-icon">📟</span>
+        <span class="log-terminal-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
         <span>Terminal Serial — Comunicação em Tempo Real</span>
         <span class="log-port-tag" id="log-port-tag">Buscando...</span>
       </div>
       <div class="log-drawer-actions">
-        <button id="btn-copy-logs" class="btn-drawer-action" title="Copiar logs para a área de transferência">📋 Copiar</button>
-        <button id="btn-export-logs" class="btn-drawer-action" title="Exportar logs para arquivo .txt">💾 Exportar TXT</button>
+        <button id="btn-copy-logs" class="btn-drawer-action" title="Copiar logs para a área de transferência"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+        <button id="btn-export-logs" class="btn-drawer-action" title="Exportar logs para arquivo .txt"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Exportar TXT</button>
         <button id="btn-clear-logs" class="btn-drawer-action" title="Limpar logs">Limpar</button>
         <button id="btn-close-logs" class="btn-drawer-action" title="Fechar painel">✕</button>
       </div>
@@ -1978,12 +2050,30 @@
       <div class="custom-modal-body" style="padding-top: 6px;">
         <!-- Tabs de Ação -->
         <div class="config-tabs mb-16" id="encoder-picker-tabs">
-          <button type="button" class="config-tab active" data-tab="combination">Combinação</button>
-          <button type="button" class="config-tab" data-tab="functions">Sistema / Camadas</button>
-          <button type="button" class="config-tab" data-tab="media">Música & Volume</button>
-          <button type="button" class="config-tab" data-tab="mouse">Mouse</button>
-          <button type="button" class="config-tab" data-tab="macro">Macro</button>
-          <button type="button" class="config-tab" data-tab="url">Abrir URL</button>
+          <button type="button" class="config-tab active" data-tab="combination">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+            <span>Combinação</span>
+          </button>
+          <button type="button" class="config-tab" data-tab="functions">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Sistema / Camadas</span>
+          </button>
+          <button type="button" class="config-tab" data-tab="media">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Música & Volume</span>
+          </button>
+          <button type="button" class="config-tab" data-tab="mouse">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="6"/><line x1="12" y1="7" x2="12" y2="11"/></svg>
+            <span>Mouse</span>
+          </button>
+          <button type="button" class="config-tab" data-tab="macro">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+            <span>Macro</span>
+          </button>
+          <button type="button" class="config-tab" data-tab="url">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>Abrir URL</span>
+          </button>
         </div>
 
         <!-- Conteúdo: Combinação -->
@@ -2223,12 +2313,30 @@
               </button>
             </div>
             <div class="custom-fn-quick-chips">
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Volume +">🔊 Vol +</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Brilho +">☀️ Brilho +</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Faixa">⏭️ Próx. Mús.</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Scroll Baixo">📜 Scroll ↓</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Zoom +">🔍 Zoom +</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Camada">📑 Próx. Camada</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Volume +">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                <span>Vol +</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Brilho +">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <span>Brilho +</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Faixa">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                <span>Próx. Mús.</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Scroll Baixo">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                <span>Scroll ↓</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Zoom +">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <span>Zoom +</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-cw" data-val="Próxima Camada">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Próx. Camada</span>
+              </button>
             </div>
           </div>
 
@@ -2249,19 +2357,37 @@
               </button>
             </div>
             <div class="custom-fn-quick-chips">
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Volume -">🔉 Vol -</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Brilho -">🌙 Brilho -</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Faixa Anterior">⏮️ Mús. Anterior</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Scroll Cima">📜 Scroll ↑</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Zoom -">🔍 Zoom -</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Camada Anterior">📑 Camada Ant.</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Volume -">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                <span>Vol -</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Brilho -">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                <span>Brilho -</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Faixa Anterior">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+                <span>Mús. Anterior</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Scroll Cima">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                <span>Scroll ↑</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Zoom -">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <span>Zoom -</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-ccw" data-val="Camada Anterior">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Camada Ant.</span>
+              </button>
             </div>
           </div>
 
           <!-- Pressionar Botão (Clique) -->
           <div class="custom-fn-action-block">
             <div class="custom-fn-action-head">
-              <span class="direction-badge click">🔘 Pressionar Botão (Clique)</span>
+              <span class="direction-badge click"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>Pressionar Botão (Clique)</span>
               <span class="custom-fn-preview-tag" id="tag-new-fn-click">Nenhum</span>
             </div>
             <div class="custom-fn-action-input-row">
@@ -2275,11 +2401,26 @@
               </button>
             </div>
             <div class="custom-fn-quick-chips">
-              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Mute">🔇 Mute</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Play/Pause">⏯️ Play/Pause</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Clique Meio">🖱️ Clique Meio</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Reset Zoom">🔍 Reset 100%</button>
-              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Camada 0">🏠 Camada 0</button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Mute">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/></svg>
+                <span>Mute</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Play/Pause">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <span>Play/Pause</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Clique Meio">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="7"/><line x1="12" y1="6" x2="12" y2="10"/></svg>
+                <span>Clique Meio</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Reset Zoom">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Reset 100%</span>
+              </button>
+              <button type="button" class="enc-quick-chip" data-target="new-fn-click" data-val="Camada 0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Camada 0</span>
+              </button>
             </div>
           </div>
         </div>
@@ -2322,11 +2463,11 @@
           <span class="form-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">3. Modo de Acionamento:</span>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
             <div class="assign-action-type-card active" id="assign-type-click">
-              <div class="assign-type-title">⚡ Clique Rápido (Toque)</div>
+              <div class="assign-type-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 5px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Clique Rápido (Toque)</div>
               <div class="assign-type-desc">Dispara ao pressionar a tecla normalmente.</div>
             </div>
             <div class="assign-action-type-card" id="assign-type-hold">
-              <div class="assign-type-title">⏳ Clique Longo (Segurar)</div>
+              <div class="assign-type-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 5px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Clique Longo (Segurar)</div>
               <div class="assign-type-desc">Dispara como dupla função ao segurar a tecla.</div>
             </div>
           </div>
@@ -2425,14 +2566,14 @@
           </label>
           <div class="custom-select-wrapper" style="width: 100%;">
             <select class="input-field select-field new-layer-encoder-select" id="new-layer-encoder-select" style="width: 100%; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 8px;">
-              <option value="layer_nav" selected>🔄 Alternar Camadas (Navegação - Padrão)</option>
-              <option value="volume">🔊 Volume & Mute (Padrão Windows)</option>
-              <option value="media">🎵 Player de Mídia (Play / Pause / Faixas)</option>
-              <option value="brightness">☀️ Brilho da Tela</option>
-              <option value="zoom">🔍 Zoom & Escala</option>
-              <option value="scroll">📜 Rolagem do Mouse (Scroll Vertical)</option>
-              <option value="video">🎬 Navegação de Vídeo (YouTube / VLC)</option>
-              <option value="custom">⚡ Atalhos Customizados</option>
+              <option value="layer_nav" selected>Alternar Camadas (Navegação - Padrão)</option>
+              <option value="volume">Volume & Mute (Padrão Windows)</option>
+              <option value="media">Player de Mídia (Play / Pause / Faixas)</option>
+              <option value="brightness">Brilho da Tela</option>
+              <option value="zoom">Zoom & Escala</option>
+              <option value="scroll">Rolagem do Mouse (Scroll Vertical)</option>
+              <option value="video">Navegação de Vídeo (YouTube / VLC)</option>
+              <option value="custom">Atalhos Customizados</option>
             </select>
           </div>
           <span style="font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; line-height: 1.4;">

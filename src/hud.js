@@ -65,7 +65,21 @@
       if (isSoundPlaying) {
         if (hudDefault) hudDefault.style.display = 'inline-flex';
         if (hudFlyout) hudFlyout.style.display = 'none';
-        actionEl.textContent = '🔊 ' + (data.soundTitle || 'TOCANDO SOM');
+        actionEl.innerHTML = '';
+        const soundIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        soundIcon.setAttribute('width', '11');
+        soundIcon.setAttribute('height', '11');
+        soundIcon.setAttribute('viewBox', '0 0 24 24');
+        soundIcon.setAttribute('fill', 'none');
+        soundIcon.setAttribute('stroke', 'currentColor');
+        soundIcon.setAttribute('stroke-width', '2');
+        soundIcon.setAttribute('stroke-linecap', 'round');
+        soundIcon.setAttribute('stroke-linejoin', 'round');
+        soundIcon.style.verticalAlign = '-1px';
+        soundIcon.style.marginRight = '5px';
+        soundIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+        actionEl.appendChild(soundIcon);
+        actionEl.appendChild(document.createTextNode(data.soundTitle || 'TOCANDO SOM'));
         actionEl.classList.add('highlight');
         pill.classList.add('playing-sound');
         if (resetTimer) clearTimeout(resetTimer);
@@ -74,6 +88,8 @@
         resetToRest();
       }
     } else if (data.action) {
+      isSoundPlaying = false;
+      pill.classList.remove('playing-sound');
       if (hudDefault) hudDefault.style.display = 'inline-flex';
       if (hudFlyout) hudFlyout.style.display = 'none';
       actionEl.textContent = data.action;
@@ -98,11 +114,12 @@
   }
 
   function resetToRest() {
-    if (isSoundPlaying) return;
+    isSoundPlaying = false;
     if (hudDefault) hudDefault.style.display = 'inline-flex';
     if (hudFlyout) hudFlyout.style.display = 'none';
     actionEl.textContent = currentProfile || 'PADRÃO';
     actionEl.classList.remove('highlight');
+    pill.classList.remove('playing-sound');
     pill.classList.remove('active-press');
     resetTimer = null;
   }

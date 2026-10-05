@@ -1587,13 +1587,10 @@ function handleSerialLine(line) {
 
     if (soundTitle) {
       startSoundpadPlaybackTracking(soundTitle);
-    } else if (currentPlayingSoundTitle) {
-      // Se estava reproduzindo um som e o usuário apertou outra tecla (ex: Play/Pause ou Stop), checa e encerra imediatamente
-      querySoundpadPlayStatus().then((status) => {
-        if (status !== 'PLAYING') {
-          stopSoundpadPlaybackTracking();
-        }
-      });
+    } else {
+      if (currentPlayingSoundTitle) {
+        stopSoundpadPlaybackTracking();
+      }
     }
 
     // Check if this key in config has a system action (URL, App, Command)

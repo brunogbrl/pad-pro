@@ -520,7 +520,7 @@
       return keyData.name || keyData.label || '[MACRO]';
     }
     if (keyData.type === 'url') {
-      return keyData.value ? `🌐 ${keyData.value.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}` : 'Abrir URL';
+      return keyData.value ? `${keyData.value.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}` : 'Abrir URL';
     }
     if (keyData.type === 'combo' && Array.isArray(keyData.value)) {
       return keyData.value.join('+');
@@ -561,8 +561,8 @@
         'volume_up': 'Vol +',
         'volume_down': 'Vol -',
         'mute': 'Mute',
-        'discord_mute': '🎙 Mute',
-        'discord_deafen': '🎧 Deafen'
+        'discord_mute': 'Discord Mute',
+        'discord_deafen': 'Discord Deafen'
       };
       title = fnTitles[keyData.value] || baseDisplay;
       isTitleCustom = true;
@@ -575,25 +575,25 @@
       isTitleCustom = true;
     } else if (keyData.type === 'mouse') {
       const mouseTitles = {
-        click_left: '🖱 Esq', click_right: '🖱 Dir', click_middle: '🖱 Meio',
-        scroll_up: '📜 Cima', scroll_down: '📜 Baixo'
+        click_left: 'Mouse Esq', click_right: 'Mouse Dir', click_middle: 'Mouse Meio',
+        scroll_up: 'Scroll Cima', scroll_down: 'Scroll Baixo'
       };
       title = mouseTitles[keyData.value] || baseDisplay;
       isTitleCustom = true;
     } else if (keyData.type === 'url') {
       if (Array.isArray(keyData.urls) && keyData.urls.length > 1) {
-        title = keyData.label || `🌐 ${keyData.urls.length} Links`;
+        title = keyData.label || `${keyData.urls.length} Links`;
       } else {
         const u = (Array.isArray(keyData.urls) && keyData.urls[0]) || keyData.value || '';
-        title = keyData.name || keyData.label || (u ? `🌐 ${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]}` : '🌐 URL');
+        title = keyData.name || keyData.label || (u ? `${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0]}` : 'URL');
       }
       isTitleCustom = true;
     } else if (keyData.type === 'app') {
       const fallback = (keyData.path || keyData.value || '').split('\\').pop().split('/').pop().replace(/\.[^/.]+$/, '') || 'App';
-      title = keyData.name || keyData.label || `💻 ${fallback}`;
+      title = keyData.name || keyData.label || fallback;
       isTitleCustom = true;
     } else if (keyData.type === 'command') {
-      title = keyData.name || keyData.label || '⚡ Comando';
+      title = keyData.name || keyData.label || 'Comando';
       isTitleCustom = true;
     } else {
       title = baseDisplay;
@@ -739,7 +739,7 @@
       }
 
       // Update OLED screen (both on virtual pad and customization simulator)
-      const l1 = event.isPreview ? '🔍 ESPIAR SOM' : (event.soundTitle ? '🔊 SOUNDPAD' : `B${event.keyIndex} PRESS`);
+      const l1 = event.isPreview ? 'ESPIAR SOM' : (event.soundTitle ? 'SOUNDPAD' : `B${event.keyIndex} PRESS`);
       const l2 = event.soundTitle || event.keyName || 'Disparado';
       setOLEDContent(l1, l2, event.isPreview ? 2500 : 1300);
       return;
@@ -1709,7 +1709,7 @@
         'layer-switch': 'Troca Camada',
         zoom_in: 'Zoom In (+)', zoom_out: 'Zoom Out (-)', zoom_reset: 'Resetar Zoom',
         brightness_up: 'Brilho (+)', brightness_down: 'Brilho (-)',
-        discord_mute: '🎙 Discord Mute', discord_deafen: '🎧 Discord Deafen'
+        discord_mute: 'Discord Mute', discord_deafen: 'Discord Deafen'
       };
       return map[action.value] || action.value;
     }
@@ -1732,17 +1732,17 @@
     }
     if (action.type === 'url') {
       if (Array.isArray(action.urls) && action.urls.length > 1) {
-        return `🌐 ${action.urls.length} Links`;
+        return `${action.urls.length} Links`;
       }
       const u = (Array.isArray(action.urls) && action.urls[0]) || action.value || '';
-      return u ? `🌐 ${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}` : 'Abrir URL';
+      return u ? `${u.replace(/^https?:\/\//i, '').replace(/^www\./i, '')}` : 'Abrir URL';
     }
     if (action.type === 'app') {
       const fallback = (action.path || action.value || '').split('\\').pop().split('/').pop().replace(/\.[^/.]+$/, '') || 'App';
-      return action.name ? `💻 ${action.name}` : `💻 ${fallback}`;
+      return action.name ? action.name : fallback;
     }
     if (action.type === 'command') {
-      return action.name ? `⚡ ${action.name}` : `⚡ ${(action.command || action.value || 'Comando').substring(0, 16)}`;
+      return action.name ? action.name : (action.command || action.value || 'Comando').substring(0, 16);
     }
     return action.value || '—';
   }
@@ -4229,7 +4229,7 @@
     const currentVal = (assignSelectedKey === 3 || kData?.value === 'layer-switch' || kData?.type === 'fixed') 
       ? 'Troca Camada' 
       : (info.label || 'Vazio');
-    const slotText = assignSelectedSlot === 'hold' ? '⏳ Clique Longo (Segurar)' : '⚡ Clique Rápido (Toque)';
+    const slotText = assignSelectedSlot === 'hold' ? 'Clique Longo (Segurar)' : 'Clique Rápido (Toque)';
     const macroName = pendingAssignMacro?.name || 'Macro';
     const isSpecialKey3 = (assignSelectedKey === 3);
 
@@ -4241,7 +4241,7 @@
             ${escapeHtml(layerName)} · <span style="color: #38BDF8;">Tecla B${assignSelectedKey}</span> 
             <span style="font-weight: 400; color: var(--text-muted); font-size: 11px;">(Atual: ${escapeHtml(currentVal)})</span>
           </div>
-          ${isSpecialKey3 ? '<div style="color: #F59E0B; font-size: 10.5px; margin-top: 2px;">⚠️ Tecla B3 é o botão padrão de troca de camada.</div>' : ''}
+          ${isSpecialKey3 ? '<div style="color: #F59E0B; font-size: 10.5px; margin-top: 2px; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Tecla B3 é o botão padrão de troca de camada.</div>' : ''}
         </div>
         <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">${slotText}</span>
       </div>
@@ -4358,8 +4358,8 @@
       });
 
       const assignBadge = assignments.length > 0
-        ? `<span class="macro-assigned-pill" style="background: rgba(56, 189, 248, 0.12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.28); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;" title="Atribuída em: ${assignments.join(', ')}">🎯 ${assignments.join(', ')}</span>`
-        : `<span style="color: var(--text-muted); font-size: 10px; font-weight: 500;">⚪ Não atribuída</span>`;
+        ? `<span class="macro-assigned-pill" style="background: rgba(56, 189, 248, 0.12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.28); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;" title="Atribuída em: ${assignments.join(', ')}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>${assignments.join(', ')}</span>`
+        : `<span style="color: var(--text-muted); font-size: 10px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>Não atribuída</span>`;
 
       return `
         <div class="macro-library-item" data-id="${m.id}">

@@ -1,6 +1,6 @@
 {
   "name": "pad-pro",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Configurador visual para o macro pad PAD Pro",
   "main": "main.js",
   "scripts": {
